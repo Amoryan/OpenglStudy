@@ -2,6 +2,7 @@ package com.fxyan.opengl.geometry;
 
 import com.fxyan.opengl.SelectActivity;
 import com.fxyan.opengl.entity.RendererMenu;
+import com.fxyan.opengl.entity.geometry.Square;
 import com.fxyan.opengl.entity.geometry.Triangle;
 
 import java.util.List;

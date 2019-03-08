@@ -1,9 +1,8 @@
-package com.fxyan.opengl.geometry;
+package com.fxyan.opengl.entity.geometry;
 
 import android.opengl.GLES20;
 
 import com.fxyan.opengl.BaseRenderer;
-import com.fxyan.opengl.entity.geometry.BaseOpenGLObjectImpl;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
