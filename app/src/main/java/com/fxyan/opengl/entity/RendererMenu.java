@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 public final class RendererMenu implements Serializable {
     public String name;
-    public Class<? extends IOpenGLObject> clazz;
+    public Class<? extends IObject> clazz;
 
-    public RendererMenu(String name, Class<? extends IOpenGLObject> clazz) {
+    public RendererMenu(String name, Class<? extends IObject> clazz) {
         this.name = name;
         this.clazz = clazz;
     }

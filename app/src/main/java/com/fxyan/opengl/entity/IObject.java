@@ -6,7 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public interface IOpenGLObject {
+public interface IObject {
     void onSurfaceCreated(GL10 gl, EGLConfig config);
 
     void onSurfaceChanged(GL10 gl, int width, int height);

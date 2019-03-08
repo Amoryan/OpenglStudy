@@ -2,6 +2,8 @@ package com.fxyan.opengl.entity.geometry;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.fxyan.opengl.BaseRenderer;
 
@@ -15,22 +17,61 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public final class Square extends ObjectImpl {
-
+public final class Cube extends ObjectImpl {
     private FloatBuffer buffer;
     private float[] vertex = {
-            -0.5f, 0.5f, 0f, 1f, 0f, 0f, 1f,
-            -0.5f, -0.5f, 0f, 0f, 1f, 0f, 1f,
-            0.5f, -0.5f, 0f, 0f, 0f, 1f, 1f,
+            // front face
+            -0.5f, 0.5f, 0.5f, 1f, 0f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 0f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 0f, 0f, 1f,
 
-            -0.5f, 0.5f, 0f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0f, 0f, 0f, 1f, 1f,
-            0.5f, 0.5f, 0f, 1f, 0f, 1f, 1f,
+            // back face
+            -0.5f, 0.5f, -0.5f, 1f, 0f, 0f, 1f,
+            -0.5f, -0.5f, -0.5f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 1f, 0f, 0f, 1f,
+            0.5f, 0.5f, -0.5f, 1f, 0f, 0f, 1f,
+
+            // left face
+            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
+            -0.5f, -0.5f, -0.5f, 0f, 1f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
+            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 0f, 1f, 0f, 1f,
+
+            // right face
+            0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 0f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
+            0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 0f, 1f, 0f, 1f,
+
+            // top face
+            -0.5f, 0.5f, -0.5f, 0f, 0f, 1f, 1f,
+            -0.5f, 0.5f, 0.5f, 0f, 0f, 1f, 1f,
+            0.5f, 0.5f, 0.5f, 0f, 0f, 1f, 1f,
+            -0.5f, 0.5f, -0.5f, 0f, 0f, 1f, 1f,
+            0.5f, 0.5f, 0.5f, 0f, 0f, 1f, 1f,
+            0.5f, 0.5f, -0.5f, 0f, 0f, 1f, 1f,
+
+            // bottom face
+            -0.5f, -0.5f, -0.5f, 0f, 0f, 1f, 1f,
+            -0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f,
+            0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f,
+            -0.5f, -0.5f, -0.5f, 0f, 0f, 1f, 1f,
+            0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f,
+            0.5f, -0.5f, -0.5f, 0f, 0f, 1f, 1f,
     };
 
     private int programHandle;
 
-    public Square() {
+    public Cube() {
         buffer = ByteBuffer.allocateDirect(vertex.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -41,7 +82,6 @@ public final class Square extends ObjectImpl {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
-
         int vertexShaderHandle = BaseRenderer.createShader(GLES20.GL_VERTEX_SHADER, Config.VERTEX_SHADER_SOURCE);
         int fragmentShaderHandle = BaseRenderer.createShader(GLES20.GL_FRAGMENT_SHADER, Config.FRAGMENT_SHADER_SOURCE);
 
@@ -51,16 +91,12 @@ public final class Square extends ObjectImpl {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         super.onSurfaceChanged(gl, width, height);
+
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1, 0);
 
         float ratio = (float) width / height;
 
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 10f);
-
-        Matrix.setIdentityM(modelMatrix, 0);
-
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1, 10);
     }
 
     @Override
@@ -70,6 +106,13 @@ public final class Square extends ObjectImpl {
         GLES20.glUseProgram(programHandle);
 
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, Config.U_MVPMATRIX);
+        Matrix.setIdentityM(modelMatrix, 0);
+        long time = SystemClock.uptimeMillis() % 10000L;
+        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
+        Log.d("fxYan", String.valueOf(angleInDegrees));
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         buffer.position(0);

@@ -2,6 +2,7 @@ package com.fxyan.opengl.geometry;
 
 import com.fxyan.opengl.SelectActivity;
 import com.fxyan.opengl.entity.RendererMenu;
+import com.fxyan.opengl.entity.geometry.Cube;
 import com.fxyan.opengl.entity.geometry.Square;
 import com.fxyan.opengl.entity.geometry.Triangle;
 
@@ -16,5 +17,6 @@ public final class GeometrySelectActivity extends SelectActivity {
     protected void genData(List<RendererMenu> data) {
         data.add(new RendererMenu("三角形", Triangle.class));
         data.add(new RendererMenu("正方形", Square.class));
+        data.add(new RendererMenu("立方体", Cube.class));
     }
 }

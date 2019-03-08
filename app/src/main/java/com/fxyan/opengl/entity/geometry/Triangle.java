@@ -1,6 +1,7 @@
 package com.fxyan.opengl.entity.geometry;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import com.fxyan.opengl.BaseRenderer;
 
@@ -14,7 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public final class Triangle extends BaseOpenGLObjectImpl {
+public final class Triangle extends ObjectImpl {
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
@@ -52,6 +53,21 @@ public final class Triangle extends BaseOpenGLObjectImpl {
         int fragmentShaderHandle = BaseRenderer.createShader(GLES20.GL_FRAGMENT_SHADER, Config.FRAGMENT_SHADER_SOURCE);
 
         programHandle = BaseRenderer.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        super.onSurfaceChanged(gl, width, height);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1, 0);
+
+        float ratio = (float) width / height;
+
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 10f);
+
+        Matrix.setIdentityM(modelMatrix, 0);
+
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
     }
 
     @Override

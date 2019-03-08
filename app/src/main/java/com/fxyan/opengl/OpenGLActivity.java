@@ -6,7 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.fxyan.opengl.entity.IOpenGLObject;
+import com.fxyan.opengl.entity.IObject;
 
 /**
  * @author fxYan
@@ -47,7 +47,7 @@ public abstract class OpenGLActivity extends AppCompatActivity {
 
     protected abstract void init();
 
-    protected void setObject(Class<? extends IOpenGLObject> clazz) {
+    protected void setObject(Class<? extends IObject> clazz) {
         renderer.setObject(clazz);
     }
 
