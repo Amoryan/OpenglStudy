@@ -1,7 +1,5 @@
 package com.fxyan.opengl.entity;
 
-import com.fxyan.opengl.entity.geometry.IOpenGLObject;
-
 import java.io.Serializable;
 
 /**

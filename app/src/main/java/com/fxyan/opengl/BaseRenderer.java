@@ -3,7 +3,7 @@ package com.fxyan.opengl;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import com.fxyan.opengl.entity.geometry.IOpenGLObject;
+import com.fxyan.opengl.entity.IOpenGLObject;
 import com.fxyan.opengl.entity.geometry.Triangle;
 
 import java.lang.reflect.Constructor;

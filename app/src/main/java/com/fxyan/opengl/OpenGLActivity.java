@@ -6,7 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.fxyan.opengl.entity.geometry.IOpenGLObject;
+import com.fxyan.opengl.entity.IOpenGLObject;
 
 /**
  * @author fxYan

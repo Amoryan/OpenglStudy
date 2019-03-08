@@ -3,6 +3,8 @@ package com.fxyan.opengl.entity.geometry;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.fxyan.opengl.entity.IOpenGLObject;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 

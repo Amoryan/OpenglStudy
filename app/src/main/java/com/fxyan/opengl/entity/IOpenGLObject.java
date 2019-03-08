@@ -1,4 +1,4 @@
-package com.fxyan.opengl.entity.geometry;
+package com.fxyan.opengl.entity;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
