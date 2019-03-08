@@ -109,7 +109,6 @@ public final class Cube extends ObjectImpl {
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Log.d("fxYan", String.valueOf(angleInDegrees));
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);

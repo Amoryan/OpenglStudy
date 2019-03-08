@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.Button;
 
 import com.fxyan.opengl.OpenGLActivity;
 import com.fxyan.opengl.R;
@@ -16,11 +15,8 @@ import com.fxyan.opengl.entity.geometry.Triangle;
  */
 public final class GeometryActivity extends OpenGLActivity {
 
-    private Button menuBtn;
-
     @Override
     protected void init() {
-        menuBtn = findViewById(R.id.menuBtn);
         setObject(Triangle.class);
     }
 
@@ -42,8 +38,6 @@ public final class GeometryActivity extends OpenGLActivity {
                 RendererMenu menu = (RendererMenu) bundle.getSerializable("menu");
 
                 if (menu == null) return;
-
-                menuBtn.setText(menu.name);
 
                 setObject(menu.clazz);
             }
