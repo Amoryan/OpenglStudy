@@ -23,6 +23,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".OpenGLActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shape.GeometryActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
