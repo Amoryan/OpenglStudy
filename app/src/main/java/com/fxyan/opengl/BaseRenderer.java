@@ -3,12 +3,49 @@ package com.fxyan.opengl;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import com.fxyan.opengl.entity.geometry.IOpenGLObject;
+import com.fxyan.opengl.entity.geometry.Triangle;
+
+import java.lang.reflect.Constructor;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 /**
  * @author fxYan
  */
-public abstract class BaseRenderer implements GLSurfaceView.Renderer {
+public class BaseRenderer implements GLSurfaceView.Renderer {
 
-    protected int createShader(int shaderType, String shaderSource) {
+    private IOpenGLObject object;
+    private Class<? extends IOpenGLObject> clazz = Triangle.class;
+
+    public void setObject(Class<? extends IOpenGLObject> clazz) {
+        this.clazz = clazz;
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        try {
+            Constructor<? extends IOpenGLObject> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            object = constructor.newInstance();
+        } catch (Exception e) {
+            object = new Triangle();
+        }
+        object.onSurfaceCreated(gl, config);
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        object.onSurfaceChanged(gl, width, height);
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        object.onDrawFrame(gl);
+    }
+
+    public static int createShader(int shaderType, String shaderSource) {
         int shaderHandle = GLES20.glCreateShader(shaderType);
         if (shaderHandle != 0) {
             GLES20.glShaderSource(shaderHandle, shaderSource);
@@ -26,7 +63,7 @@ public abstract class BaseRenderer implements GLSurfaceView.Renderer {
         return shaderHandle;
     }
 
-    protected int createAndLinkProgram(int... shaderList) {
+    public static int createAndLinkProgram(int... shaderList) {
         int programHandle = GLES20.glCreateProgram();
         if (programHandle != 0) {
             for (int shader : shaderList) {

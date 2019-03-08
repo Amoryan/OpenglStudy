@@ -25,11 +25,11 @@
         </activity>
 
         <activity
-            android:name=".OpenGLActivity"
+            android:name=".geometry.GeometryActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".shape.GeometryActivity"
+            android:name=".geometry.GeometrySelectActivity"
             android:screenOrientation="portrait" />
 
     </application>

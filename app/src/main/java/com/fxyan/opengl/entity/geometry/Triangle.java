@@ -1,7 +1,6 @@
-package com.fxyan.opengl.shape;
+package com.fxyan.opengl.entity.geometry;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.fxyan.opengl.BaseRenderer;
 
@@ -15,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public final class Triangle extends BaseRenderer {
+public final class Triangle extends BaseOpenGLObjectImpl {
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
@@ -29,11 +28,6 @@ public final class Triangle extends BaseRenderer {
             0f, 1f, 0f, 1f,
             0f, 0f, 1f, 1f
     };
-
-    private float[] mvpMatrix = new float[16];
-    private float[] modelMatrix = new float[16];
-    private float[] viewMatrix = new float[16];
-    private float[] projectionMatrix = new float[16];
 
     private int programHandle;
 
@@ -53,35 +47,19 @@ public final class Triangle extends BaseRenderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.9f, 0.9f, 0.9f, 1f);
+        super.onSurfaceCreated(gl, config);
+        int vertexShaderHandle = BaseRenderer.createShader(GLES20.GL_VERTEX_SHADER, Config.VERTEX_SHADER_SOURCE);
+        int fragmentShaderHandle = BaseRenderer.createShader(GLES20.GL_FRAGMENT_SHADER, Config.FRAGMENT_SHADER_SOURCE);
 
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1, 0);
-
-        int vertexShaderHandle = createShader(GLES20.GL_VERTEX_SHADER, Config.VERTEX_SHADER_SOURCE);
-        int fragmentShaderHandle = createShader(GLES20.GL_FRAGMENT_SHADER, Config.FRAGMENT_SHADER_SOURCE);
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        GLES20.glViewport(0, 0, width, height);
-
-        float ratio = (float) width / height;
-
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 10f);
+        programHandle = BaseRenderer.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
+        super.onDrawFrame(gl);
         GLES20.glUseProgram(programHandle);
 
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, Config.U_MVPMATRIX);
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, Config.A_POSITION);
@@ -94,7 +72,7 @@ public final class Triangle extends BaseRenderer {
         GLES20.glEnableVertexAttribArray(aColorHandle);
         GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, 7 * 4, vertexBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 3 * 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 7);
     }
 
     public static class Config {

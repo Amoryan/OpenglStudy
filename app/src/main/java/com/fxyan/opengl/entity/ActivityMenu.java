@@ -5,11 +5,11 @@ import android.app.Activity;
 /**
  * @author fxYan
  */
-public final class OpenGLMenu {
+public final class ActivityMenu {
     public Class<? extends Activity> clazz;
     public String menu;
 
-    public OpenGLMenu(Class<? extends Activity> clazz, String menu) {
+    public ActivityMenu(Class<? extends Activity> clazz, String menu) {
         this.clazz = clazz;
         this.menu = menu;
     }

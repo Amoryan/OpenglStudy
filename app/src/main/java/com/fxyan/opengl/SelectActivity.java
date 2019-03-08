@@ -13,49 +13,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.fxyan.opengl.entity.ActivityMenu;
-import com.fxyan.opengl.geometry.GeometryActivity;
+import com.fxyan.opengl.entity.RendererMenu;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * @author fxYan
+ */
+public abstract class SelectActivity extends AppCompatActivity {
 
     private Context context;
-    private RecyclerView recyclerView;
-
-    private List<ActivityMenu> data = new ArrayList<>();
+    private List<RendererMenu> data = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_select);
 
         context = this;
 
-        data.add(new ActivityMenu(GeometryActivity.class, "几何图形"));
-
-        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        genData(data);
         recyclerView.setAdapter(new RecyclerView.Adapter() {
             @NonNull
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                return new RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_opengl_menu, recyclerView, false)) {
+                return new RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_opengl_menu, viewGroup, false)) {
                 };
             }
 
             @Override
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-                Button btn = viewHolder.itemView.findViewById(R.id.menuBtn);
-                btn.setText(data.get(i).menu);
-
-                btn.setTag(i);
-                btn.setOnClickListener(new View.OnClickListener() {
+                final Button menuBtn = viewHolder.itemView.findViewById(R.id.menuBtn);
+                menuBtn.setText(data.get(i).name);
+                menuBtn.setTag(i);
+                menuBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int pos = (int) v.getTag();
-                        startActivity(new Intent(context, data.get(pos).clazz));
+                        int position = ((int) menuBtn.getTag());
+                        RendererMenu menu = data.get(position);
+                        back(menu);
                     }
                 });
             }
@@ -65,5 +64,16 @@ public class MainActivity extends AppCompatActivity {
                 return data.size();
             }
         });
+    }
+
+    protected abstract void genData(List<RendererMenu> data);
+
+    private void back(RendererMenu menu) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("menu", menu);
+        intent.putExtras(bundle);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
