@@ -10,7 +10,7 @@
         android:onClick="geometry"
         android:text="切换" />
 
-    <android.opengl.GLSurfaceView
+    <com.fxyan.opengl.widget.GLView
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

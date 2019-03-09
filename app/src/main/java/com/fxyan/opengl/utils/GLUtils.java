@@ -1,54 +1,16 @@
-package com.fxyan.opengl;
+package com.fxyan.opengl.utils;
 
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-
-import com.fxyan.opengl.entity.IObject;
-import com.fxyan.opengl.entity.geometry.Triangle;
-
-import java.lang.reflect.Constructor;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * @author fxYan
  */
-public class BaseRenderer implements GLSurfaceView.Renderer {
+public final class GLUtils {
 
-    private IObject object;
-    private Class<? extends IObject> clazz = Triangle.class;
-
-    public void setObject(Class<? extends IObject> clazz) {
-        this.clazz = clazz;
-    }
-
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        try {
-            Constructor<? extends IObject> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            object = constructor.newInstance();
-        } catch (Exception e) {
-            object = new Triangle();
-        }
-        object.onSurfaceCreated(gl, config);
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        object.onSurfaceChanged(gl, width, height);
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        object.onDrawFrame(gl);
-    }
-
-    public static int createShader(int shaderType, String shaderSource) {
+    public static int createShader(int shaderType, String path) {
         int shaderHandle = GLES20.glCreateShader(shaderType);
         if (shaderHandle != 0) {
-            GLES20.glShaderSource(shaderHandle, shaderSource);
+            GLES20.glShaderSource(shaderHandle, AssetsUtils.loadAssets(path));
             GLES20.glCompileShader(shaderHandle);
             int[] compileStatus = new int[1];
             GLES20.glGetShaderiv(shaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
