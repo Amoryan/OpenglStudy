@@ -3,7 +3,6 @@ package com.fxyan.opengl.entity.geometry;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.fxyan.opengl.BaseRenderer;
 
