@@ -8,7 +8,7 @@ import android.view.View;
 import com.fxyan.opengl.OpenGLActivity;
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.entity.RendererMenu;
-import com.fxyan.opengl.entity.geometry.Triangle;
+import com.fxyan.opengl.entity.geometry.Cube;
 
 /**
  * @author fxYan
@@ -17,12 +17,12 @@ public final class GeometryActivity extends OpenGLActivity {
 
     @Override
     protected void init() {
-        setObject(Triangle.class);
+        setObject(Cube.class);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_opengl;
+        return R.layout.activity_geometry;
     }
 
     public void geometry(View view) {

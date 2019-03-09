@@ -1,7 +1,5 @@
 package com.fxyan.opengl.utils;
 
-import android.content.Context;
-
 import com.fxyan.opengl.BaseApp;
 
 import java.io.BufferedReader;
@@ -20,7 +18,12 @@ public final class AssetsUtils {
             bufr = new BufferedReader(new InputStreamReader(BaseApp.getContext().getAssets().open(path)));
             String line;
             while ((line = bufr.readLine()) != null) {
-                builder.append(line);
+                if (!line.startsWith("//")) {
+                    builder.append(line);
+                }
+                if (line.equals("//end")) {
+                    break;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

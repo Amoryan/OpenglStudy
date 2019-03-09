@@ -46,4 +46,8 @@ public abstract class OpenGLActivity extends AppCompatActivity {
         surfaceView.setObject(clazz);
     }
 
+    protected IObject getObject() {
+        return surfaceView.getObject();
+    }
+
 }

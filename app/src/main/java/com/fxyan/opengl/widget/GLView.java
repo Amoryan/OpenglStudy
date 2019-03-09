@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
 import com.fxyan.opengl.entity.IObject;
+import com.fxyan.opengl.entity.geometry.Cube;
 import com.fxyan.opengl.entity.geometry.Triangle;
 
 import java.lang.reflect.Constructor;
@@ -32,6 +33,10 @@ public final class GLView extends GLSurfaceView implements GLSurfaceView.Rendere
         this.clazz = clazz;
     }
 
+    public IObject getObject() {
+        return object;
+    }
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         try {
@@ -39,7 +44,7 @@ public final class GLView extends GLSurfaceView implements GLSurfaceView.Rendere
             constructor.setAccessible(true);
             object = constructor.newInstance();
         } catch (Exception e) {
-            object = new Triangle();
+            object = new Cube();
         }
         object.onSurfaceCreated(gl, config);
     }
