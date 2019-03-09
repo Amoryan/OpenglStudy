@@ -4,6 +4,9 @@ uniform vec3 u_AmbientLightColor;
 // 环境光强度
 uniform float u_AmbientLightStrength;
 
+// 漫射光强度
+uniform float u_DiffuseLightStrength;
+
 attribute vec4 a_Position;
 attribute vec4 a_Color;
 
@@ -25,11 +28,18 @@ void main(){
 //end
 
 /*
-    Ambient light(环境光)的计算将，色值相乘即可
+    Ambient light(环境光)的计算，将色值相乘即可
+
     f -> final color
     o -> origin color
     a -> ambient light color
-    Rf = Ro * Ra;
-    Gf = Go * Ga;
-    Bf = Bo * Ba;
+
+    R(f) = R(o) * R(a);
+    G(f) = G(o) * G(a);
+    B(f) = B(o) * B(a);
+*/
+
+/*
+
+    Diffuse light(漫射光)的计算
 */
