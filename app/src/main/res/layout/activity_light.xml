@@ -2,48 +2,48 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#e3e3e3">
-
-    <Switch
-        android:id="@+id/ambient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:text="环境光    "
-        app:layout_constraintEnd_toStartOf="@+id/diffuse"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/diffuse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text="漫反射    "
-        app:layout_constraintEnd_toStartOf="@+id/specular"
-        app:layout_constraintStart_toEndOf="@+id/ambient"
-        app:layout_constraintTop_toTopOf="@+id/ambient" />
-
-    <Switch
-        android:id="@+id/specular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text="镜面反射    "
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/diffuse"
-        app:layout_constraintTop_toTopOf="@+id/ambient" />
+    android:layout_height="match_parent">
 
     <com.fxyan.opengl.widget.GLView
         android:id="@+id/surfaceView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ambient" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/ambientLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="环境光强度"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/ambientStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="10"
+        app:layout_constraintBottom_toBottomOf="@id/ambientLabel"
+        app:layout_constraintEnd_toStartOf="@id/ambientValue"
+        app:layout_constraintStart_toEndOf="@id/ambientLabel"
+        app:layout_constraintTop_toTopOf="@id/ambientLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/ambientValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/ambientLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ambientStrength"
+        app:layout_constraintTop_toTopOf="@+id/ambientLabel" />
 
 </android.support.constraint.ConstraintLayout>

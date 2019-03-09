@@ -1,7 +1,7 @@
 package com.fxyan.opengl.light;
 
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.fxyan.opengl.OpenGLActivity;
 import com.fxyan.opengl.R;
@@ -11,18 +11,19 @@ import com.fxyan.opengl.R;
  */
 public final class LightActivity
         extends OpenGLActivity
-        implements CompoundButton.OnCheckedChangeListener {
+        implements SeekBar.OnSeekBarChangeListener {
 
-    private boolean ambient;
-    private boolean diffuse;
-    private boolean specular;
+    private TextView ambientValue;
 
     @Override
     protected void init() {
         setObject(Light.class);
-        int[] ids = {R.id.ambient, R.id.diffuse, R.id.specular};
+
+        ambientValue = findViewById(R.id.ambientValue);
+
+        int[] ids = {R.id.ambientStrength};
         for (int id : ids) {
-            ((Switch) findViewById(id)).setOnCheckedChangeListener(this);
+            ((SeekBar) findViewById(id)).setOnSeekBarChangeListener(this);
         }
     }
 
@@ -32,18 +33,29 @@ public final class LightActivity
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.ambient:
-                ((Light) getObject()).setAmbient(isChecked);
-                break;
-            case R.id.diffuse:
-                ((Light) getObject()).setDiffuse(isChecked);
-                break;
-            case R.id.specular:
-                ((Light) getObject()).setSpecular(isChecked);
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Light object = (Light) getObject();
+
+        if (object == null) return;
+
+        float value = progress / 10f;
+
+        switch (seekBar.getId()) {
+            case R.id.ambientStrength:
+                object.setAmbientStrength(value);
+                ambientValue.setText(String.valueOf(value));
                 break;
             default:
         }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

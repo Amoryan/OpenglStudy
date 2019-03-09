@@ -19,9 +19,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public final class Light extends ObjectImpl {
 
-    private boolean ambient;
-    private boolean diffuse;
-    private boolean specular;
+    // 环境光强度
+    private float ambientStrength;
 
     private FloatBuffer buffer;
     private float[] vertex = {
@@ -90,8 +89,9 @@ public final class Light extends ObjectImpl {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
-        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "geometry/cube.vert");
-        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "geometry/cube.frag");
+
+        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "light/light.vert");
+        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "light/light.frag");
 
         programHandle = GLUtils.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
     }
@@ -126,7 +126,7 @@ public final class Light extends ObjectImpl {
         GLES20.glUniform3fv(ambientLightColorHandle, 1, ambientLightColor, 0);
 
         int ambientLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightStrength");
-        GLES20.glUniform1f(ambientLightStrengthHandle, 1f);
+        GLES20.glUniform1f(ambientLightStrengthHandle, ambientStrength);
 
         buffer.position(0);
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
@@ -141,15 +141,7 @@ public final class Light extends ObjectImpl {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 7);
     }
 
-    public void setAmbient(boolean ambient) {
-        this.ambient = ambient;
-    }
-
-    public void setDiffuse(boolean diffuse) {
-        this.diffuse = diffuse;
-    }
-
-    public void setSpecular(boolean specular) {
-        this.specular = specular;
+    public void setAmbientStrength(float value) {
+        ambientStrength = value;
     }
 }
