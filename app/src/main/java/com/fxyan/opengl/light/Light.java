@@ -22,64 +22,65 @@ public final class Light extends ObjectImpl {
     // 环境光强度
     private float ambientStrength;
     // 环境光颜色
-    private float[] ambientLightColor = {1f, 0f, 0f};
+    private float[] ambientLightColor = {1f, 1f, 1f};
 
     // 漫射光颜色
-    private float[] diffuseLightColor = {1f, 0f, 0f};
-    // 漫射光原位置
-    private float[] diffuseLightPosition = {0f, 0f, 0f};
+    private float[] diffuseLightColor = {1f, 1f, 1f};
     // 漫射光的强度
     private float diffuseStrength;
+
+    // 光源位置
+    private float[] lightPosition = {0f, 0f, 1f};
 
     private FloatBuffer buffer;
     private float[] vertex = {
             // front face
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
 
             // back face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
 
             // left face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
 
             // right face
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
 
             // top face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
 
             // bottom face
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
     };
 
     private int perVertexStride = 10;
@@ -121,13 +122,18 @@ public final class Light extends ObjectImpl {
 
         GLES20.glUseProgram(programHandle);
 
-        int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+
+        int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MMatrix");
+        GLES20.glUniform4fv(modelMatrixHandle, 1, modelMatrix, 0);
+
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+
+        int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         int ambientLightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightColor");
@@ -136,8 +142,8 @@ public final class Light extends ObjectImpl {
         int ambientLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightStrength");
         GLES20.glUniform1f(ambientLightStrengthHandle, ambientStrength);
 
-        int diffuseLightPositionHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseLightPosition");
-        GLES20.glUniform3fv(diffuseLightPositionHandle, 1, diffuseLightPosition, 0);
+        int lightPositionHandle = GLES20.glGetUniformLocation(programHandle, "u_LightPosition");
+        GLES20.glUniform3fv(lightPositionHandle, 1, lightPosition, 0);
 
         int diffuseLightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseLightColor");
         GLES20.glUniform3fv(diffuseLightColorHandle, 1, diffuseLightColor, 0);

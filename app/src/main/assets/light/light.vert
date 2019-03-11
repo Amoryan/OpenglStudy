@@ -1,3 +1,4 @@
+uniform mat4 u_ModelMatrix;
 uniform mat4 u_MVPMatrix;
 
 // 环境光颜色
@@ -5,8 +6,8 @@ uniform vec3 u_AmbientLightColor;
 // 环境光强度
 uniform float u_AmbientLightStrength;
 
-// 漫射光位置
-uniform vec3 u_DiffuseLightPosition;
+// 光源位置
+uniform vec3 u_LightPosition;
 // 漫射光颜色
 uniform vec3 u_DiffuseLightColor;
 // 漫射光的强度(衰减因子)
@@ -25,13 +26,13 @@ vec4 ambientColor(){
 
 vec4 diffuseColor(){
     // 转换后的坐标
-    vec3 transPosition = (u_MVPMatrix * a_Position).xyz;
+    vec3 transPosition = (u_ModelMatrix * a_Position).xyz;
     // 光源方向的单位向量
-    vec3 lightNormalize = normalize(u_DiffuseLightPosition - transPosition);
+    vec3 lightNormalize = normalize(u_LightPosition - transPosition);
     // 转换后的法线向量
-    vec3 transNormal = normalize(mat3(u_MVPMatrix) * a_Normal);
+    vec3 transNormalize = normalize(mat3(u_ModelMatrix) * a_Normal);
     // 朗伯因子
-    float diffuse = max(dot(a_Normal, lightNormalize), 0.0);
+    float diffuse = max(dot(transNormalize, lightNormalize), 0.0);
     // 漫反射后的光
     vec3 color = u_DiffuseLightColor * diffuse * u_DiffuseLightStrength;
     return vec4(color, 1.0);
@@ -47,10 +48,6 @@ void main(){
 
 /*
     Ambient light(环境光)的计算，将色值相乘即可
-
-    f -> final color
-    o -> origin color
-    a -> ambient light color
 
     R(final) = R(vertex color) * R(ambient color);
     G(final) = G(vertex color) * G(ambient color);

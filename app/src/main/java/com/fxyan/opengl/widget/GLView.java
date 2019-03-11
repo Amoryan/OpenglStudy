@@ -18,6 +18,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public final class GLView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
+    private boolean isChanged;
     private IObject object;
     private Class<? extends IObject> clazz = Triangle.class;
 
@@ -30,6 +31,7 @@ public final class GLView extends GLSurfaceView implements GLSurfaceView.Rendere
     }
 
     public void setObject(Class<? extends IObject> clazz) {
+        isChanged = true;
         this.clazz = clazz;
     }
 
@@ -39,12 +41,15 @@ public final class GLView extends GLSurfaceView implements GLSurfaceView.Rendere
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        try {
-            Constructor<? extends IObject> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            object = constructor.newInstance();
-        } catch (Exception e) {
-            object = new Cube();
+        if (isChanged) {
+            try {
+                Constructor<? extends IObject> constructor = clazz.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                object = constructor.newInstance();
+            } catch (Exception e) {
+                object = new Cube();
+            }
+            isChanged = false;
         }
         object.onSurfaceCreated(gl, config);
     }
