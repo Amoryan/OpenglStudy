@@ -21,60 +21,68 @@ public final class Light extends ObjectImpl {
 
     // 环境光强度
     private float ambientStrength;
+    // 环境光颜色
+    private float[] ambientLightColor = {1f, 0f, 0f};
+
+    // 漫射光颜色
+    private float[] diffuseLightColor = {1f, 0f, 0f};
+    // 漫射光原位置
+    private float[] diffuseLightPosition = {0f, 0f, 0f};
+    // 漫射光的强度
+    private float diffuseStrength;
 
     private FloatBuffer buffer;
     private float[] vertex = {
             // front face
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0f, 1f,
 
             // back face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 0f, -1f,
 
             // left face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, -1f, 0f, 0f,
 
             // right face
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 1f, 0f, 0f,
 
             // top face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, 1f, 0f,
 
             // bottom face
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 1f, 1f, 0f, -1f, 0f,
     };
 
-    // 环境光颜色
-    private float[] ambientLightColor = {1f, 0f, 0f};
+    private int perVertexStride = 10;
 
     private int programHandle;
 
@@ -128,20 +136,38 @@ public final class Light extends ObjectImpl {
         int ambientLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightStrength");
         GLES20.glUniform1f(ambientLightStrengthHandle, ambientStrength);
 
+        int diffuseLightPositionHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseLightPosition");
+        GLES20.glUniform3fv(diffuseLightPositionHandle, 1, diffuseLightPosition, 0);
+
+        int diffuseLightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseLightColor");
+        GLES20.glUniform3fv(diffuseLightColorHandle, 1, diffuseLightColor, 0);
+
+        int diffuseLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseLightStrength");
+        GLES20.glUniform1f(diffuseLightStrengthHandle, diffuseStrength);
+
         buffer.position(0);
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, 3, GLES20.GL_FLOAT, false, 7 * 4, buffer);
+        GLES20.glVertexAttribPointer(aPositionHandle, 3, GLES20.GL_FLOAT, false, perVertexStride * 4, buffer);
 
         buffer.position(3);
         int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, 7 * 4, buffer);
+        GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, perVertexStride * 4, buffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 7);
+        buffer.position(7);
+        int aNormalHandle = GLES20.glGetAttribLocation(programHandle, "a_Normal");
+        GLES20.glEnableVertexAttribArray(aNormalHandle);
+        GLES20.glVertexAttribPointer(aNormalHandle, 3, GLES20.GL_FLOAT, false, perVertexStride * 4, buffer);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / perVertexStride);
     }
 
     public void setAmbientStrength(float value) {
         ambientStrength = value;
+    }
+
+    public void setDiffuseStrength(float diffuseStrength) {
+        this.diffuseStrength = diffuseStrength;
     }
 }

@@ -14,14 +14,16 @@ public final class LightActivity
         implements SeekBar.OnSeekBarChangeListener {
 
     private TextView ambientValue;
+    private TextView diffuseValue;
 
     @Override
     protected void init() {
         setObject(Light.class);
 
         ambientValue = findViewById(R.id.ambientValue);
+        diffuseValue = findViewById(R.id.diffuseValue);
 
-        int[] ids = {R.id.ambientStrength};
+        int[] ids = {R.id.ambientStrength, R.id.diffuseStrength};
         for (int id : ids) {
             ((SeekBar) findViewById(id)).setOnSeekBarChangeListener(this);
         }
@@ -44,6 +46,10 @@ public final class LightActivity
             case R.id.ambientStrength:
                 object.setAmbientStrength(value);
                 ambientValue.setText(String.valueOf(value));
+                break;
+            case R.id.diffuseStrength:
+                object.setDiffuseStrength(value);
+                diffuseValue.setText(String.valueOf(value));
                 break;
             default:
         }

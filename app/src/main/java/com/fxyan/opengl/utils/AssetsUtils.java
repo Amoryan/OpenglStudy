@@ -18,7 +18,7 @@ public final class AssetsUtils {
             bufr = new BufferedReader(new InputStreamReader(BaseApp.getContext().getAssets().open(path)));
             String line;
             while ((line = bufr.readLine()) != null) {
-                if (!line.startsWith("//")) {
+                if (!line.contains("//")) {
                     builder.append(line);
                 }
                 if (line.equals("//end")) {

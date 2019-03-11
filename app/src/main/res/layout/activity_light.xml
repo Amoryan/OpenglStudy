@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:text="环境光强度"
+        android:text="ambient"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,39 @@
         android:text="0.0"
         app:layout_constraintBottom_toBottomOf="@+id/ambientLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ambientStrength"
         app:layout_constraintTop_toTopOf="@+id/ambientLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/diffuseLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="diffuse"
+        app:layout_constraintEnd_toEndOf="@+id/ambientLabel"
+        app:layout_constraintStart_toStartOf="@+id/ambientLabel"
+        app:layout_constraintTop_toBottomOf="@+id/ambientLabel" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/diffuseStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="10"
+        app:layout_constraintBottom_toBottomOf="@id/diffuseLabel"
+        app:layout_constraintEnd_toStartOf="@id/diffuseValue"
+        app:layout_constraintStart_toEndOf="@id/diffuseLabel"
+        app:layout_constraintTop_toTopOf="@id/diffuseLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/diffuseValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/diffuseLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/diffuseLabel" />
 
 </android.support.constraint.ConstraintLayout>
