@@ -37,6 +37,10 @@
             android:name=".light.LightActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ply.PlyActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
