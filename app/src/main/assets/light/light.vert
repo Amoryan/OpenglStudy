@@ -29,8 +29,8 @@ vec4 diffuseColor(){
     vec3 transPosition = (u_ModelMatrix * a_Position).xyz;
     // 光源方向的单位向量
     vec3 lightNormalize = normalize(u_LightPosition - transPosition);
-    // 转换后的法线向量
-    vec3 transNormalize = normalize(mat3(u_ModelMatrix) * a_Normal);
+    // 转换后的法线向量，这里法线向量的旋转有点问题
+    vec3 transNormalize = normalize(a_Normal);
     // 朗伯因子
     float diffuse = max(dot(transNormalize, lightNormalize), 0.0);
     // 漫反射后的光

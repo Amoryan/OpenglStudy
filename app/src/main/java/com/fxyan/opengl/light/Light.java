@@ -30,7 +30,7 @@ public final class Light extends ObjectImpl {
     private float diffuseStrength;
 
     // 光源位置
-    private float[] lightPosition = {0f, 0f, 1f};
+    private float[] lightPosition = {0f, 0, 1};
 
     private FloatBuffer buffer;
     private float[] vertex = {
@@ -127,7 +127,7 @@ public final class Light extends ObjectImpl {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
 
-        int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MMatrix");
+        int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ModelMatrix");
         GLES20.glUniform4fv(modelMatrixHandle, 1, modelMatrix, 0);
 
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
