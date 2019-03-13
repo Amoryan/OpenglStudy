@@ -9,6 +9,7 @@ import com.fxyan.opengl.utils.GLUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,65 +19,74 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public final class Cube extends ObjectImpl {
 
-    private FloatBuffer buffer;
+    private final int PER_FLOAT_BYTE = 4;
+    private final int PER_INT_BYTE = 4;
+
+    private final int PER_VERTEX_SIZE = 3;
+    private final int PER_COLOR_SIZE = 4;
+
+    private final int PER_VERTEX_STRIDE = PER_FLOAT_BYTE * PER_VERTEX_SIZE;
+    private final int PER_COLOR_STRIDE = PER_FLOAT_BYTE * PER_COLOR_SIZE;
+
+    private FloatBuffer vertexBuffer;
+    private IntBuffer indexBuffer;
+    private FloatBuffer colorBuffer;
+
     private float[] vertex = {
-            // front face
-            -0.5f, 0.5f, 0.5f, 1f, 0f, 0f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 0f, 0f, 1f,
-            -0.5f, 0.5f, 0.5f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 0f, 0f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
 
-            // back face
-            -0.5f, 0.5f, -0.5f, 1f, 0f, 0f, 1f,
-            -0.5f, -0.5f, -0.5f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, -0.5f, 1f, 0f, 0f, 1f,
-            -0.5f, 0.5f, -0.5f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, -0.5f, 1f, 0f, 0f, 1f,
-            0.5f, 0.5f, -0.5f, 1f, 0f, 0f, 1f,
-
-            // left face
-            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
-            -0.5f, -0.5f, -0.5f, 0f, 1f, 0f, 1f,
-            -0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
-            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
-            -0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
-            -0.5f, 0.5f, 0.5f, 0f, 1f, 0f, 1f,
-
-            // right face
-            0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
-            0.5f, -0.5f, -0.5f, 0f, 1f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
-            0.5f, 0.5f, -0.5f, 0f, 1f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 0f, 1f, 0f, 1f,
-            0.5f, 0.5f, 0.5f, 0f, 1f, 0f, 1f,
-
-            // top face
-            -0.5f, 0.5f, -0.5f, 0f, 0f, 1f, 1f,
-            -0.5f, 0.5f, 0.5f, 0f, 0f, 1f, 1f,
-            0.5f, 0.5f, 0.5f, 0f, 0f, 1f, 1f,
-            -0.5f, 0.5f, -0.5f, 0f, 0f, 1f, 1f,
-            0.5f, 0.5f, 0.5f, 0f, 0f, 1f, 1f,
-            0.5f, 0.5f, -0.5f, 0f, 0f, 1f, 1f,
-
-            // bottom face
-            -0.5f, -0.5f, -0.5f, 0f, 0f, 1f, 1f,
-            -0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f,
-            -0.5f, -0.5f, -0.5f, 0f, 0f, 1f, 1f,
-            0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f,
-            0.5f, -0.5f, -0.5f, 0f, 0f, 1f, 1f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+    };
+    private float[] color = {
+            0f, 0f, 1f, 1f,
+            0f, 1f, 0f, 1f,
+            0f, 1f, 1f, 1f,
+            1f, 0f, 0f, 1f,
+            1f, 0f, 1f, 1f,
+            1f, 1f, 0f, 1f,
+            1f, 1f, 1f, 1f
+    };
+    private int[] index = {
+            // front
+            0, 1, 2, 0, 2, 3,
+            // back
+            4, 5, 6, 4, 6, 7,
+            // left
+            4, 5, 1, 4, 1, 0,
+            // right
+            3, 2, 6, 3, 6, 7,
+            // top
+            4, 0, 3, 4, 3, 7,
+            // bottom
+            5, 1, 2, 5, 2, 6
     };
 
     private int programHandle;
 
     public Cube() {
-        buffer = ByteBuffer.allocateDirect(vertex.length * 4)
+        vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertex);
-        buffer.position(0);
+        vertexBuffer.position(0);
+
+        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTE)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(color);
+        colorBuffer.position(0);
+
+        indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTE)
+                .order(ByteOrder.nativeOrder())
+                .asIntBuffer()
+                .put(index);
+        indexBuffer.position(0);
     }
 
     @Override
@@ -114,17 +124,15 @@ public final class Cube extends ObjectImpl {
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
-        buffer.position(0);
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, 3, GLES20.GL_FLOAT, false, 7 * 4, buffer);
+        GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        buffer.position(3);
         int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, 7 * 4, buffer);
+        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 7);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
     }
 
 }
