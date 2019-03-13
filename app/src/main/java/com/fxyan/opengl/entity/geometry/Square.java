@@ -8,6 +8,7 @@ import com.fxyan.opengl.utils.GLUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -16,25 +17,57 @@ import javax.microedition.khronos.opengles.GL10;
  * @author fxYan
  */
 public final class Square extends ObjectImpl {
-    private FloatBuffer buffer;
-    private float[] vertex = {
-            -0.5f, 0.5f, 0f, 1f, 0f, 0f, 1f,
-            -0.5f, -0.5f, 0f, 0f, 1f, 0f, 1f,
-            0.5f, -0.5f, 0f, 0f, 0f, 1f, 1f,
+    private final int PER_FLOAT_BYTES = 4;
+    private final int PER_INT_BYTES = 4;
 
-            -0.5f, 0.5f, 0f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0f, 0f, 0f, 1f, 1f,
-            0.5f, 0.5f, 0f, 1f, 0f, 1f, 1f,
+    private final int PER_VERTEX_SIZE = 3;
+    private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
+
+    private final int PER_COLOR_SIZE = 4;
+    private final int PER_COLOR_STRIDE = PER_COLOR_SIZE * PER_FLOAT_BYTES;
+
+    private FloatBuffer vertexBuffer;
+    private IntBuffer indexBuffer;
+    private FloatBuffer colorBuffer;
+
+    private float[] vertex = {
+            -0.5f, 0.5f, 0f,
+            -0.5f, -0.5f, 0f,
+            0.5f, -0.5f, 0f,
+            0.5f, 0.5f, 0f,
+    };
+    // 每个面的索引
+    private int[] index = {
+            0, 1, 2,
+            0, 2, 3
+    };
+    private float[] color = {
+            1f, 0f, 0f, 1f,
+            0f, 1f, 0f, 1f,
+            0f, 0f, 1f, 1f,
+            1f, 0f, 1f, 1f,
     };
 
     private int programHandle;
 
     public Square() {
-        buffer = ByteBuffer.allocateDirect(vertex.length * 4)
+        vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertex);
-        buffer.position(0);
+        vertexBuffer.position(0);
+
+        indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asIntBuffer()
+                .put(index);
+        indexBuffer.position(0);
+
+        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(color);
+        colorBuffer.position(0);
     }
 
     @Override
@@ -71,17 +104,15 @@ public final class Square extends ObjectImpl {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
-        buffer.position(0);
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, 3, GLES20.GL_FLOAT, false, 7 * 4, buffer);
+        GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        buffer.position(3);
         int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, 7 * 4, buffer);
+        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 7);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
     }
 
 }
