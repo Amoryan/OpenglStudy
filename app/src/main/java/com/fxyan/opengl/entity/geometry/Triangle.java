@@ -8,6 +8,7 @@ import com.fxyan.opengl.utils.GLUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -17,33 +18,51 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public final class Triangle extends ObjectImpl {
 
+    private final int PER_FLOAT_BYTE = 4;
+    private final int PER_INT_BYTE = 4;
+
+    private final int PER_VERTEX_SIZE = 3;
+    private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTE;
+
+    private final int PER_COLOR_SIZE = 4;
+    private final int PER_COLOR_STRIDE = PER_COLOR_SIZE * PER_FLOAT_BYTE;
+
     private FloatBuffer vertexBuffer;
-    private float[] vertex = {
-            -0.5f, -0.5f, 0.0f, 1f, 0f, 0f, 1f,// left bottom
-            0.5f, -0.5f, 0.0f, 0f, 1f, 0f, 1f,// right bottom
-            0.0f, 0.5f, 0.0f, 0f, 0f, 1f, 1f// top
-    };
     private FloatBuffer colorBuffer;
+    private IntBuffer indexBuffer;
+
+    private float[] vertex = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f,
+    };
     private float[] color = {
             1f, 0f, 0f, 1f,
             0f, 1f, 0f, 1f,
             0f, 0f, 1f, 1f
     };
+    private int[] index = {0, 1, 2};
 
     private int programHandle;
 
     public Triangle() {
-        vertexBuffer = ByteBuffer.allocateDirect(vertex.length * 4)
+        vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertex);
         vertexBuffer.position(0);
 
-        colorBuffer = ByteBuffer.allocateDirect(color.length * 4)
+        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(color);
         colorBuffer.position(0);
+
+        indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTE)
+                .order(ByteOrder.nativeOrder())
+                .asIntBuffer()
+                .put(index);
+        indexBuffer.position(0);
     }
 
     @Override
@@ -79,16 +98,14 @@ public final class Triangle extends ObjectImpl {
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
-        vertexBuffer.position(0);
         GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, 3, GLES20.GL_FLOAT, false, 7 * 4, vertexBuffer);
+        GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
         int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        vertexBuffer.position(3);
         GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, 7 * 4, vertexBuffer);
+        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, vertexBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / 7);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
     }
 
 }
