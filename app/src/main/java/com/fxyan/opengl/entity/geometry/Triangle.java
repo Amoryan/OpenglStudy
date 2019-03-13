@@ -103,7 +103,7 @@ public final class Triangle extends ObjectImpl {
 
         int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, vertexBuffer);
+        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
     }
