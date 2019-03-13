@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.fxyan.opengl.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -18,7 +21,7 @@ public final class PlyActivity
         implements GLSurfaceView.Renderer {
 
     GLSurfaceView surfaceView;
-
+    List<PlyModel> models = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,9 +29,14 @@ public final class PlyActivity
         setContentView(R.layout.activity_ply);
 
         surfaceView = findViewById(R.id.surfaceView);
-        surfaceView.setRenderer(this);
 
         surfaceView.setEGLContextClientVersion(2);
+
+        surfaceView.setRenderer(this);
+
+        models.add(new PlyModel(this, "ply/主石.ply"));
+        models.add(new PlyModel(this, "ply/戒臂2.ply"));
+        models.add(new PlyModel(this, "ply/花托2.ply"));
     }
 
     @Override
