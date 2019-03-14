@@ -8,6 +8,8 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.utils.GLUtils;
@@ -18,7 +20,10 @@ import org.smurn.jply.PlyReaderFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,7 +41,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 public final class PlyActivity
         extends AppCompatActivity
-        implements GLSurfaceView.Renderer {
+        implements GLSurfaceView.Renderer,
+        CompoundButton.OnCheckedChangeListener {
 
     GLSurfaceView surfaceView;
     List<PlyModel> models = new ArrayList<>();
@@ -51,6 +57,8 @@ public final class PlyActivity
 
     private int programHandle;
 
+    private Map<String, PlyModel> map = new HashMap<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +70,18 @@ public final class PlyActivity
 
         surfaceView.setRenderer(this);
 
-        readPlyFile("ply/花托2.ply");
-        readPlyFile("ply/戒臂2.ply");
+        models = Collections.synchronizedList(models);
+
+        int[] ids = {
+                R.id.jiebi1, R.id.jiebi2, R.id.jiebi3, R.id.jiebi4, R.id.jiebi5,
+                R.id.huatuo1, R.id.huatuo2, R.id.huatuo3, R.id.huatuo4, R.id.huatuo5,
+        };
+        for (int id : ids) {
+            ((RadioButton) findViewById(id)).setOnCheckedChangeListener(this);
+        }
+
+        readPlyFile("ply/戒臂1.ply");
+        readPlyFile("ply/花托1.ply");
         readPlyFile("ply/主石.ply");
     }
 
@@ -77,6 +95,56 @@ public final class PlyActivity
     protected void onPause() {
         super.onPause();
         surfaceView.onPause();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.jiebi1:
+                updateModel(isChecked, "ply/戒臂1.ply");
+                break;
+            case R.id.jiebi2:
+                updateModel(isChecked, "ply/戒臂2.ply");
+                break;
+            case R.id.jiebi3:
+                updateModel(isChecked, "ply/戒臂3.ply");
+                break;
+            case R.id.jiebi4:
+                updateModel(isChecked, "ply/戒臂4.ply");
+                break;
+            case R.id.jiebi5:
+                updateModel(isChecked, "ply/戒臂5.ply");
+                break;
+            case R.id.huatuo1:
+                updateModel(isChecked, "ply/花托1.ply");
+                break;
+            case R.id.huatuo2:
+                updateModel(isChecked, "ply/花托2.ply");
+                break;
+            case R.id.huatuo3:
+                updateModel(isChecked, "ply/花托3.ply");
+                break;
+            case R.id.huatuo4:
+                updateModel(isChecked, "ply/花托4.ply");
+                break;
+            case R.id.huatuo5:
+                updateModel(isChecked, "ply/花托5.ply");
+                break;
+            default:
+        }
+    }
+
+    private void updateModel(boolean isChecked, String path) {
+        PlyModel model = map.get(path);
+        if (isChecked) {
+            if (model == null) {
+                readPlyFile(path);
+            } else {
+                models.add(model);
+            }
+        } else {
+            models.remove(model);
+        }
     }
 
     @Override
@@ -140,13 +208,13 @@ public final class PlyActivity
 
                 emitter.onSuccess(new PlyModel(vertex, index));
             } catch (IOException e) {
-                emitter.onError(null);
+                emitter.onError(e);
             } finally {
                 if (reader != null) {
                     try {
                         reader.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        emitter.onError(e);
                     }
                 }
             }
@@ -160,6 +228,7 @@ public final class PlyActivity
 
                     @Override
                     public void onSuccess(PlyModel plyModel) {
+                        map.put(path, plyModel);
                         models.add(plyModel);
                     }
 
