@@ -8,7 +8,6 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
 import com.fxyan.opengl.R;
-import com.fxyan.opengl.entity.geometry.ObjectImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
@@ -16,14 +15,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 /**
  * @author fxYan
  * 2D纹理贴图
  */
-public final class Texture2D extends ObjectImpl {
+public final class Texture2D {
 
     private final int PER_FLOAT_BYTES = 4;
     private final int PER_INT_BYTES = 4;
@@ -54,16 +50,28 @@ public final class Texture2D extends ObjectImpl {
     };
     private float[] texCoord = {
             0f, 0f,
-            0f, 1f,
-            1f, 1f,
-            1f, 0f,
+            0f, 2f,
+            2f, 2f,
+            2f, 0f,
     };
+
+    private float[] mvpMatrix = new float[16];
+    private float[] mvMatrix = new float[16];
+    private float[] modelMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
 
     private int programHandle;
     private Context context;
 
-    public Texture2D(Context context) {
-        this.context = context;
+    private int sMode;
+    private int tMode;
+
+    public Texture2D(Context _context, int _sMode, int _tMode) {
+        this.context = _context;
+        this.sMode = _sMode;
+        this.tMode = _tMode;
+
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -83,9 +91,8 @@ public final class Texture2D extends ObjectImpl {
         texCoordBuffer.position(0);
     }
 
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        super.onSurfaceCreated(gl, config);
+    public void onSurfaceCreated() {
+        GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
 
         programHandle = GLESUtils.createAndLinkProgram("texture/texture2d.vert", "texture/texture2d.frag");
 
@@ -99,31 +106,27 @@ public final class Texture2D extends ObjectImpl {
         // 设置放大过滤
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         // 设置环绕方向S
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, sMode);
         // 设置环绕方向T
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, tMode);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.texture2d);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
 
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        super.onSurfaceChanged(gl, width, height);
-
+    public void onSurfaceChanged(int width, int height) {
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1f, 0);
 
         float ratio = (float) width / height;
 
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1, 10);
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 2, 10);
 
         Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
     }
 
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        super.onDrawFrame(gl);
+    public void onDrawFrame() {
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         GLES20.glUseProgram(programHandle);
 
@@ -142,4 +145,5 @@ public final class Texture2D extends ObjectImpl {
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
+
 }

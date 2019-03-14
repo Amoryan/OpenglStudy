@@ -13,7 +13,7 @@ import com.fxyan.opengl.widget.GLView;
  */
 public abstract class OpenGLActivity extends AppCompatActivity {
 
-    private GLView surfaceView;
+    protected GLView surfaceView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
