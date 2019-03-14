@@ -66,11 +66,15 @@ public final class Texture2D {
 
     private int sMode;
     private int tMode;
+    private int minFilter;
+    private int magFilter;
 
-    public Texture2D(Context _context, int _sMode, int _tMode) {
+    public Texture2D(Context _context, int _sMode, int _tMode, int _minFilter, int _magFilter) {
         this.context = _context;
         this.sMode = _sMode;
         this.tMode = _tMode;
+        this.minFilter = _minFilter;
+        this.magFilter = _magFilter;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -102,9 +106,9 @@ public final class Texture2D {
         // 绑定纹理
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
         // 设置缩小过滤
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter);
         // 设置放大过滤
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, magFilter);
         // 设置环绕方向S
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, sMode);
         // 设置环绕方向T

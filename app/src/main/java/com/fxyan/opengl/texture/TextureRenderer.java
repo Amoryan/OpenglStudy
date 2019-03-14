@@ -14,8 +14,8 @@ public final class TextureRenderer
 
     private Texture2D obj;
 
-    public TextureRenderer(Context _context, int _sMode, int _tMode) {
-        obj = new Texture2D(_context, _sMode, _tMode);
+    public TextureRenderer(Context _context, int _sMode, int _tMode, int _minFilter, int _magFilter) {
+        obj = new Texture2D(_context, _sMode, _tMode, _minFilter, _magFilter);
     }
 
     @Override

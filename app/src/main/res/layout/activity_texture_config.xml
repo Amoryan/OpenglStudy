@@ -90,14 +90,89 @@
 
     </RadioGroup>
 
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/minify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="minify过滤："
+        app:layout_constraintBottom_toBottomOf="@+id/minG"
+        app:layout_constraintEnd_toStartOf="@+id/minG"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/minG" />
+
+    <RadioGroup
+        android:id="@+id/minG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/minify"
+        app:layout_constraintTop_toBottomOf="@+id/tg">
+
+        <RadioButton
+            android:id="@+id/minNearest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="NEAREST" />
+
+        <RadioButton
+            android:id="@+id/minLinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LINEAR" />
+
+    </RadioGroup>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/magnify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="magnify过滤："
+        app:layout_constraintBottom_toBottomOf="@+id/magG"
+        app:layout_constraintEnd_toStartOf="@+id/magG"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/magG" />
+
+    <RadioGroup
+        android:id="@+id/magG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/magnify"
+        app:layout_constraintTop_toBottomOf="@+id/minG">
+
+        <RadioButton
+            android:id="@+id/magNearest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEAREST" />
+
+        <RadioButton
+            android:id="@+id/magLinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="LINEAR" />
+
+    </RadioGroup>
+
     <android.support.v7.widget.AppCompatButton
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:onClick="start"
         android:text="纹理渲染"
         android:textColor="#333333"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/magG" />
 
 </android.support.constraint.ConstraintLayout>
