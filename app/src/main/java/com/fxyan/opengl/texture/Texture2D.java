@@ -28,8 +28,15 @@ public final class Texture2D extends ObjectImpl {
     private final int PER_FLOAT_BYTES = 4;
     private final int PER_INT_BYTES = 4;
 
+    private final int PER_VERTEX_SIZE = 2;
+    private final int PER_VERTEX_STRIDE = PER_FLOAT_BYTES * PER_VERTEX_SIZE;
+
+    private final int PER_TEX_COORD_SIZE = 2;
+    private final int PER_TEX_COORD_STRIDE = PER_FLOAT_BYTES * PER_TEX_COORD_SIZE;
+
     private FloatBuffer vertexBuffer;
     private IntBuffer indexBuffer;
+    private FloatBuffer texCoordBuffer;
 
     private float[] vertex = {
             // left top
@@ -49,7 +56,7 @@ public final class Texture2D extends ObjectImpl {
             0f, 0f,
             0f, 1f,
             1f, 1f,
-            0f, 1f,
+            1f, 0f,
     };
 
     private int programHandle;
@@ -68,6 +75,12 @@ public final class Texture2D extends ObjectImpl {
                 .asIntBuffer()
                 .put(index);
         indexBuffer.position(0);
+
+        texCoordBuffer = ByteBuffer.allocateDirect(texCoord.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(texCoord);
+        texCoordBuffer.position(0);
     }
 
     @Override
@@ -89,7 +102,7 @@ public final class Texture2D extends ObjectImpl {
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
         // 设置环绕方向T
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.texture2d);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
 
@@ -117,6 +130,16 @@ public final class Texture2D extends ObjectImpl {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
+        int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
+        GLES20.glEnableVertexAttribArray(positionHandle);
+        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
+        int texCoordHandle = GLES20.glGetAttribLocation(programHandle, "a_TexCoord");
+        GLES20.glEnableVertexAttribArray(texCoordHandle);
+        GLES20.glVertexAttribPointer(texCoordHandle, PER_TEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, texCoordBuffer);
+
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
+        GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 }
