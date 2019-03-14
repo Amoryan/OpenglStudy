@@ -12,7 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
 import com.fxyan.opengl.R;
-import com.fxyan.opengl.utils.GLUtils;
+import com.fxyan.opengl.utils.GLESUtils;
 
 import org.smurn.jply.Element;
 import org.smurn.jply.ElementReader;
@@ -149,7 +149,7 @@ public final class PlyActivity
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        programHandle = GLUtils.createAndLinkProgram("ply/ply.vert", "ply/ply.frag");
+        programHandle = GLESUtils.createAndLinkProgram("ply/ply.vert", "ply/ply.frag");
         for (PlyModel model : models) {
             model.onSurfaceCreated(gl, config);
         }

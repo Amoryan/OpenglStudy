@@ -1,11 +1,12 @@
 package com.fxyan.opengl.texture;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.fxyan.opengl.entity.geometry.ObjectImpl;
-import com.fxyan.opengl.utils.GLUtils;
+import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -62,7 +63,7 @@ public final class Texture3D extends ObjectImpl {
 
     private int programHandle;
 
-    public Texture3D() {
+    public Texture3D(Context context) {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -80,7 +81,7 @@ public final class Texture3D extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        programHandle = GLUtils.createAndLinkProgram("texture/texture3d.vert", "texture/texture3d.frag");
+        programHandle = GLESUtils.createAndLinkProgram("texture/texture3d.vert", "texture/texture3d.frag");
     }
 
     @Override

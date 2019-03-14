@@ -1,10 +1,11 @@
 package com.fxyan.opengl.entity.geometry;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.fxyan.opengl.utils.GLUtils;
+import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -69,7 +70,7 @@ public final class Cube extends ObjectImpl {
 
     private int programHandle;
 
-    public Cube() {
+    public Cube(Context context) {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -93,7 +94,7 @@ public final class Cube extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        programHandle = GLUtils.createAndLinkProgram("geometry/cube.vert", "geometry/cube.frag");
+        programHandle = GLESUtils.createAndLinkProgram("geometry/cube.vert", "geometry/cube.frag");
     }
 
     @Override

@@ -43,11 +43,11 @@ public final class GLView extends GLSurfaceView implements GLSurfaceView.Rendere
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         if (isChanged) {
             try {
-                Constructor<? extends IObject> constructor = clazz.getDeclaredConstructor();
+                Constructor<? extends IObject> constructor = clazz.getDeclaredConstructor(Context.class);
                 constructor.setAccessible(true);
-                object = constructor.newInstance();
+                object = constructor.newInstance(getContext());
             } catch (Exception e) {
-                object = new Cube();
+                object = new Cube(getContext());
             }
             isChanged = false;
         }

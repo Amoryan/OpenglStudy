@@ -1,9 +1,10 @@
 package com.fxyan.opengl.entity.geometry;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.fxyan.opengl.utils.GLUtils;
+import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -50,7 +51,7 @@ public final class Square extends ObjectImpl {
 
     private int programHandle;
 
-    public Square() {
+    public Square(Context context) {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -74,7 +75,7 @@ public final class Square extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        programHandle = GLUtils.createAndLinkProgram("geometry/square.vert", "geometry/square.frag");
+        programHandle = GLESUtils.createAndLinkProgram("geometry/square.vert", "geometry/square.frag");
     }
 
     @Override

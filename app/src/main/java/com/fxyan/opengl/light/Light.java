@@ -1,11 +1,12 @@
 package com.fxyan.opengl.light;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.fxyan.opengl.entity.geometry.ObjectImpl;
-import com.fxyan.opengl.utils.GLUtils;
+import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -87,7 +88,7 @@ public final class Light extends ObjectImpl {
 
     private int programHandle;
 
-    public Light() {
+    public Light(Context context) {
         buffer = ByteBuffer.allocateDirect(vertex.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -99,7 +100,7 @@ public final class Light extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        programHandle = GLUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
+        programHandle = GLESUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
     }
 
     @Override

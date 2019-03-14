@@ -1,9 +1,10 @@
 package com.fxyan.opengl.entity.geometry;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.fxyan.opengl.utils.GLUtils;
+import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -45,7 +46,7 @@ public final class Triangle extends ObjectImpl {
 
     private int programHandle;
 
-    public Triangle() {
+    public Triangle(Context context) {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -69,7 +70,7 @@ public final class Triangle extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        programHandle = GLUtils.createAndLinkProgram("geometry/triangle.vert", "geometry/triangle.frag");
+        programHandle = GLESUtils.createAndLinkProgram("geometry/triangle.vert", "geometry/triangle.frag");
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.opengl.GLES20;
 /**
  * @author fxYan
  */
-public final class GLUtils {
+public final class GLESUtils {
 
     public static int createShader(int shaderType, String path) {
         int shaderHandle = GLES20.glCreateShader(shaderType);
