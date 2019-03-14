@@ -18,20 +18,17 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public final class Texture extends ObjectImpl {
+public final class Texture3D extends ObjectImpl {
 
     private final int PER_FLOAT_BYTE = 4;
     private final int PER_INT_BYTE = 4;
 
     private final int PER_VERTEX_SIZE = 3;
-    private final int PER_COLOR_SIZE = 4;
 
     private final int PER_VERTEX_STRIDE = PER_FLOAT_BYTE * PER_VERTEX_SIZE;
-    private final int PER_COLOR_STRIDE = PER_FLOAT_BYTE * PER_COLOR_SIZE;
 
     private FloatBuffer vertexBuffer;
     private IntBuffer indexBuffer;
-    private FloatBuffer colorBuffer;
 
     private float[] vertex = {
             -0.5f, 0.5f, 0.5f,
@@ -43,15 +40,6 @@ public final class Texture extends ObjectImpl {
             -0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
             0.5f, 0.5f, -0.5f,
-    };
-    private float[] color = {
-            0f, 0f, 1f, 1f,
-            0f, 1f, 0f, 1f,
-            0f, 1f, 1f, 1f,
-            1f, 0f, 0f, 1f,
-            1f, 0f, 1f, 1f,
-            1f, 1f, 0f, 1f,
-            1f, 1f, 1f, 1f
     };
     private int[] index = {
             // front
@@ -67,21 +55,19 @@ public final class Texture extends ObjectImpl {
             // bottom
             5, 1, 2, 5, 2, 6
     };
+    // 纹理坐标
+    private float[] texCoord = {
+
+    };
 
     private int programHandle;
 
-    public Texture() {
+    public Texture3D() {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTE)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertex);
         vertexBuffer.position(0);
-
-        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTE)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(color);
-        colorBuffer.position(0);
 
         indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTE)
                 .order(ByteOrder.nativeOrder())
@@ -94,10 +80,7 @@ public final class Texture extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "texture/texture.vert");
-        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "texture/texture.frag");
-
-        programHandle = GLUtils.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
+        programHandle = GLUtils.createAndLinkProgram("texture/texture3d.vert", "texture/texture3d.frag");
     }
 
     @Override
@@ -129,10 +112,6 @@ public final class Texture extends ObjectImpl {
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(aPositionHandle);
         GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
-
-        int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
     }

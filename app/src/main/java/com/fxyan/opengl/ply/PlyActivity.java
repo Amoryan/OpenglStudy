@@ -19,11 +19,9 @@ import org.smurn.jply.ElementReader;
 import org.smurn.jply.PlyReaderFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -45,7 +43,7 @@ public final class PlyActivity
         CompoundButton.OnCheckedChangeListener {
 
     GLSurfaceView surfaceView;
-    List<PlyModel> models = new ArrayList<>();
+    CopyOnWriteArrayList<PlyModel> models = new CopyOnWriteArrayList<>();
 
     CompositeDisposable disposables = new CompositeDisposable();
 
@@ -69,8 +67,6 @@ public final class PlyActivity
         surfaceView.setEGLContextClientVersion(2);
 
         surfaceView.setRenderer(this);
-
-        models = Collections.synchronizedList(models);
 
         int[] ids = {
                 R.id.jiebi1, R.id.jiebi2, R.id.jiebi3, R.id.jiebi4, R.id.jiebi5,
@@ -153,11 +149,7 @@ public final class PlyActivity
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "ply/ply.vert");
-        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "ply/ply.frag");
-
-        programHandle = GLUtils.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
-
+        programHandle = GLUtils.createAndLinkProgram("ply/ply.vert", "ply/ply.frag");
         for (PlyModel model : models) {
             model.onSurfaceCreated(gl, config);
         }
@@ -172,7 +164,6 @@ public final class PlyActivity
         float ratio = (float) width / height;
 
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 100f);
-
         for (PlyModel model : models) {
             model.onSurfaceChanged(gl, width, height);
         }

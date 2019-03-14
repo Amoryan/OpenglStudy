@@ -92,10 +92,8 @@ public final class Cube extends ObjectImpl {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
-        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "geometry/cube.vert");
-        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "geometry/cube.frag");
 
-        programHandle = GLUtils.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
+        programHandle = GLUtils.createAndLinkProgram("geometry/cube.vert", "geometry/cube.frag");
     }
 
     @Override

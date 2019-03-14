@@ -99,10 +99,7 @@ public final class Light extends ObjectImpl {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
 
-        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "light/light.vert");
-        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "light/light.frag");
-
-        programHandle = GLUtils.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
+        programHandle = GLUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
     }
 
     @Override

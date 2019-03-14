@@ -25,12 +25,14 @@ public final class GLUtils {
         return shaderHandle;
     }
 
-    public static int createAndLinkProgram(int... shaderList) {
+    public static int createAndLinkProgram(String vertPath, String fragPath) {
+        int vertexShaderHandle = createShader(GLES20.GL_VERTEX_SHADER, vertPath);
+        int fragmentShaderHandle = createShader(GLES20.GL_FRAGMENT_SHADER, fragPath);
+
         int programHandle = GLES20.glCreateProgram();
         if (programHandle != 0) {
-            for (int shader : shaderList) {
-                GLES20.glAttachShader(programHandle, shader);
-            }
+            GLES20.glAttachShader(programHandle, vertexShaderHandle);
+            GLES20.glAttachShader(programHandle, fragmentShaderHandle);
             GLES20.glLinkProgram(programHandle);
             int[] linkStatus = new int[1];
             GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);

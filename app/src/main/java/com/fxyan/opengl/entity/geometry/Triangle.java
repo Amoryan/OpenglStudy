@@ -68,10 +68,8 @@ public final class Triangle extends ObjectImpl {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         super.onSurfaceCreated(gl, config);
-        int vertexShaderHandle = GLUtils.createShader(GLES20.GL_VERTEX_SHADER, "geometry/triangle.vert");
-        int fragmentShaderHandle = GLUtils.createShader(GLES20.GL_FRAGMENT_SHADER, "geometry/triangle.frag");
 
-        programHandle = GLUtils.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle);
+        programHandle = GLUtils.createAndLinkProgram("geometry/triangle.vert", "geometry/triangle.frag");
     }
 
     @Override

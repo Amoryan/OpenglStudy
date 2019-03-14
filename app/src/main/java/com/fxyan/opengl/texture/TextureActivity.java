@@ -10,7 +10,7 @@ public final class TextureActivity extends OpenGLActivity {
 
     @Override
     protected void init() {
-        setObject(Texture.class);
+        setObject(Texture2D.class);
     }
 
     @Override
