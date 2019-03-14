@@ -149,7 +149,7 @@ public final class PlyActivity
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.9f, 0.9f, 0.9f, 1f);
+        GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
