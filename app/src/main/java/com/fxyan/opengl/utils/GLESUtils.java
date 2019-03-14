@@ -1,13 +1,14 @@
 package com.fxyan.opengl.utils;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 /**
  * @author fxYan
  */
 public final class GLESUtils {
 
-    public static int createShader(int shaderType, String path) {
+    private static int createShader(int shaderType, String path) {
         int shaderHandle = GLES20.glCreateShader(shaderType);
         if (shaderHandle != 0) {
             GLES20.glShaderSource(shaderHandle, AssetsUtils.loadAssets(path));
@@ -15,6 +16,10 @@ public final class GLESUtils {
             int[] compileStatus = new int[1];
             GLES20.glGetShaderiv(shaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
             if (compileStatus[0] == 0) {
+
+                String error = GLES20.glGetShaderInfoLog(shaderHandle);
+                Log.d("fxYan", error);
+
                 GLES20.glDeleteShader(shaderHandle);
                 shaderHandle = 0;
             }
@@ -37,6 +42,10 @@ public final class GLESUtils {
             int[] linkStatus = new int[1];
             GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
             if (linkStatus[0] == 0) {
+
+                String error = GLES20.glGetProgramInfoLog(programHandle);
+                Log.d("fxYan", error);
+
                 GLES20.glDeleteProgram(programHandle);
                 programHandle = 0;
             }
