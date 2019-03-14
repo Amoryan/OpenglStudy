@@ -24,7 +24,9 @@ public final class PlyModel {
     private float[] vertex;
     private int[] index;
 
-    private float[] color = {1f, 1f, 1f, 1f};
+//    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
+//    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};
+    private float[] color = {255f / 255, 220f / 255, 0, 1f};// 黄钻
 
     public PlyModel(float[] _vertex, int[] _index) {
         this.vertex = _vertex;

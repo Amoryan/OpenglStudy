@@ -26,7 +26,7 @@ vec4 ambientColor(){
 
 vec4 diffuseColor(){
     // 转换后的坐标
-    vec3 transPosition = (u_ModelMatrix * a_Position).xyz;
+    vec3 transPosition = vec3(u_ModelMatrix * a_Position);
     // 光源方向的单位向量
     vec3 lightNormalize = normalize(u_LightPosition - transPosition);
     // 转换后的法线向量，这里法线向量的旋转有点问题

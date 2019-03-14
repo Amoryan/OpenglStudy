@@ -20,6 +20,17 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public final class Light extends ObjectImpl {
 
+    private final int PER_FLOAT_BYTES = 4;
+
+    private final int PER_VERTEX_SIZE = 7;
+    private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
+
+    private final int PER_VERTEX_COORD_SIZE = 3;
+    private final int PER_VERTEX_COLOR_SIZE = 4;
+
+    private final int PER_NORMAL_SIZE = 3;
+    private final int PER_NORMAL_STRIDE = PER_NORMAL_SIZE * PER_FLOAT_BYTES;
+
     // 环境光强度
     private float ambientStrength;
     // 环境光颜色
@@ -33,67 +44,115 @@ public final class Light extends ObjectImpl {
     // 光源位置
     private float[] lightPosition = {0f, 0, 1};
 
-    private FloatBuffer buffer;
+    private FloatBuffer vertexBuffer;
+    private FloatBuffer normalBuffer;
     private float[] vertex = {
             // front face
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
 
             // back face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 0f, -1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
 
             // left face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, -1f, 0f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
 
             // right face
-            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 1f, 0f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
 
             // top face
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
-            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
-            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
-            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, 1f, 0f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, 0.5f, -0.5f, 1f, 1f, 0f, 1f,
 
             // bottom face
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
-            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
-            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
-            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f, 0f, -1f, 0f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            -0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 1f, 1f, 0f, 1f,
+            0.5f, -0.5f, -0.5f, 1f, 1f, 0f, 1f,
     };
+    private float[] normal = {
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
 
-    private int perVertexStride = 10;
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+    };
 
     private int programHandle;
 
     public Light(Context context) {
-        buffer = ByteBuffer.allocateDirect(vertex.length * 4)
+        vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertex);
-        buffer.position(0);
+        vertexBuffer.position(0);
+
+        normalBuffer = ByteBuffer.allocateDirect(normal.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(normal);
+        normalBuffer.position(0);
     }
 
     @Override
@@ -149,22 +208,22 @@ public final class Light extends ObjectImpl {
         int diffuseLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseLightStrength");
         GLES20.glUniform1f(diffuseLightStrengthHandle, diffuseStrength);
 
-        buffer.position(0);
+        vertexBuffer.position(0);
         int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, 3, GLES20.GL_FLOAT, false, perVertexStride * 4, buffer);
+        GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        buffer.position(3);
+        vertexBuffer.position(PER_VERTEX_COORD_SIZE);
         int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, 4, GLES20.GL_FLOAT, false, perVertexStride * 4, buffer);
+        GLES20.glVertexAttribPointer(aColorHandle, PER_VERTEX_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        buffer.position(7);
+        normalBuffer.position(0);
         int aNormalHandle = GLES20.glGetAttribLocation(programHandle, "a_Normal");
         GLES20.glEnableVertexAttribArray(aNormalHandle);
-        GLES20.glVertexAttribPointer(aNormalHandle, 3, GLES20.GL_FLOAT, false, perVertexStride * 4, buffer);
+        GLES20.glVertexAttribPointer(aNormalHandle, PER_NORMAL_SIZE, GLES20.GL_FLOAT, false, PER_NORMAL_STRIDE, normalBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / perVertexStride);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / PER_VERTEX_SIZE);
     }
 
     public void setAmbientStrength(float value) {
