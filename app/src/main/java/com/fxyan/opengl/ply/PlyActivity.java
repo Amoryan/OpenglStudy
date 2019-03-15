@@ -1,5 +1,6 @@
 package com.fxyan.opengl.ply;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -42,6 +43,7 @@ public final class PlyActivity
         implements GLSurfaceView.Renderer,
         CompoundButton.OnCheckedChangeListener {
 
+    Context context;
     GLSurfaceView surfaceView;
     CopyOnWriteArrayList<PlyModel> models = new CopyOnWriteArrayList<>();
 
@@ -61,6 +63,8 @@ public final class PlyActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ply);
+
+        context = this;
 
         surfaceView = findViewById(R.id.surfaceView);
 
@@ -197,7 +201,7 @@ public final class PlyActivity
 
                 int[] index = readFace(reader);
 
-                emitter.onSuccess(new PlyModel(vertex, index));
+                emitter.onSuccess(new PlyModel(context, vertex, index));
             } catch (IOException e) {
                 emitter.onError(e);
             } finally {

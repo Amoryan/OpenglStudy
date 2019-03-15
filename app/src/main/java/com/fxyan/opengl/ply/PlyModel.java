@@ -1,6 +1,12 @@
 package com.fxyan.opengl.ply;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
+
+import com.fxyan.opengl.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -24,11 +30,15 @@ public final class PlyModel {
     private float[] vertex;
     private int[] index;
 
-//    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
+    //    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
 //    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};
     private float[] color = {255f / 255, 220f / 255, 0, 1f};// 黄钻
 
-    public PlyModel(float[] _vertex, int[] _index) {
+    private Context context;
+
+    public PlyModel(Context _context, float[] _vertex, int[] _index) {
+        this.context = _context;
+
         this.vertex = _vertex;
         this.index = _index;
 
