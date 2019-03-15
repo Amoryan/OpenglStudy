@@ -65,6 +65,7 @@ public final class Texture2D
             2f, 2f,
             2f, 0f,
     };
+    private int[] textures;
 
     private float[] mvpMatrix = new float[16];
     private float[] mvMatrix = new float[16];
@@ -123,9 +124,11 @@ public final class Texture2D
          * 第二个参数是生成的纹理id存放的数组
          * 第三个参数是偏移量
          */
-        int[] textures = new int[1];
-        GLES20.glGenTextures(1, textures, 0);
-        // 绑定纹理
+        textures = new int[2];
+        GLES20.glGenTextures(2, textures, 0);
+
+        // 绑定纹理，默认GL_TEXTURE0的纹理单元是激活的
+//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
         // 设置缩小过滤
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter);
@@ -135,11 +138,20 @@ public final class Texture2D
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, sMode);
         // 设置环绕方向T
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, tMode);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.texture2d);
+        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.texture2d);
         /**
          * 第二个参数表示多级远近纹理的级别
          */
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap1, 0);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[1]);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, magFilter);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, sMode);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, tMode);
+        Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.kb);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap2, 0);
     }
 
     @Override
@@ -175,6 +187,13 @@ public final class Texture2D
         int texCoordHandle = GLES20.glGetAttribLocation(programHandle, "a_TexCoord");
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, PER_TEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, texCoordBuffer);
+
+        // u_Texture1绑定第一个纹理
+        int texture1Handle = GLES20.glGetUniformLocation(programHandle, "u_Texture1");
+        GLES20.glUniform1i(texture1Handle, 0);
+        // u_Texture2绑定第二个纹理
+        int texture2Handle = GLES20.glGetUniformLocation(programHandle, "u_Texture2");
+        GLES20.glUniform1i(texture2Handle, 1);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
         GLES20.glDisableVertexAttribArray(positionHandle);
