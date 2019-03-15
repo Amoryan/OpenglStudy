@@ -12,10 +12,17 @@ import javax.microedition.khronos.opengles.GL10;
 public final class TextureRenderer
         implements GLSurfaceView.Renderer {
 
-    private Texture2D obj;
+    private ITexture obj;
 
-    public TextureRenderer(Context _context, int _sMode, int _tMode, int _minFilter, int _magFilter) {
-        obj = new Texture2D(_context, _sMode, _tMode, _minFilter, _magFilter);
+    public TextureRenderer(Context _context, int _sMode, int _tMode, int _minFilter, int _magFilter,
+                           int _geo) {
+        switch (_geo) {
+            case 1://cube
+                obj = new Texture3D(_context, _sMode, _tMode, _minFilter, _magFilter);
+                break;
+            default:
+                obj = new Texture2D(_context, _sMode, _tMode, _minFilter, _magFilter);
+        }
     }
 
     @Override

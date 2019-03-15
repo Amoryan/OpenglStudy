@@ -21,6 +21,7 @@ public final class TextureConfigActivity
     private int wrapTMode = GLES20.GL_REPEAT;
     private int minFilter = GLES20.GL_NEAREST;
     private int magFilter = GLES20.GL_LINEAR;
+    private int geo = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +32,8 @@ public final class TextureConfigActivity
                 R.id.sRepeat, R.id.sMirror, R.id.sClamp,
                 R.id.tRepeat, R.id.tMirror, R.id.tClamp,
                 R.id.minNearest, R.id.minLinear,
-                R.id.magNearest, R.id.magLinear
+                R.id.magNearest, R.id.magLinear,
+                R.id.square, R.id.cube,
         };
         for (int id : ids) {
             ((RadioButton) findViewById(id)).setOnCheckedChangeListener(this);
@@ -73,11 +75,17 @@ public final class TextureConfigActivity
             case R.id.magLinear:
                 magFilter = GLES20.GL_LINEAR;
                 break;
+            case R.id.square:
+                geo = 0;
+                break;
+            case R.id.cube:
+                geo = 1;
+                break;
             default:
         }
     }
 
     public void start(View view) {
-        TextureActivity.open(this, wrapSMode, wrapTMode, minFilter, magFilter);
+        TextureActivity.open(this, wrapSMode, wrapTMode, minFilter, magFilter, geo);
     }
 }

@@ -19,7 +19,8 @@ import java.nio.IntBuffer;
  * @author fxYan
  * 2D纹理贴图
  */
-public final class Texture2D {
+public final class Texture2D
+        implements ITexture {
 
     private final int PER_FLOAT_BYTES = 4;
     private final int PER_INT_BYTES = 4;
@@ -95,12 +96,17 @@ public final class Texture2D {
         texCoordBuffer.position(0);
     }
 
+    @Override
     public void onSurfaceCreated() {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
 
         programHandle = GLESUtils.createAndLinkProgram("texture/texture2d.vert", "texture/texture2d.frag");
 
-        // 生成纹理
+        /**
+         * 第一个参数是生成纹理的数量
+         * 第二个参数是生成的纹理id存放的数组
+         * 第三个参数是偏移量
+         */
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
         // 绑定纹理
@@ -114,9 +120,13 @@ public final class Texture2D {
         // 设置环绕方向T
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, tMode);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.texture2d);
+        /**
+         * 第二个参数表示多级远近纹理的级别
+         */
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
 
+    @Override
     public void onSurfaceChanged(int width, int height) {
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1f, 0);
 
@@ -129,6 +139,7 @@ public final class Texture2D {
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
     }
 
+    @Override
     public void onDrawFrame() {
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 

@@ -19,14 +19,16 @@ public final class TextureActivity
     public static final String WRAP_T_MODE = "tMode";
     public static final String MIN_FILTER = "minFilter";
     public static final String MAG_FILTER = "magFilter";
+    public static final String GEOMETRY = "geo";
 
-    public static void open(Context context, int wrapSMode, int wrapTMode, int minFilter, int magFilter) {
+    public static void open(Context context, int wrapSMode, int wrapTMode, int minFilter, int magFilter, int geo) {
         Intent intent = new Intent(context, TextureActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(WRAP_S_MODE, wrapSMode);
         bundle.putInt(WRAP_T_MODE, wrapTMode);
         bundle.putInt(MIN_FILTER, minFilter);
         bundle.putInt(MAG_FILTER, magFilter);
+        bundle.putInt(GEOMETRY, geo);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -41,12 +43,13 @@ public final class TextureActivity
         int tMode = extras.getInt(WRAP_T_MODE);
         int minFilter = extras.getInt(MIN_FILTER);
         int magFilter = extras.getInt(MAG_FILTER);
+        int geo = extras.getInt(GEOMETRY);
 
         GLSurfaceView glView = findViewById(R.id.surfaceView);
 
         glView.setEGLContextClientVersion(2);
 
-        glView.setRenderer(new TextureRenderer(this, sMode, tMode, minFilter, magFilter));
+        glView.setRenderer(new TextureRenderer(this, sMode, tMode, minFilter, magFilter, geo));
     }
 
 }
