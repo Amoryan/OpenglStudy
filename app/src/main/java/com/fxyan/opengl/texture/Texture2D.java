@@ -31,8 +31,12 @@ public final class Texture2D
     private final int PER_TEX_COORD_SIZE = 2;
     private final int PER_TEX_COORD_STRIDE = PER_FLOAT_BYTES * PER_TEX_COORD_SIZE;
 
+    private final int PER_COLOR_SIZE = 4;
+    private final int PER_COLOR_STRIDE = PER_FLOAT_BYTES * PER_COLOR_SIZE;
+
     private FloatBuffer vertexBuffer;
     private IntBuffer indexBuffer;
+    private FloatBuffer colorBuffer;
     private FloatBuffer texCoordBuffer;
 
     private float[] vertex = {
@@ -48,6 +52,12 @@ public final class Texture2D
     private int[] index = {
             0, 1, 2,
             0, 2, 3
+    };
+    private float[] color = {
+            1f, 0f, 0f, 1f,
+            0f, 1f, 0f, 1f,
+            0f, 0f, 1f, 1f,
+            1f, 1f, 0f, 1f
     };
     private float[] texCoord = {
             0f, 0f,
@@ -88,6 +98,12 @@ public final class Texture2D
                 .asIntBuffer()
                 .put(index);
         indexBuffer.position(0);
+
+        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(color);
+        colorBuffer.position(0);
 
         texCoordBuffer = ByteBuffer.allocateDirect(texCoord.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -152,12 +168,17 @@ public final class Texture2D
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
+        int colorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
+        GLES20.glEnableVertexAttribArray(colorHandle);
+        GLES20.glVertexAttribPointer(colorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, colorBuffer);
+
         int texCoordHandle = GLES20.glGetAttribLocation(programHandle, "a_TexCoord");
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, PER_TEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, texCoordBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
         GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES20.glDisableVertexAttribArray(colorHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 
