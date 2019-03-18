@@ -2,10 +2,15 @@ uniform mat4 u_ModelMatrix;
 uniform mat4 u_ViewMatrix;
 uniform mat4 u_ProjectionMatrix;
 
-// 环境光颜色
-uniform vec3 u_AmbientLightColor;
+// 光颜色
+uniform vec3 u_LightColor;
+// 光源位置
+uniform vec3 u_LightPosition;
+
 // 环境光强度
-uniform float u_AmbientLightStrength;
+uniform float u_AmbientStrength;
+// 漫反射强度
+uniform float u_DiffuseStrength;
 
 attribute vec4 a_Position;
 attribute vec3 a_Normal;
@@ -13,12 +18,23 @@ attribute vec3 a_Normal;
 varying vec4 v_Color;
 
 vec4 ambientColor(){
-    vec3 ambient = u_AmbientLightStrength * u_AmbientLightColor;
+    vec3 ambient = u_AmbientStrength * u_LightColor;
     return vec4(ambient, 1.0);
 }
 
-void diffuse(){
-
+vec4 diffuseColor(){
+    // 模型顶点坐标转换
+    mat4 viewModelMatrix = u_ViewMatrix * u_ModelMatrix;
+    mat4 mvpMatrix = u_ProjectionMatrix * viewModelMatrix;
+    vec3 pos = (mvpMatrix * a_Position).xyz;
+    // 光源方向的单位向量
+    vec3 l = normalize(u_LightPosition - pos);
+    // 法向转换后的单位向量
+    vec3 n = normalize(vec3(mvpMatrix * vec4(a_Normal, 1.0f)));
+    // 计算两个单位向量之间的cos(θ)
+    float diffuse = max(dot(l, n), 0.0f);
+    vec3 diffuseColor = u_DiffuseStrength * diffuse * u_LightColor;
+    return vec4(diffuseColor, 1.0f);
 }
 
 void main(){
@@ -27,7 +43,7 @@ void main(){
 
     gl_Position = mvpMatrix * a_Position;
 
-    v_Color = ambientColor() * vec4(1f, 1f, 0f, 1f);
+    v_Color = (ambientColor() + diffuseColor()) * vec4(1f, 1f, 0f, 1f);
 }
 
 //end

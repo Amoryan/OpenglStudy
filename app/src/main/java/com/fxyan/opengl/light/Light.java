@@ -34,8 +34,8 @@ public final class Light extends ObjectImpl {
 
     // 环境光强度
     private float ambientStrength;
-    // 环境光颜色
-    private float[] ambientLightColor = {1f, 1f, 1f};
+    // 漫反射强度
+    private float diffuseStrength;
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
@@ -84,7 +84,8 @@ public final class Light extends ObjectImpl {
     };
 
     private FloatBuffer lightPositionBuffer;
-    private float[] lightPosition = {0f, 0f, 1f};
+    private float[] lightPosition = {0f, 0f, 0.8f};
+    private float[] lightColor = {1f, 1f, 1f};
 
     private int programHandle;
     private int lightPositionProgramHandle;
@@ -133,6 +134,7 @@ public final class Light extends ObjectImpl {
 
         drawCube();
 
+        Matrix.setIdentityM(modelMatrix, 0);
         drawLight();
     }
 
@@ -147,12 +149,19 @@ public final class Light extends ObjectImpl {
 
         int projectionMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ProjectionMatrix");
         GLES20.glUniformMatrix4fv(projectionMatrixHandle, 1, false, projectionMatrix, 0);
-
-        int ambientLightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightColor");
-        GLES20.glUniform3fv(ambientLightColorHandle, 1, ambientLightColor, 0);
-
-        int ambientLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightStrength");
-        GLES20.glUniform1f(ambientLightStrengthHandle, ambientStrength);
+        // 光颜色
+        int lightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_LightColor");
+        GLES20.glUniform3fv(lightColorHandle, 1, lightColor, 0);
+        // 光位置
+        lightPositionBuffer.position(0);
+        int lightPositionHandle = GLES20.glGetUniformLocation(programHandle, "u_LightPosition");
+        GLES20.glUniform3fv(lightPositionHandle, 1, lightPositionBuffer);
+        // 环境光强度
+        int ambientStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientStrength");
+        GLES20.glUniform1f(ambientStrengthHandle, ambientStrength);
+        // 漫反射强度
+        int diffuseStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseStrength");
+        GLES20.glUniform1f(diffuseStrengthHandle, diffuseStrength);
 
         vertexBuffer.position(VERTEX_COORD_START);
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
@@ -194,6 +203,7 @@ public final class Light extends ObjectImpl {
         ambientStrength = value;
     }
 
-    public void setDiffuseStrength(float diffuseStrength) {
+    public void setDiffuseStrength(float value) {
+        diffuseStrength = value;
     }
 }
