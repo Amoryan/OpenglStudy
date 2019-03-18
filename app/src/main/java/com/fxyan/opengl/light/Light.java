@@ -27,6 +27,9 @@ public final class Light extends ObjectImpl {
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
+    private final int PER_LIGHT_VERTEX_SIZE = 3;
+    private final int PER_LIGHT_VERTEX_STRIDE = PER_LIGHT_VERTEX_SIZE * PER_FLOAT_BYTES;
+
     // 环境光强度
     private float ambientStrength;
     // 环境光颜色
@@ -61,7 +64,11 @@ public final class Light extends ObjectImpl {
             5, 1, 2, 5, 2, 6,
     };
 
+    private FloatBuffer lightPositionBuffer;
+    private float[] lightPosition = {0f, 0f, 1f};
+
     private int programHandle;
+    private int lightPositionProgramHandle;
 
     public Light(Context context) {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
@@ -75,6 +82,12 @@ public final class Light extends ObjectImpl {
                 .asIntBuffer()
                 .put(index);
         indexBuffer.position(0);
+
+        lightPositionBuffer = ByteBuffer.allocateDirect(lightPosition.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(lightPosition);
+        lightPositionBuffer.position(0);
     }
 
     @Override
@@ -82,6 +95,7 @@ public final class Light extends ObjectImpl {
         super.onSurfaceCreated(gl, config);
 
         programHandle = GLESUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
+        lightPositionProgramHandle = GLESUtils.createAndLinkProgram("light/lightposition.vert", "light/lightposition.frag");
     }
 
     @Override
@@ -127,6 +141,24 @@ public final class Light extends ObjectImpl {
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
         GLES20.glDisableVertexAttribArray(aPositionHandle);
+
+        GLES20.glUseProgram(lightPositionProgramHandle);
+
+        modelMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ModelMatrix");
+        GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
+
+        viewMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ViewMatrix");
+        GLES20.glUniformMatrix4fv(viewMatrixHandle, 1, false, viewMatrix, 0);
+
+        projectionMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ProjectionMatrix");
+        GLES20.glUniformMatrix4fv(projectionMatrixHandle, 1, false, projectionMatrix, 0);
+
+        lightPositionBuffer.position(0);
+        aPositionHandle = GLES20.glGetAttribLocation(lightPositionProgramHandle, "a_Position");
+        GLES20.glEnableVertexAttribArray(aPositionHandle);
+        GLES20.glVertexAttribPointer(aPositionHandle, PER_LIGHT_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_LIGHT_VERTEX_STRIDE, lightPositionBuffer);
+
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, lightPosition.length);
     }
 
     public void setAmbientStrength(float value) {
