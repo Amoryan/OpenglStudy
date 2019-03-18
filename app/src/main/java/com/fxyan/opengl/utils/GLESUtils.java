@@ -18,7 +18,7 @@ public final class GLESUtils {
             if (compileStatus[0] == 0) {
 
                 String error = GLES20.glGetShaderInfoLog(shaderHandle);
-                Log.d("fxYan", error);
+                Log.d("fxYan", String.format("%s , %s", path, error));
 
                 GLES20.glDeleteShader(shaderHandle);
                 shaderHandle = 0;

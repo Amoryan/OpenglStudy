@@ -1,3 +1,4 @@
+uniform mat4 u_MVMatrix;
 uniform mat4 u_MVPMatrix;
 
 // 光颜色
@@ -21,22 +22,23 @@ vec4 ambientColor(){
 }
 
 vec4 diffuseColor(){
-    // 模型顶点坐标转换
-    vec3 pos = (u_MVPMatrix * a_Position).xyz;
-    // 光源方向的单位向量
-    vec3 l = normalize(u_LightPosition - pos);
-    // 法向转换后的单位向量
-    vec3 n = normalize(mat3(u_MVPMatrix) * a_Normal);
-    // 计算光照的入射角
-    float diffuse = max(dot(l, n), 0.0f);
+    vec3 posInEyeSpace = (u_MVMatrix * a_Position).xyz;
+
+    vec3 lightDirection = normalize(u_LightPosition - posInEyeSpace);
+
+    vec3 normal = normalize(mat3(u_MVMatrix) * a_Normal);
+
+    float diffuse = max(dot(lightDirection, normal), 0.0);
+
     vec3 diffuseColor = u_DiffuseStrength * diffuse * u_LightColor;
-    return vec4(diffuseColor, 1.0f);
+
+    return vec4(diffuseColor, 1.0);
 }
 
 void main(){
     gl_Position = u_MVPMatrix * a_Position;
 
-    v_Color = (ambientColor() + diffuseColor()) * vec4(1f, 1f, 0f, 1f);
+    v_Color = (ambientColor() + diffuseColor()) * vec4(1.0, 1.0, 0.0, 1.0);
 }
 
 //end
