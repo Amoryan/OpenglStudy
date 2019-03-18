@@ -182,6 +182,8 @@ public final class Light extends ObjectImpl {
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
 
         drawCube();
 
@@ -192,14 +194,9 @@ public final class Light extends ObjectImpl {
     private void drawCube() {
         GLES20.glUseProgram(programHandle);
 
-        int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ModelMatrix");
-        GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
+        int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
+        GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
-        int viewMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ViewMatrix");
-        GLES20.glUniformMatrix4fv(viewMatrixHandle, 1, false, viewMatrix, 0);
-
-        int projectionMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ProjectionMatrix");
-        GLES20.glUniformMatrix4fv(projectionMatrixHandle, 1, false, projectionMatrix, 0);
         // 光颜色
         int lightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_LightColor");
         GLES20.glUniform3fv(lightColorHandle, 1, lightColor, 0);

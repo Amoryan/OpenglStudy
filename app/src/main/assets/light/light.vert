@@ -1,6 +1,4 @@
-uniform mat4 u_ModelMatrix;
-uniform mat4 u_ViewMatrix;
-uniform mat4 u_ProjectionMatrix;
+uniform mat4 u_MVPMatrix;
 
 // 光颜色
 uniform vec3 u_LightColor;
@@ -24,13 +22,11 @@ vec4 ambientColor(){
 
 vec4 diffuseColor(){
     // 模型顶点坐标转换
-    mat4 viewModelMatrix = u_ViewMatrix * u_ModelMatrix;
-    mat4 mvpMatrix = u_ProjectionMatrix * viewModelMatrix;
-    vec3 pos = (mvpMatrix * a_Position).xyz;
+    vec3 pos = (u_MVPMatrix * a_Position).xyz;
     // 光源方向的单位向量
     vec3 l = normalize(u_LightPosition - pos);
     // 法向转换后的单位向量
-    vec3 n = normalize(mat3(mvpMatrix) * a_Normal);
+    vec3 n = normalize(mat3(u_MVPMatrix) * a_Normal);
     // 计算光照的入射角
     float diffuse = max(dot(l, n), 0.0f);
     vec3 diffuseColor = u_DiffuseStrength * diffuse * u_LightColor;
@@ -38,10 +34,7 @@ vec4 diffuseColor(){
 }
 
 void main(){
-    mat4 viewModelMatrix = u_ViewMatrix * u_ModelMatrix;
-    mat4 mvpMatrix = u_ProjectionMatrix * viewModelMatrix;
-
-    gl_Position = mvpMatrix * a_Position;
+    gl_Position = u_MVPMatrix * a_Position;
 
     v_Color = (ambientColor() + diffuseColor()) * vec4(1f, 1f, 0f, 1f);
 }
@@ -106,18 +99,3 @@ void main(){
 /*
     Specular light(镜面反射)的计算
 */
-
-
-//vec4 diffuseColor(){
-//    // 转换后的坐标
-//    vec3 transPosition = vec3(u_ModelMatrix * a_Position);
-//    // 光源方向的单位向量
-//    vec3 lightNormalize = normalize(u_LightPosition - transPosition);
-//    // 转换后的法线向量，这里法线向量的旋转有点问题
-//    vec3 transNormalize = normalize(a_Normal);
-//    // 朗伯因子
-//    float diffuse = max(dot(transNormalize, lightNormalize), 0.0);
-//    // 漫反射后的光
-//    vec3 color = u_DiffuseLightColor * diffuse * u_DiffuseLightStrength;
-//    return vec4(color, 1.0);
-//}
