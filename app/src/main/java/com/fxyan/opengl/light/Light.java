@@ -11,7 +11,6 @@ import com.fxyan.opengl.utils.GLESUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -22,9 +21,12 @@ import javax.microedition.khronos.opengles.GL10;
 public final class Light extends ObjectImpl {
 
     private final int PER_FLOAT_BYTES = 4;
-    private final int PER_INT_BYTES = 4;
 
-    private final int PER_VERTEX_SIZE = 3;
+    private final int PER_VERTEX_SIZE = 6;
+    private final int VERTEX_COORD_START = 0;
+    private final int PER_VERTEX_COORD_SIZE = 3;
+    private final int VERTEX_NORMAL_START = PER_VERTEX_COORD_SIZE;
+    private final int PER_VERTEX_NORMAL_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
     private final int PER_LIGHT_VERTEX_SIZE = 3;
@@ -37,31 +39,48 @@ public final class Light extends ObjectImpl {
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-    };
-
-    private IntBuffer indexBuffer;
-    private int[] index = {
             // front
-            0, 1, 2, 0, 2, 3,
+            -0.5f, 0.5f, 0.5f, 0f, 0f, 1f,
+            -0.5f, -0.5f, 0.5f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f, 0f, 0f, 1f,
+            0.5f, -0.5f, 0.5f, 0f, 0f, 1f,
+            0.5f, 0.5f, 0.5f, 0f, 0f, 1f,
             // back
-            4, 5, 6, 4, 6, 7,
+            -0.5f, 0.5f, -0.5f, 0f, 0f, -1f,
+            -0.5f, -0.5f, -0.5f, 0f, 0f, -1f,
+            0.5f, -0.5f, -0.5f, 0f, 0f, -1f,
+            -0.5f, 0.5f, -0.5f, 0f, 0f, -1f,
+            0.5f, -0.5f, -0.5f, 0f, 0f, -1f,
+            0.5f, 0.5f, -0.5f, 0f, 0f, -1f,
             // left
-            4, 5, 1, 4, 1, 0,
+            -0.5f, 0.5f, -0.5f, -1f, 0f, 0f,
+            -0.5f, -0.5f, -0.5f, -1f, 0f, 0f,
+            -0.5f, -0.5f, 0.5f, -1f, 0f, 0f,
+            -0.5f, 0.5f, -0.5f, -1f, 0f, 0f,
+            -0.5f, -0.5f, 0.5f, -1f, 0f, 0f,
+            -0.5f, 0.5f, 0.5f, -1f, 0f, 0f,
             // right
-            3, 2, 6, 3, 6, 7,
+            0.5f, 0.5f, 0.5f, 1f, 0f, 0f,
+            0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+            0.5f, -0.5f, -0.5f, 1f, 0f, 0f,
+            0.5f, 0.5f, 0.5f, 1f, 0f, 0f,
+            0.5f, -0.5f, -0.5f, 1f, 0f, 0f,
+            0.5f, 0.5f, -0.5f, 1f, 0f, 0f,
             // top
-            4, 0, 3, 4, 3, 7,
+            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f,
+            -0.5f, 0.5f, 0.5f, 0f, 1f, 0f,
+            0.5f, 0.5f, 0.5f, 0f, 1f, 0f,
+            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f,
+            0.5f, 0.5f, 0.5f, 0f, 1f, 0f,
+            0.5f, 0.5f, -0.5f, 0f, 1f, 0f,
             // bottom
-            5, 1, 2, 5, 2, 6,
+            -0.5f, -0.5f, -0.5f, 0f, -1f, 0f,
+            -0.5f, -0.5f, 0.5f, 0f, -1f, 0f,
+            0.5f, -0.5f, 0.5f, 0f, -1f, 0f,
+            -0.5f, -0.5f, -0.5f, 0f, -1f, 0f,
+            0.5f, -0.5f, 0.5f, 0f, -1f, 0f,
+            0.5f, -0.5f, -0.5f, 0f, -1f, 0f,
     };
 
     private FloatBuffer lightPositionBuffer;
@@ -76,12 +95,6 @@ public final class Light extends ObjectImpl {
                 .asFloatBuffer()
                 .put(vertex);
         vertexBuffer.position(0);
-
-        indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asIntBuffer()
-                .put(index);
-        indexBuffer.position(0);
 
         lightPositionBuffer = ByteBuffer.allocateDirect(lightPosition.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -113,12 +126,18 @@ public final class Light extends ObjectImpl {
     public void onDrawFrame(GL10 gl) {
         super.onDrawFrame(gl);
 
-        GLES20.glUseProgram(programHandle);
-
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+
+        drawCube();
+
+        drawLight();
+    }
+
+    private void drawCube() {
+        GLES20.glUseProgram(programHandle);
 
         int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ModelMatrix");
         GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
@@ -135,30 +154,40 @@ public final class Light extends ObjectImpl {
         int ambientLightStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientLightStrength");
         GLES20.glUniform1f(ambientLightStrengthHandle, ambientStrength);
 
-        int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
-        GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
+        vertexBuffer.position(VERTEX_COORD_START);
+        int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
+        GLES20.glEnableVertexAttribArray(positionHandle);
+        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
-        GLES20.glDisableVertexAttribArray(aPositionHandle);
+        vertexBuffer.position(VERTEX_NORMAL_START);
+        int normalHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
+        GLES20.glEnableVertexAttribArray(normalHandle);
+        GLES20.glVertexAttribPointer(normalHandle, PER_VERTEX_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_VERTEX_STRIDE, vertexBuffer);
 
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / PER_VERTEX_SIZE);
+        GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES20.glDisableVertexAttribArray(normalHandle);
+    }
+
+    private void drawLight() {
         GLES20.glUseProgram(lightPositionProgramHandle);
 
-        modelMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ModelMatrix");
+        int modelMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ModelMatrix");
         GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
 
-        viewMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ViewMatrix");
+        int viewMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ViewMatrix");
         GLES20.glUniformMatrix4fv(viewMatrixHandle, 1, false, viewMatrix, 0);
 
-        projectionMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ProjectionMatrix");
+        int projectionMatrixHandle = GLES20.glGetUniformLocation(lightPositionProgramHandle, "u_ProjectionMatrix");
         GLES20.glUniformMatrix4fv(projectionMatrixHandle, 1, false, projectionMatrix, 0);
 
         lightPositionBuffer.position(0);
-        aPositionHandle = GLES20.glGetAttribLocation(lightPositionProgramHandle, "a_Position");
-        GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, PER_LIGHT_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_LIGHT_VERTEX_STRIDE, lightPositionBuffer);
+        int positionHandle = GLES20.glGetAttribLocation(lightPositionProgramHandle, "a_Position");
+        GLES20.glEnableVertexAttribArray(positionHandle);
+        GLES20.glVertexAttribPointer(positionHandle, PER_LIGHT_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_LIGHT_VERTEX_STRIDE, lightPositionBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, lightPosition.length);
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
+        GLES20.glDisableVertexAttribArray(positionHandle);
     }
 
     public void setAmbientStrength(float value) {

@@ -8,12 +8,17 @@ uniform vec3 u_AmbientLightColor;
 uniform float u_AmbientLightStrength;
 
 attribute vec4 a_Position;
+attribute vec3 a_Normal;
 
 varying vec4 v_Color;
 
 vec4 ambientColor(){
     vec3 ambient = u_AmbientLightStrength * u_AmbientLightColor;
     return vec4(ambient, 1.0);
+}
+
+void diffuse(){
+
 }
 
 void main(){
