@@ -22,12 +22,11 @@ public final class Light extends ObjectImpl {
 
     private final int PER_FLOAT_BYTES = 4;
 
-    private final int PER_VERTEX_SIZE = 6;
-    private final int VERTEX_COORD_START = 0;
-    private final int PER_VERTEX_COORD_SIZE = 3;
-    private final int VERTEX_NORMAL_START = PER_VERTEX_COORD_SIZE;
-    private final int PER_VERTEX_NORMAL_SIZE = 3;
+    private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
+
+    private final int PER_NORMAL_SIZE = 3;
+    private final int PER_NORMAL_STRIDE = PER_NORMAL_SIZE * PER_FLOAT_BYTES;
 
     private final int PER_LIGHT_VERTEX_SIZE = 3;
     private final int PER_LIGHT_VERTEX_STRIDE = PER_LIGHT_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -40,47 +39,93 @@ public final class Light extends ObjectImpl {
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
             // front
-            -0.5f, 0.5f, 0.5f, 0f, 0f, 1f,
-            -0.5f, -0.5f, 0.5f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 0f, 0f, 1f,
-            -0.5f, 0.5f, 0.5f, 0f, 0f, 1f,
-            0.5f, -0.5f, 0.5f, 0f, 0f, 1f,
-            0.5f, 0.5f, 0.5f, 0f, 0f, 1f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
             // back
-            -0.5f, 0.5f, -0.5f, 0f, 0f, -1f,
-            -0.5f, -0.5f, -0.5f, 0f, 0f, -1f,
-            0.5f, -0.5f, -0.5f, 0f, 0f, -1f,
-            -0.5f, 0.5f, -0.5f, 0f, 0f, -1f,
-            0.5f, -0.5f, -0.5f, 0f, 0f, -1f,
-            0.5f, 0.5f, -0.5f, 0f, 0f, -1f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
             // left
-            -0.5f, 0.5f, -0.5f, -1f, 0f, 0f,
-            -0.5f, -0.5f, -0.5f, -1f, 0f, 0f,
-            -0.5f, -0.5f, 0.5f, -1f, 0f, 0f,
-            -0.5f, 0.5f, -0.5f, -1f, 0f, 0f,
-            -0.5f, -0.5f, 0.5f, -1f, 0f, 0f,
-            -0.5f, 0.5f, 0.5f, -1f, 0f, 0f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
             // right
-            0.5f, 0.5f, 0.5f, 1f, 0f, 0f,
-            0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
-            0.5f, -0.5f, -0.5f, 1f, 0f, 0f,
-            0.5f, 0.5f, 0.5f, 1f, 0f, 0f,
-            0.5f, -0.5f, -0.5f, 1f, 0f, 0f,
-            0.5f, 0.5f, -0.5f, 1f, 0f, 0f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
             // top
-            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f,
-            -0.5f, 0.5f, 0.5f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0.5f, 0f, 1f, 0f,
-            -0.5f, 0.5f, -0.5f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0.5f, 0f, 1f, 0f,
-            0.5f, 0.5f, -0.5f, 0f, 1f, 0f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, -0.5f,
             // bottom
-            -0.5f, -0.5f, -0.5f, 0f, -1f, 0f,
-            -0.5f, -0.5f, 0.5f, 0f, -1f, 0f,
-            0.5f, -0.5f, 0.5f, 0f, -1f, 0f,
-            -0.5f, -0.5f, -0.5f, 0f, -1f, 0f,
-            0.5f, -0.5f, 0.5f, 0f, -1f, 0f,
-            0.5f, -0.5f, -0.5f, 0f, -1f, 0f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, -0.5f,
+    };
+
+    private FloatBuffer normalBuffer;
+    private float[] normal = {
+            // front
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            // back
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            // left
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            // right
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            // top
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            // bottom
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
     };
 
     private FloatBuffer lightPositionBuffer;
@@ -96,6 +141,12 @@ public final class Light extends ObjectImpl {
                 .asFloatBuffer()
                 .put(vertex);
         vertexBuffer.position(0);
+
+        normalBuffer = ByteBuffer.allocateDirect(normal.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(normal);
+        normalBuffer.position(0);
 
         lightPositionBuffer = ByteBuffer.allocateDirect(lightPosition.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -163,15 +214,15 @@ public final class Light extends ObjectImpl {
         int diffuseStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseStrength");
         GLES20.glUniform1f(diffuseStrengthHandle, diffuseStrength);
 
-        vertexBuffer.position(VERTEX_COORD_START);
+        vertexBuffer.position(0);
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(positionHandle);
-        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
+        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        vertexBuffer.position(VERTEX_NORMAL_START);
+        normalBuffer.position(0);
         int normalHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         GLES20.glEnableVertexAttribArray(normalHandle);
-        GLES20.glVertexAttribPointer(normalHandle, PER_VERTEX_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_VERTEX_STRIDE, vertexBuffer);
+        GLES20.glVertexAttribPointer(normalHandle, PER_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_NORMAL_STRIDE, normalBuffer);
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / PER_VERTEX_SIZE);
         GLES20.glDisableVertexAttribArray(positionHandle);

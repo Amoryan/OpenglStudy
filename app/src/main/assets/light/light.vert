@@ -30,8 +30,8 @@ vec4 diffuseColor(){
     // 光源方向的单位向量
     vec3 l = normalize(u_LightPosition - pos);
     // 法向转换后的单位向量
-    vec3 n = normalize(vec3(mvpMatrix * vec4(a_Normal, 1.0f)));
-    // 计算两个单位向量之间的cos(θ)
+    vec3 n = normalize(mat3(mvpMatrix) * a_Normal);
+    // 计算光照的入射角
     float diffuse = max(dot(l, n), 0.0f);
     vec3 diffuseColor = u_DiffuseStrength * diffuse * u_LightColor;
     return vec4(diffuseColor, 1.0f);
