@@ -187,7 +187,7 @@ public final class PlyActivity
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
 
         for (PlyModel model : models) {
-            model.onDrawFrame(mvMatrix, mvpMatrix, programHandle);
+            model.onDrawFrame(viewMatrix, mvMatrix, mvpMatrix, programHandle);
         }
     }
 
@@ -244,6 +244,9 @@ public final class PlyActivity
             vertex[i * PER_VERTEX_SIZE] = (float) element.getDouble("x");
             vertex[i * PER_VERTEX_SIZE + 1] = (float) element.getDouble("y");
             vertex[i * PER_VERTEX_SIZE + 2] = (float) element.getDouble("z");
+//            vertex[i * PER_VERTEX_SIZE + 3] = (float) element.getDouble("nx");
+//            vertex[i * PER_VERTEX_SIZE + 4] = (float) element.getDouble("ny");
+//            vertex[i * PER_VERTEX_SIZE + 5] = (float) element.getDouble("nz");
         }
         elementReader.close();
         return vertex;
