@@ -135,6 +135,8 @@ public final class Light extends ObjectImpl {
     private float[] lightPosInEyeSpace = new float[4];
     private float[] lightColor = {1f, 1f, 1f, 1f};
 
+    private float[] cameraInWorldSpace = {0f, 0f, 3f};
+
     private int programHandle;
     private int lightPosProgramHandle;
 
@@ -170,7 +172,7 @@ public final class Light extends ObjectImpl {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         super.onSurfaceChanged(gl, width, height);
 
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1, 0);
+        Matrix.setLookAtM(viewMatrix, 0, cameraInWorldSpace[0], cameraInWorldSpace[1], cameraInWorldSpace[2], 0, 0, -5f, 0, 1, 0);
 
         float ratio = (float) width / height;
 
@@ -208,8 +210,8 @@ public final class Light extends ObjectImpl {
         Matrix.setIdentityM(lightModelMatrix, 0);
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
-        int lightPosHandle = GLES20.glGetUniformLocation(programHandle, "u_LightPosition");
-        GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        int lightInEyeSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_LightInEyeSpace");
+        GLES20.glUniform3f(lightInEyeSpaceHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
         int ambientStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientStrength");
         GLES20.glUniform1f(ambientStrengthHandle, ambientStrength);

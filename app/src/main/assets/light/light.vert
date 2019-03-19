@@ -4,12 +4,14 @@ uniform mat4 u_MVPMatrix;
 // 光颜色
 uniform vec3 u_LightColor;
 // 光源位置
-uniform vec3 u_LightPosition;
+uniform vec3 u_LightInEyeSpace;
 
 // 环境光强度
 uniform float u_AmbientStrength;
 // 漫反射强度
 uniform float u_DiffuseStrength;
+// 镜面反射强度(物体粗糙度，1表示非常光滑)
+uniform float u_SpecularStrength;
 
 attribute vec4 a_Position;
 attribute vec3 a_Normal;
@@ -24,7 +26,7 @@ vec4 ambientColor(){
 vec4 diffuseColor(){
     vec3 posInEyeSpace = (u_MVMatrix * a_Position).xyz;
 
-    vec3 lightDirection = normalize(u_LightPosition - posInEyeSpace);
+    vec3 lightDirection = normalize(u_LightInEyeSpace - posInEyeSpace);
 
     vec3 normal = normalize(mat3(u_MVMatrix) * a_Normal);
 
@@ -35,10 +37,28 @@ vec4 diffuseColor(){
     return vec4(diffuseColor, 1.0);
 }
 
+vec4 specularColor(){
+    vec3 cameraInEyeSpace = vec3(0.0, 0.0, 0.0);
+
+    vec3 posInEyeSpace = (u_MVMatrix * a_Position).xyz;
+
+    vec3 cameraDirection = normalize(posInEyeSpace);
+
+    vec3 normal = normalize(mat3(u_MVMatrix) * a_Normal);
+
+    vec3 reflectLight = reflect(normalize(u_LightInEyeSpace - posInEyeSpace), normal);
+
+    float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
+
+    vec3 specularColor = u_SpecularStrength * specular * u_LightColor;
+
+    return vec4(specularColor, 1.0);
+}
+
 void main(){
     gl_Position = u_MVPMatrix * a_Position;
 
-    v_Color = (ambientColor() + diffuseColor()) * vec4(1.0, 1.0, 0.0, 1.0);
+    v_Color = (ambientColor() + diffuseColor() + specularColor()) * vec4(1.0, 1.0, 0.0, 1.0);
 }
 
 //end
@@ -100,4 +120,4 @@ void main(){
 
 /*
     Specular light(镜面反射)的计算
-*/
+ */
