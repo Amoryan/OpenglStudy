@@ -35,7 +35,7 @@ public final class PlyModel {
     private Context context;
 
     private float[] lightModelMatrix = new float[16];
-    private float[] lightInModelSpace = {0f, 0f, 20f, 1f};
+    private float[] lightInModelSpace = {0f, 0f, 15f, 1f};
     private float[] lightInWorldSpace = new float[4];
     private float[] lightInEyeSpace = new float[4];
 

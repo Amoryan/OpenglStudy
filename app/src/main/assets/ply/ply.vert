@@ -25,7 +25,7 @@ void main(){
     float diffuse = max(dot(lightDirection, normal), 0.0);
     vec4 diffuseColor = diffuseStrength * diffuse * lightColor;
 
-    float specularStrength = 1.0;
+    float specularStrength = 0.7;
     vec3 lightRefDirection = reflect(-lightDirection, normal);;
     vec3 posEyeNormal = normalize(posInEyeSpace);
     float specular = pow(max(dot(posEyeNormal, lightRefDirection), 0.0), 32.0);
