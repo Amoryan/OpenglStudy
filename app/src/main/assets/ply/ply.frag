@@ -11,6 +11,8 @@ varying vec3 v_PosInEyeSpace;
 varying vec3 v_NormalInEyeSpace;
 
 void main(){
+    vec4 texColor = texture2D(u_Texture, v_TexCoord);
+
     vec4 lightColor = vec4(1.0, 1.0, 1.0, 1.0);
 
     float ambientStrength = 0.3;
@@ -27,6 +29,6 @@ void main(){
     float specular = pow(max(dot(posEyeNormal, lightRefDirection), 0.0), 32.0);
     vec4 specularColor = specularStrength * specular * lightColor;
 
-    gl_FragColor = (ambientColor + diffuseColor + specularColor) * u_Color;
-    //    gl_FragColor = texture2D(u_Texture, v_TexCoord);
+    //    gl_FragColor = (ambientColor + diffuseColor + specularColor) * u_Color;
+    gl_FragColor = texColor;
 }

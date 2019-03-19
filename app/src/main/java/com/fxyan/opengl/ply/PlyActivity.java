@@ -85,8 +85,8 @@ public final class PlyActivity
 
         readPlyFile("ply/戒臂.ply");
         readPlyFile("ply/花托.ply");
-        readPlyFile("ply/主石.ply");
-        readPlyFile("ply/副石.ply");
+//        readPlyFile("ply/主石.ply");
+//        readPlyFile("ply/副石.ply");
     }
 
     @Override
@@ -166,8 +166,12 @@ public final class PlyActivity
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.kb);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(context.getAssets().open("ply/kh.png"));
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for (PlyModel model : models) {
             model.onSurfaceCreated(gl, config);
@@ -178,7 +182,7 @@ public final class PlyActivity
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 50f, 0f, 0f, -5f, 0f, 1f, 0f);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 50f, 0f, 0f, -5f, 1f, 1f, 1f);
 
         float ratio = (float) width / height;
 
@@ -197,7 +201,7 @@ public final class PlyActivity
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1f, 1f, 1f);
         Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
 
@@ -216,9 +220,7 @@ public final class PlyActivity
 
                 int[] index = readFace(reader);
 
-                float[] texCoord = genTexCoord(vertex);
-
-                emitter.onSuccess(new PlyModel(context, vertex, index, texCoord));
+                emitter.onSuccess(new PlyModel(context, vertex, index));
             } catch (IOException e) {
                 emitter.onError(e);
             } finally {
@@ -283,23 +285,6 @@ public final class PlyActivity
         }
         elementReader.close();
         return index;
-    }
-
-    private float[] genTexCoord(float[] vertex) {
-        float[] texCoord = new float[vertex.length / 3];
-        for (int i = 0; i < texCoord.length; i += 6) {
-            texCoord[i] = 0.0f;
-            texCoord[i + 1] = 0.0f;
-            if (i + 2 < texCoord.length) {
-                texCoord[i + 2] = 1.0f;
-                texCoord[i + 3] = 0.0f;
-            }
-            if (i+4 < texCoord.length) {
-                texCoord[i + 4] = 0.5f;
-                texCoord[i + 5] = 1.0f;
-            }
-        }
-        return texCoord;
     }
 
 }
