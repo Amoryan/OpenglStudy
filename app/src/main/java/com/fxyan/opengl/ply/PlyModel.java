@@ -74,6 +74,11 @@ public final class PlyModel {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
+        Matrix.invertM(mvpMatrix, 0, mvpMatrix, 0);
+        Matrix.transposeM(mvpMatrix, 0, mvpMatrix, 0);
+        int tmvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_TMVPMatrix");
+        GLES20.glUniformMatrix4fv(tmvpMatrixHandle, 1, false, mvpMatrix, 0);
+
         Matrix.setIdentityM(lightModelMatrix, 0);
         Matrix.multiplyMV(lightInWorldSpace, 0, lightModelMatrix, 0, lightInModelSpace, 0);
         Matrix.multiplyMV(lightInEyeSpace, 0, viewMatrix, 0, lightInWorldSpace, 0);
