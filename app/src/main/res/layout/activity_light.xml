@@ -17,10 +17,10 @@
         android:id="@+id/ambientLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:text="ambient"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
+        app:layout_constraintStart_toStartOf="@+id/specularLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -52,8 +52,8 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="diffuse"
-        app:layout_constraintEnd_toEndOf="@+id/ambientLabel"
-        app:layout_constraintStart_toStartOf="@+id/ambientLabel"
+        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
+        app:layout_constraintStart_toStartOf="@+id/specularLabel"
         app:layout_constraintTop_toBottomOf="@+id/ambientLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -77,5 +77,38 @@
         app:layout_constraintBottom_toBottomOf="@+id/diffuseLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/diffuseLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/specularLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="specular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/diffuseLabel" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/specularStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="10"
+        app:layout_constraintBottom_toBottomOf="@id/specularLabel"
+        app:layout_constraintEnd_toStartOf="@id/specularValue"
+        app:layout_constraintStart_toEndOf="@id/specularLabel"
+        app:layout_constraintTop_toTopOf="@id/specularLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/specularValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/specularLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/specularLabel" />
 
 </android.support.constraint.ConstraintLayout>

@@ -42,11 +42,11 @@ vec4 specularColor(){
 
     vec3 posInEyeSpace = (u_MVMatrix * a_Position).xyz;
 
-    vec3 cameraDirection = normalize(posInEyeSpace);
+    vec3 cameraDirection = normalize(posInEyeSpace - cameraInEyeSpace);
 
     vec3 normal = normalize(mat3(u_MVMatrix) * a_Normal);
 
-    vec3 reflectLight = reflect(normalize(u_LightInEyeSpace - posInEyeSpace), normal);
+    vec3 reflectLight = reflect(-normalize(u_LightInEyeSpace - posInEyeSpace), normal);
 
     float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
 

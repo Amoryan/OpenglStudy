@@ -15,6 +15,7 @@ public final class LightActivity
 
     private TextView ambientValue;
     private TextView diffuseValue;
+    private TextView specularValue;
 
     @Override
     protected void init() {
@@ -22,8 +23,9 @@ public final class LightActivity
 
         ambientValue = findViewById(R.id.ambientValue);
         diffuseValue = findViewById(R.id.diffuseValue);
+        specularValue = findViewById(R.id.specularValue);
 
-        int[] ids = {R.id.ambientStrength, R.id.diffuseStrength};
+        int[] ids = {R.id.ambientStrength, R.id.diffuseStrength, R.id.specularStrength};
         for (int id : ids) {
             ((SeekBar) findViewById(id)).setOnSeekBarChangeListener(this);
         }
@@ -50,6 +52,10 @@ public final class LightActivity
             case R.id.diffuseStrength:
                 object.setDiffuseStrength(value);
                 diffuseValue.setText(String.valueOf(value));
+                break;
+            case R.id.specularStrength:
+                object.setSpecularStrength(value);
+                specularValue.setText(String.valueOf(value));
                 break;
             default:
         }

@@ -35,6 +35,8 @@ public final class Light extends ObjectImpl {
     private float ambientStrength;
     // 漫反射强度
     private float diffuseStrength;
+    // 镜面反射强度(物体粗糙度)
+    private float specularStrength;
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
@@ -194,7 +196,7 @@ public final class Light extends ObjectImpl {
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 0);
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         int mvMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVMatrix");
@@ -218,6 +220,9 @@ public final class Light extends ObjectImpl {
 
         int diffuseStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseStrength");
         GLES20.glUniform1f(diffuseStrengthHandle, diffuseStrength);
+
+        int specularStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_SpecularStrength");
+        GLES20.glUniform1f(specularStrengthHandle, specularStrength);
 
         vertexBuffer.position(0);
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
@@ -261,5 +266,9 @@ public final class Light extends ObjectImpl {
 
     public void setDiffuseStrength(float value) {
         diffuseStrength = value;
+    }
+
+    public void setSpecularStrength(float value) {
+        this.specularStrength = value;
     }
 }
