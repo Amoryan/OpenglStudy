@@ -18,12 +18,12 @@ void main(){
     float ambientStrength = 0.3;
     vec4 ambientColor = ambientStrength * lightColor;
 
-//    float diffuseStrength = 0.7;
-//    vec3 posInEyeSpace = (u_MVMatrix * a_Position).xyz;
-//    vec3 lightDirection = normalize(u_LightInEyeSpace - posInEyeSpace);
-//    vec3 normal = normalize(mat3(u_MVMatrix) * a_Normal);
-//    float diffuse = max(dot(lightDirection, normal), 0.0);
-//    vec4 diffuseColor = diffuseStrength * diffuse * lightColor;
+    float diffuseStrength = 0.7;
+    vec3 posInEyeSpace = (u_MVMatrix * a_Position).xyz;
+    vec3 lightDirection = normalize(u_LightInEyeSpace - posInEyeSpace);
+    vec3 normal = normalize(mat3(u_MVMatrix) * a_Normal);
+    float diffuse = max(dot(lightDirection, normal), 0.0);
+    vec4 diffuseColor = diffuseStrength * diffuse * lightColor;
 
-    v_Color = (ambientColor) * u_Color;
+    v_Color = (ambientColor + diffuseStrength) * u_Color;
 }

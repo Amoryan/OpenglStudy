@@ -80,8 +80,8 @@ public final class PlyActivity
             ((RadioButton) findViewById(id)).setOnCheckedChangeListener(this);
         }
 
-        readPlyFile("ply/戒臂1.ply");
-        readPlyFile("ply/花托1.ply");
+        readPlyFile("ply/戒臂.ply");
+        readPlyFile("ply/花托.ply");
         readPlyFile("ply/主石.ply");
     }
 
@@ -237,16 +237,16 @@ public final class PlyActivity
     private float[] readVertex(PlyReaderFile reader) throws IOException {
         float[] vertex;
         ElementReader elementReader = reader.nextElementReader();
-        int PER_VERTEX_SIZE = 3;
+        int PER_VERTEX_SIZE = 6;
         vertex = new float[elementReader.getCount() * PER_VERTEX_SIZE];
         for (int i = 0; i < elementReader.getCount(); i++) {
             Element element = elementReader.readElement();
             vertex[i * PER_VERTEX_SIZE] = (float) element.getDouble("x");
             vertex[i * PER_VERTEX_SIZE + 1] = (float) element.getDouble("y");
             vertex[i * PER_VERTEX_SIZE + 2] = (float) element.getDouble("z");
-//            vertex[i * PER_VERTEX_SIZE + 3] = (float) element.getDouble("nx");
-//            vertex[i * PER_VERTEX_SIZE + 4] = (float) element.getDouble("ny");
-//            vertex[i * PER_VERTEX_SIZE + 5] = (float) element.getDouble("nz");
+            vertex[i * PER_VERTEX_SIZE + 3] = (float) element.getDouble("nx");
+            vertex[i * PER_VERTEX_SIZE + 4] = (float) element.getDouble("ny");
+            vertex[i * PER_VERTEX_SIZE + 5] = (float) element.getDouble("nz");
         }
         elementReader.close();
         return vertex;

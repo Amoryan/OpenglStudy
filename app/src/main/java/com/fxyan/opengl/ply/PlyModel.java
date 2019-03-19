@@ -1,13 +1,8 @@
 package com.fxyan.opengl.ply;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
-
-import com.fxyan.opengl.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -25,17 +20,17 @@ public final class PlyModel {
     private final int PER_FLOAT_BYTES = 4;
     private final int PER_INT_BYTES = 4;
 
-    private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_COORD_SIZE = 3;
     private final int PER_VERTEX_NORMAL_SIZE = 3;
+    private final int PER_VERTEX_SIZE = PER_VERTEX_COORD_SIZE + PER_VERTEX_NORMAL_SIZE;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
     private float[] vertex;
     private int[] index;
 
-    //    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
+    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
 //    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};
-    private float[] color = {255f / 255, 220f / 255, 0, 1f};// 黄钻
+//    private float[] color = {255f / 255, 220f / 255, 0, 1f};// 黄钻
 
     private Context context;
 
@@ -67,16 +62,6 @@ public final class PlyModel {
     private IntBuffer indexBuffer;
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        int[] textureIds = new int[1];
-        GLES20.glGenTextures(1, textureIds, 0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.zuanshi);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -102,12 +87,12 @@ public final class PlyModel {
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-//        int normalHandle = GLES20.glGetAttribLocation(programHandle, "a_Normal");
-//        GLES20.glEnableVertexAttribArray(normalHandle);
-//        GLES20.glVertexAttribPointer(normalHandle, PER_VERTEX_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_VERTEX_STRIDE, vertexBuffer);
+        int normalHandle = GLES20.glGetAttribLocation(programHandle, "a_Normal");
+        GLES20.glEnableVertexAttribArray(normalHandle);
+        GLES20.glVertexAttribPointer(normalHandle, PER_VERTEX_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_VERTEX_STRIDE, vertexBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
         GLES20.glDisableVertexAttribArray(positionHandle);
-//        GLES20.glDisableVertexAttribArray(normalHandle);
+        GLES20.glDisableVertexAttribArray(normalHandle);
     }
 }
