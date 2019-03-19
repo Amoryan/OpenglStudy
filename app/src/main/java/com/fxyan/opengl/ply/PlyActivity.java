@@ -1,8 +1,11 @@
 package com.fxyan.opengl.ply;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -154,6 +157,17 @@ public final class PlyActivity
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         programHandle = GLESUtils.createAndLinkProgram("ply/ply.vert", "ply/ply.frag");
+
+        int[] textureIds = new int[1];
+        GLES20.glGenTextures(1, textureIds, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.kb);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
         for (PlyModel model : models) {
             model.onSurfaceCreated(gl, config);
         }
@@ -201,7 +215,9 @@ public final class PlyActivity
 
                 int[] index = readFace(reader);
 
-                emitter.onSuccess(new PlyModel(context, vertex, index));
+                float[] texCoord = genTexCoord(vertex);
+
+                emitter.onSuccess(new PlyModel(context, vertex, index, texCoord));
             } catch (IOException e) {
                 emitter.onError(e);
             } finally {
@@ -266,6 +282,23 @@ public final class PlyActivity
         }
         elementReader.close();
         return index;
+    }
+
+    private float[] genTexCoord(float[] vertex) {
+        float[] texCoord = new float[vertex.length / 3];
+        for (int i = 0; i < texCoord.length; i += 6) {
+            texCoord[i] = 0.0f;
+            texCoord[i + 1] = 0.0f;
+            if (i + 2 < texCoord.length) {
+                texCoord[i + 2] = 1.0f;
+                texCoord[i + 3] = 0.0f;
+            }
+            if (i+4 < texCoord.length) {
+                texCoord[i + 4] = 0.5f;
+                texCoord[i + 5] = 1.0f;
+            }
+        }
+        return texCoord;
     }
 
 }

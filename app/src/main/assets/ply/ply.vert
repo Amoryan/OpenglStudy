@@ -7,8 +7,10 @@ uniform vec4 u_Color;
 
 attribute vec4 a_Position;
 attribute vec3 a_Normal;
+attribute vec2 a_TexCoord;
 
 varying vec4 v_Color;
+varying vec2 v_TexCoord;
 
 void main(){
     gl_Position = u_MVPMatrix * a_Position;

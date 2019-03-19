@@ -25,8 +25,12 @@ public final class PlyModel {
     private final int PER_VERTEX_SIZE = PER_VERTEX_COORD_SIZE + PER_VERTEX_NORMAL_SIZE;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
+    private final int PER_TEX_COORD_SIZE = 2;
+    private final int PER_TEX_COORD_STRIDE = PER_TEX_COORD_SIZE * PER_FLOAT_BYTES;
+
     private float[] vertex;
     private int[] index;
+    private float[] texCoord;
 
     private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
 //    private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};
@@ -35,15 +39,16 @@ public final class PlyModel {
     private Context context;
 
     private float[] lightModelMatrix = new float[16];
-    private float[] lightInModelSpace = {0f, 0f, 15f, 1f};
+    private float[] lightInModelSpace = {3f, 3f, 15f, 1f};
     private float[] lightInWorldSpace = new float[4];
     private float[] lightInEyeSpace = new float[4];
 
-    public PlyModel(Context _context, float[] _vertex, int[] _index) {
+    public PlyModel(Context _context, float[] _vertex, int[] _index, float[] _texCoord) {
         this.context = _context;
 
         this.vertex = _vertex;
         this.index = _index;
+        this.texCoord = _texCoord;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -56,10 +61,17 @@ public final class PlyModel {
                 .asIntBuffer()
                 .put(index);
         indexBuffer.position(0);
+
+        texCoordBuffer = ByteBuffer.allocateDirect(texCoord.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(texCoord);
+        texCoordBuffer.position(0);
     }
 
     private FloatBuffer vertexBuffer;
     private IntBuffer indexBuffer;
+    private FloatBuffer texCoordBuffer;
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
