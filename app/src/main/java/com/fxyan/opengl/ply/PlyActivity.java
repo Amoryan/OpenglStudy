@@ -187,7 +187,7 @@ public final class PlyActivity
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
 
         for (PlyModel model : models) {
-            model.onDrawFrame(mvpMatrix, programHandle);
+            model.onDrawFrame(mvMatrix, mvpMatrix, programHandle);
         }
     }
 

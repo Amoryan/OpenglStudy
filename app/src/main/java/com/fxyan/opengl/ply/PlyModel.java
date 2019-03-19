@@ -1,12 +1,7 @@
 package com.fxyan.opengl.ply;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
-
-import com.fxyan.opengl.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -64,7 +59,10 @@ public final class PlyModel {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
     }
 
-    public void onDrawFrame(float[] mvpMatrix, int programHandle) {
+    public void onDrawFrame(float[] mvMatrix, float[] mvpMatrix, int programHandle) {
+        int mvMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVMatrix");
+        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
+
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
