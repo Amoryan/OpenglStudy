@@ -86,6 +86,7 @@ public final class PlyActivity
         readPlyFile("ply/戒臂.ply");
         readPlyFile("ply/花托.ply");
         readPlyFile("ply/主石.ply");
+        readPlyFile("ply/副石.ply");
     }
 
     @Override
