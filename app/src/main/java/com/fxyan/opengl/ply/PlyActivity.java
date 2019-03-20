@@ -211,11 +211,11 @@ public final class PlyActivity
             try {
                 reader = new PlyReaderFile(getAssets().open(path));
 
-                float[] vertex = readVertex(reader);
+                Map<String, float[]> map = readVertex(reader);
 
                 int[] index = readFace(reader);
 
-                emitter.onSuccess(new PlyModel(context, vertex, index));
+                emitter.onSuccess(new PlyModel(context, map.get("vertex"), map.get("normal"), map.get("color"), index));
             } catch (IOException e) {
                 emitter.onError(e);
             } finally {
@@ -248,22 +248,32 @@ public final class PlyActivity
                 });
     }
 
-    private float[] readVertex(PlyReaderFile reader) throws IOException {
-        float[] vertex;
+    private Map<String, float[]> readVertex(PlyReaderFile reader) throws IOException {
+        float[] vertex, normal, color;
+        Map<String, float[]> map = new HashMap<>();
         ElementReader elementReader = reader.nextElementReader();
-        int PER_VERTEX_SIZE = 6;
-        vertex = new float[elementReader.getCount() * PER_VERTEX_SIZE];
+        vertex = new float[elementReader.getCount() * PlyModel.PER_VERTEX_SIZE];
+        normal = new float[elementReader.getCount() * PlyModel.PER_NORMAL_SIZE];
+        color = new float[elementReader.getCount() * PlyModel.PER_COLOR_SIZE];
         for (int i = 0; i < elementReader.getCount(); i++) {
             Element element = elementReader.readElement();
-            vertex[i * PER_VERTEX_SIZE] = (float) element.getDouble("x");
-            vertex[i * PER_VERTEX_SIZE + 1] = (float) element.getDouble("y");
-            vertex[i * PER_VERTEX_SIZE + 2] = (float) element.getDouble("z");
-            vertex[i * PER_VERTEX_SIZE + 3] = (float) element.getDouble("nx");
-            vertex[i * PER_VERTEX_SIZE + 4] = (float) element.getDouble("ny");
-            vertex[i * PER_VERTEX_SIZE + 5] = (float) element.getDouble("nz");
+            vertex[i * PlyModel.PER_VERTEX_SIZE] = (float) element.getDouble("x");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 1] = (float) element.getDouble("y");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 2] = (float) element.getDouble("z");
+
+            normal[i * PlyModel.PER_NORMAL_SIZE] = (float) element.getDouble("nx");
+            normal[i * PlyModel.PER_NORMAL_SIZE + 1] = (float) element.getDouble("ny");
+            normal[i * PlyModel.PER_NORMAL_SIZE + 2] = (float) element.getDouble("nz");
+
+            color[i * PlyModel.PER_COLOR_SIZE] = element.getInt("red") / 255f;
+            color[i * PlyModel.PER_COLOR_SIZE + 1] = element.getInt("green") / 255f;
+            color[i * PlyModel.PER_COLOR_SIZE + 2] = element.getInt("blue") / 255f;
         }
+        map.put("vertex", vertex);
+        map.put("normal", normal);
+        map.put("color", color);
         elementReader.close();
-        return vertex;
+        return map;
     }
 
     private int[] readFace(PlyReaderFile reader) throws IOException {

@@ -17,15 +17,25 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public final class PlyModel {
 
-    private final int PER_FLOAT_BYTES = 4;
-    private final int PER_INT_BYTES = 4;
+    public static final int PER_FLOAT_BYTES = 4;
+    public static final int PER_INT_BYTES = 4;
 
-    private final int PER_VERTEX_COORD_SIZE = 3;
-    private final int PER_VERTEX_NORMAL_SIZE = 3;
-    private final int PER_VERTEX_SIZE = PER_VERTEX_COORD_SIZE + PER_VERTEX_NORMAL_SIZE;
-    private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
+    public static final int PER_VERTEX_SIZE = 3;
+    public static final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
+    public static final int PER_NORMAL_SIZE = 3;
+    public static final int PER_NORMAL_STRIDE = PER_NORMAL_SIZE * PER_FLOAT_BYTES;
+
+    public static final int PER_COLOR_SIZE = 3;
+    public static final int PER_COLOR_STRIDE = PER_COLOR_SIZE * PER_FLOAT_BYTES;
+
+    private FloatBuffer vertexBuffer;
     private float[] vertex;
+    private FloatBuffer normalBuffer;
+    private float[] normal;
+//    private FloatBuffer colorBuffer;
+//    private float[] color;
+    private IntBuffer indexBuffer;
     private int[] index;
 
     private float[] color = {220f / 255, 220f / 255, 245f / 255, 1f};// 白钻
@@ -39,10 +49,12 @@ public final class PlyModel {
     private float[] lightInWorldSpace = new float[4];
     private float[] lightInEyeSpace = new float[4];
 
-    public PlyModel(Context _context, float[] _vertex, int[] _index) {
+    public PlyModel(Context _context, float[] _vertex, float[] _normal, float[] _color, int[] _index) {
         this.context = _context;
 
         this.vertex = _vertex;
+        this.normal = _normal;
+//        this.color = _color;
         this.index = _index;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
@@ -51,15 +63,23 @@ public final class PlyModel {
                 .put(vertex);
         vertexBuffer.position(0);
 
+        normalBuffer = ByteBuffer.allocateDirect(normal.length * PER_FLOAT_BYTES)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+                .put(normal);
+        normalBuffer.position(0);
+
+//        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTES)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer()
+//                .put(color);
+
         indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asIntBuffer()
                 .put(index);
         indexBuffer.position(0);
     }
-
-    private FloatBuffer vertexBuffer;
-    private IntBuffer indexBuffer;
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
@@ -74,11 +94,6 @@ public final class PlyModel {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
-        Matrix.invertM(mvpMatrix, 0, mvpMatrix, 0);
-        Matrix.transposeM(mvpMatrix, 0, mvpMatrix, 0);
-        int tmvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_TMVPMatrix");
-        GLES20.glUniformMatrix4fv(tmvpMatrixHandle, 1, false, mvpMatrix, 0);
-
         Matrix.setIdentityM(lightModelMatrix, 0);
         Matrix.multiplyMV(lightInWorldSpace, 0, lightModelMatrix, 0, lightInModelSpace, 0);
         Matrix.multiplyMV(lightInEyeSpace, 0, viewMatrix, 0, lightInWorldSpace, 0);
@@ -90,14 +105,19 @@ public final class PlyModel {
 
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(positionHandle);
-        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
+        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
         int normalHandle = GLES20.glGetAttribLocation(programHandle, "a_Normal");
         GLES20.glEnableVertexAttribArray(normalHandle);
-        GLES20.glVertexAttribPointer(normalHandle, PER_VERTEX_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_VERTEX_STRIDE, vertexBuffer);
+        GLES20.glVertexAttribPointer(normalHandle, PER_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_NORMAL_STRIDE, normalBuffer);
+
+//        int colorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
+//        GLES20.glEnableVertexAttribArray(colorHandle);
+//        GLES20.glVertexAttribPointer(colorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(normalHandle);
+//        GLES20.glDisableVertexAttribArray(colorHandle);
     }
 }

@@ -6,6 +6,7 @@ uniform sampler2D u_Texture;
 
 uniform vec4 u_Color;
 
+//varying vec4 v_Color;
 varying vec2 v_TexCoord;
 varying vec3 v_PosInEyeSpace;
 varying vec3 v_NormalInEyeSpace;
@@ -29,6 +30,6 @@ void main(){
     float specular = pow(max(dot(posEyeNormal, lightRefDirection), 0.0), 32.0);
     vec4 specularColor = specularStrength * specular * lightColor;
 
-        gl_FragColor =  u_Color;
-//    gl_FragColor = texColor;
+//        gl_FragColor =  u_Color;
+    gl_FragColor = texColor;
 }
