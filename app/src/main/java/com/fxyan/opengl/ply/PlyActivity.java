@@ -215,7 +215,7 @@ public final class PlyActivity
 
                 int[] index = readFace(reader);
 
-                emitter.onSuccess(new PlyModel(context, map.get("vertex"), map.get("normal"), map.get("color"), index));
+                emitter.onSuccess(new PlyModel(context, map.get("vertex"), map.get("normal"), index));
             } catch (IOException e) {
                 emitter.onError(e);
             } finally {
@@ -249,12 +249,11 @@ public final class PlyActivity
     }
 
     private Map<String, float[]> readVertex(PlyReaderFile reader) throws IOException {
-        float[] vertex, normal, color;
+        float[] vertex, normal;
         Map<String, float[]> map = new HashMap<>();
         ElementReader elementReader = reader.nextElementReader();
         vertex = new float[elementReader.getCount() * PlyModel.PER_VERTEX_SIZE];
         normal = new float[elementReader.getCount() * PlyModel.PER_NORMAL_SIZE];
-        color = new float[elementReader.getCount() * PlyModel.PER_COLOR_SIZE];
         for (int i = 0; i < elementReader.getCount(); i++) {
             Element element = elementReader.readElement();
             vertex[i * PlyModel.PER_VERTEX_SIZE] = (float) element.getDouble("x");
@@ -264,14 +263,9 @@ public final class PlyActivity
             normal[i * PlyModel.PER_NORMAL_SIZE] = (float) element.getDouble("nx");
             normal[i * PlyModel.PER_NORMAL_SIZE + 1] = (float) element.getDouble("ny");
             normal[i * PlyModel.PER_NORMAL_SIZE + 2] = (float) element.getDouble("nz");
-
-            color[i * PlyModel.PER_COLOR_SIZE] = element.getInt("red") / 255f;
-            color[i * PlyModel.PER_COLOR_SIZE + 1] = element.getInt("green") / 255f;
-            color[i * PlyModel.PER_COLOR_SIZE + 2] = element.getInt("blue") / 255f;
         }
         map.put("vertex", vertex);
         map.put("normal", normal);
-        map.put("color", color);
         elementReader.close();
         return map;
     }
