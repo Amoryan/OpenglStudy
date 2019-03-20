@@ -12,8 +12,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.CompoundButton;
-import android.widget.RadioButton;
 
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.utils.GLESUtils;
@@ -43,8 +41,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public final class PlyActivity
         extends AppCompatActivity
-        implements GLSurfaceView.Renderer,
-        CompoundButton.OnCheckedChangeListener {
+        implements GLSurfaceView.Renderer {
 
     Context context;
     GLSurfaceView surfaceView;
@@ -75,18 +72,10 @@ public final class PlyActivity
 
         surfaceView.setRenderer(this);
 
-        int[] ids = {
-                R.id.jiebi1, R.id.jiebi2, R.id.jiebi3, R.id.jiebi4, R.id.jiebi5,
-                R.id.huatuo1, R.id.huatuo2, R.id.huatuo3, R.id.huatuo4, R.id.huatuo5,
-        };
-        for (int id : ids) {
-            ((RadioButton) findViewById(id)).setOnCheckedChangeListener(this);
-        }
-
-        readPlyFile("ply/戒臂.ply");
-//        readPlyFile("ply/花托.ply");
-//        readPlyFile("ply/主石.ply");
-//        readPlyFile("ply/副石.ply");
+        readPlyFile("ply/戒臂.ply", 0);
+        readPlyFile("ply/花托.ply", 0);
+        readPlyFile("ply/主石.ply", 1);
+        readPlyFile("ply/副石.ply", 1);
     }
 
     @Override
@@ -102,56 +91,6 @@ public final class PlyActivity
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.jiebi1:
-                updateModel(isChecked, "ply/戒臂1.ply");
-                break;
-            case R.id.jiebi2:
-                updateModel(isChecked, "ply/戒臂2.ply");
-                break;
-            case R.id.jiebi3:
-                updateModel(isChecked, "ply/戒臂3.ply");
-                break;
-            case R.id.jiebi4:
-                updateModel(isChecked, "ply/戒臂4.ply");
-                break;
-            case R.id.jiebi5:
-                updateModel(isChecked, "ply/戒臂5.ply");
-                break;
-            case R.id.huatuo1:
-                updateModel(isChecked, "ply/花托1.ply");
-                break;
-            case R.id.huatuo2:
-                updateModel(isChecked, "ply/花托2.ply");
-                break;
-            case R.id.huatuo3:
-                updateModel(isChecked, "ply/花托3.ply");
-                break;
-            case R.id.huatuo4:
-                updateModel(isChecked, "ply/花托4.ply");
-                break;
-            case R.id.huatuo5:
-                updateModel(isChecked, "ply/花托5.ply");
-                break;
-            default:
-        }
-    }
-
-    private void updateModel(boolean isChecked, String path) {
-        PlyModel model = map.get(path);
-        if (isChecked) {
-            if (model == null) {
-                readPlyFile(path);
-            } else {
-                models.add(model);
-            }
-        } else {
-            models.remove(model);
-        }
-    }
-
-    @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
 
@@ -159,8 +98,9 @@ public final class PlyActivity
 
         programHandle = GLESUtils.createAndLinkProgram("ply/ply.vert", "ply/ply.frag");
 
-        int[] textureIds = new int[1];
-        GLES20.glGenTextures(1, textureIds, 0);
+        int[] textureIds = new int[2];
+        GLES20.glGenTextures(2, textureIds, 0);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
@@ -168,6 +108,16 @@ public final class PlyActivity
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.kh);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[1]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        Bitmap zuanshi = BitmapFactory.decodeResource(getResources(), R.mipmap.zuanshi);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, zuanshi, 0);
+
         for (PlyModel model : models) {
             model.onSurfaceCreated(gl, config);
         }
@@ -205,7 +155,7 @@ public final class PlyActivity
         }
     }
 
-    private void readPlyFile(String path) {
+    private void readPlyFile(String path, final int type) {
         Single.create((SingleOnSubscribe<PlyModel>) emitter -> {
             PlyReaderFile reader = null;
             try {
@@ -215,7 +165,11 @@ public final class PlyActivity
 
                 int[] index = readFace(reader);
 
-                emitter.onSuccess(new PlyModel(context, map.get("vertex"), map.get("normal"), index));
+                if (type == 1) {
+                    emitter.onSuccess(new ZSPlyModel(context, map.get("vertex"), map.get("normal"), index));
+                } else {
+                    emitter.onSuccess(new PlyModel(context, map.get("vertex"), map.get("normal"), index));
+                }
             } catch (IOException e) {
                 emitter.onError(e);
             } finally {

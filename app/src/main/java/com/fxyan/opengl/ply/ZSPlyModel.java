@@ -4,66 +4,16 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
  * @author fxYan
  */
-public class PlyModel {
+public final class ZSPlyModel extends PlyModel {
 
-    public static final int PER_FLOAT_BYTES = 4;
-    public static final int PER_INT_BYTES = 4;
-
-    public static final int PER_VERTEX_SIZE = 3;
-    public static final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
-
-    public static final int PER_NORMAL_SIZE = 3;
-    public static final int PER_NORMAL_STRIDE = PER_NORMAL_SIZE * PER_FLOAT_BYTES;
-
-    protected FloatBuffer vertexBuffer;
-    protected float[] vertex;
-    protected FloatBuffer normalBuffer;
-    protected float[] normal;
-    protected IntBuffer indexBuffer;
-    protected int[] index;
-
-    protected Context context;
-
-    protected float[] lightModelMatrix = new float[16];
-    protected float[] lightInModelSpace = {3f, 3f, 15f, 1f};
-    protected float[] lightInWorldSpace = new float[4];
-    protected float[] lightInEyeSpace = new float[4];
-
-    public PlyModel(Context _context, float[] _vertex, float[] _normal, int[] _index) {
-        this.context = _context;
-
-        this.vertex = _vertex;
-        this.normal = _normal;
-        this.index = _index;
-
-        vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(vertex);
-        vertexBuffer.position(0);
-
-        normalBuffer = ByteBuffer.allocateDirect(normal.length * PER_FLOAT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(normal);
-        normalBuffer.position(0);
-
-        indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asIntBuffer()
-                .put(index);
-        indexBuffer.position(0);
+    public ZSPlyModel(Context _context, float[] _vertex, float[] _normal, int[] _index) {
+        super(_context, _vertex, _normal, _index);
     }
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -86,7 +36,7 @@ public class PlyModel {
         GLES20.glUniform3f(lightInEyeSpaceHandle, lightInEyeSpace[0], lightInEyeSpace[1], lightInEyeSpace[2]);
 
         int textureHandle = GLES20.glGetUniformLocation(programHandle, "u_Texture");
-        GLES20.glUniform1i(textureHandle, 0);
+        GLES20.glUniform1i(textureHandle, 1);
 
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(positionHandle);
