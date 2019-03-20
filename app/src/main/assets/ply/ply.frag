@@ -29,6 +29,6 @@ void main(){
     float specular = pow(max(dot(posEyeNormal, lightRefDirection), 0.0), 32.0);
     vec4 specularColor = specularStrength * specular * lightColor;
 
-    //    gl_FragColor = (ambientColor + diffuseColor + specularColor) * u_Color;
-    gl_FragColor = texColor;
+        gl_FragColor =  u_Color;
+//    gl_FragColor = texColor;
 }
