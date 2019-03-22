@@ -24,6 +24,7 @@ android {
             res.srcDirs += [
                     "src/main/res/base",
                     "src/main/res/light",
+                    "src/main/res/texture",
                     "src/main/res"
             ]
         }

@@ -34,6 +34,22 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".texture.TextureMenuActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".texture.TextureFeatureActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".texture.TextureConfigActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".texture.TextureActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".light.LightMenuActivity"
             android:screenOrientation="portrait" />
 
@@ -43,14 +59,6 @@
 
         <activity
             android:name=".light.texture.LightTextureActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".texture.TextureConfigActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".texture.TextureActivity"
             android:screenOrientation="portrait" />
 
         <activity
