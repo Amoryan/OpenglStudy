@@ -273,7 +273,7 @@ public final class LightTexture {
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 0);
         drawCube();
 
-        Matrix.setIdengtityM(modelMatrix, 0);
+        Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, -2f, 2f, -2f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
         drawCube();
