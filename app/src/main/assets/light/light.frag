@@ -51,6 +51,7 @@ vec4 specularColorInWorldSpace(){
 
     vec3 reflectLight = -reflect(normalize(v_PosInWorldSpace - u_LightInWorldSpace), v_NormalInWorldSpace);
 
+    // 32表示高光的反光度，越大表示反光度越强，散色的光就越少
     float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
 
     vec3 specularColor = u_SpecularStrength * specular * u_LightColor;

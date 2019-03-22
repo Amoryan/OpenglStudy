@@ -63,7 +63,7 @@ void main(){
     接下来，我们需要计算衰减因子。点光源的真实光衰减遵循平方反比定律
         > 1. luminosity = 1 / (光源向量的模 * 光源向量的模)
 
-    3: Calculate the final color 计算vertex 的最终颜色
+    3.Calculate the final color 计算vertex 的最终颜色
         > 1. final color =vertex color  * (diffuse color * lambert factor * attenuation factor)
 
         举个栗子：
@@ -80,4 +80,24 @@ void main(){
 
 /*
     Specular light(镜面反射)的计算
+    理解了漫反射，再来计算镜面反射就非常简单了，我们在视觉空间中进行计算，所以将光源，点，和向量都转换到视觉空间中。
+    1.某点的入射光的反射光
+        > 某点的入射光
+            normalize(v_PosInEyeSpace - u_LightInEyeSpace)
+            这里要特别注意一下，我们计算漫射光的时候，是光照方向的向量，是u_LihgtInEyeSpace - v_PosInEyeSpace，和这个方向是相反的
+        > 入射光相对向量的反射光
+            这里使用reflect()函数计算入射光的反射光
+            vec3 reflectLight = reflect(normalize(v_PosInEyeSpace - u_LightInEyeSpace), v_NormalInEyeSpace)
+    2.点在视觉空间的向量(也就是眼睛和点朝向点方向的向量)
+            vec3 cameraDirection = normalize(v_PosInEyeSpace - cameraInEyeSpace)
+            因为在视觉空间中，所以，cameraInEyeSpace始终都在原点(0, 0, 0)的位置
+            所以实际上就是
+            vec3 = cameraDirection = normalize(v_PosInEyeSpace);
+    3.计算反射因子
+            这里还需要注意一点，反射光的方向和点在视觉空间的向量的方向是不一致的，需要将反射光方向调整
+            float specular = pow(max(dot(-reflectLight, cameraDirection), 0.0), 32.0)
+            这里的32表示的是反光度，这个值越大，表示反光度越强，这样入射光反射后被散色的光就越少。
+    4.计算反射光
+            u_SpecularStrength表示物体的粗糙度，表面越光滑的物体反射效果越好
+            vec4 specularColor = u_SpecularStrength * specular * u_LightColor;
  */
