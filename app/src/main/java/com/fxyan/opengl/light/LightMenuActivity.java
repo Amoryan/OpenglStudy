@@ -48,7 +48,7 @@ public final class LightMenuActivity
     @Override
     protected void initData() {
         data.add(new ActivityMenu(BaseLightActivity.class, "基础光照"));
-        data.add(new ActivityMenu(LightTextureActivity.class, "漫射光贴图"));
+        data.add(new ActivityMenu(LightTextureActivity.class, "光照贴图"));
         adapter.notifyDataSetChanged();
     }
 
