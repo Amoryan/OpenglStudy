@@ -1,5 +1,8 @@
 precision mediump float;
 
+// 物体颜色
+uniform vec3 u_Color;
+
 // 光颜色
 uniform vec3 u_LightColor;
 // 光源位置
@@ -76,5 +79,5 @@ vec4 specularColorInEyeSpace(){
 
 void main(){
     //    gl_FragColor = (ambientColor() + diffuseColorInWorldSpace()+ specularColorInWorldSpace()) * vec4(1.0, 1.0, 0.0, 1.0);
-    gl_FragColor = (ambientColor() + diffuseColorInEyeSpace() + specularColorInEyeSpace()) * vec4(1.0, 1.0, 0.0, 1.0);
+    gl_FragColor = (ambientColor() + diffuseColorInEyeSpace() + specularColorInEyeSpace()) * vec4(u_Color, 1.0);
 }

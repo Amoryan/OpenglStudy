@@ -40,6 +40,10 @@ public final class Light extends ObjectImpl {
     // 反光度
     private float shininessStrength;
 
+    private float red;
+    private float green;
+    private float blue;
+
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
             // front
@@ -212,6 +216,9 @@ public final class Light extends ObjectImpl {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
+        int colorHandle = GLES20.glGetUniformLocation(programHandle, "u_Color");
+        GLES20.glUniform3f(colorHandle, red, green, blue);
+
         int lightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_LightColor");
         GLES20.glUniform3f(lightColorHandle, lightColor[0], lightColor[1], lightColor[2]);
 
@@ -289,5 +296,17 @@ public final class Light extends ObjectImpl {
 
     public void setShininessStrength(int shininess) {
         this.shininessStrength = shininess;
+    }
+
+    public void setRed(float red) {
+        this.red = red;
+    }
+
+    public void setGreen(float green) {
+        this.green = green;
+    }
+
+    public void setBlue(float blue) {
+        this.blue = blue;
     }
 }

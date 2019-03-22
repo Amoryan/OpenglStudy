@@ -17,7 +17,6 @@
         android:id="@+id/ambientLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="ambient"
         app:layout_constraintEnd_toEndOf="@+id/specularLabel"
@@ -50,7 +49,6 @@
         android:id="@+id/diffuseLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="diffuse"
         app:layout_constraintEnd_toEndOf="@+id/specularLabel"
@@ -84,7 +82,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="specular"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +113,6 @@
         android:id="@+id/shininessLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="反光度"
         app:layout_constraintEnd_toEndOf="@+id/specularLabel"
@@ -144,5 +140,101 @@
         app:layout_constraintBottom_toBottomOf="@+id/shininessLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/shininessLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/redLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="red"
+        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
+        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintTop_toBottomOf="@+id/shininessLabel" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/redStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="255"
+        app:layout_constraintBottom_toBottomOf="@id/redLabel"
+        app:layout_constraintEnd_toStartOf="@id/redValue"
+        app:layout_constraintStart_toEndOf="@id/redLabel"
+        app:layout_constraintTop_toTopOf="@id/redLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/redValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="@+id/redLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/redLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/greenLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="green"
+        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
+        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintTop_toBottomOf="@+id/redLabel" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/greenStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="255"
+        app:layout_constraintBottom_toBottomOf="@id/greenLabel"
+        app:layout_constraintEnd_toStartOf="@id/greenValue"
+        app:layout_constraintStart_toEndOf="@id/greenLabel"
+        app:layout_constraintTop_toTopOf="@id/greenLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/greenValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="@+id/greenLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/greenLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/blueLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="blue"
+        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
+        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintTop_toBottomOf="@+id/greenLabel" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/blueStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="255"
+        app:layout_constraintBottom_toBottomOf="@id/blueLabel"
+        app:layout_constraintEnd_toStartOf="@id/blueValue"
+        app:layout_constraintStart_toEndOf="@id/blueLabel"
+        app:layout_constraintTop_toTopOf="@id/blueLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/blueValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="@+id/blueLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blueLabel" />
 
 </android.support.constraint.ConstraintLayout>
