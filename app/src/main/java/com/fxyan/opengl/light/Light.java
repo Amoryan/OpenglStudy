@@ -37,6 +37,8 @@ public final class Light extends ObjectImpl {
     private float diffuseStrength;
     // 镜面反射强度(物体粗糙度)
     private float specularStrength;
+    // 反光度
+    private float shininessStrength;
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
@@ -234,6 +236,9 @@ public final class Light extends ObjectImpl {
         int specularStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_SpecularStrength");
         GLES20.glUniform1f(specularStrengthHandle, specularStrength);
 
+        int shininessStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_ShininessStrength");
+        GLES20.glUniform1f(shininessStrengthHandle, shininessStrength);
+
         vertexBuffer.position(0);
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         GLES20.glEnableVertexAttribArray(positionHandle);
@@ -280,5 +285,9 @@ public final class Light extends ObjectImpl {
 
     public void setSpecularStrength(float value) {
         this.specularStrength = value;
+    }
+
+    public void setShininessStrength(int shininess) {
+        this.shininessStrength = shininess;
     }
 }

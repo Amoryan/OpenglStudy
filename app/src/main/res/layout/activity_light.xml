@@ -15,9 +15,10 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/ambientLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:gravity="center"
         android:text="ambient"
         app:layout_constraintEnd_toEndOf="@+id/specularLabel"
         app:layout_constraintStart_toStartOf="@+id/specularLabel"
@@ -80,7 +81,7 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/specularLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
@@ -110,5 +111,38 @@
         app:layout_constraintBottom_toBottomOf="@+id/specularLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/specularLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/shininessLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="反光度"
+        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
+        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintTop_toBottomOf="@+id/specularLabel" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/shininessStrength"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:max="8"
+        app:layout_constraintBottom_toBottomOf="@id/shininessLabel"
+        app:layout_constraintEnd_toStartOf="@id/shininessValue"
+        app:layout_constraintStart_toEndOf="@id/shininessLabel"
+        app:layout_constraintTop_toTopOf="@id/shininessLabel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/shininessValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="1"
+        app:layout_constraintBottom_toBottomOf="@+id/shininessLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shininessLabel" />
 
 </android.support.constraint.ConstraintLayout>

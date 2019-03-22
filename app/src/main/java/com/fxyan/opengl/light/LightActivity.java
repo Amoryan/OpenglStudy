@@ -16,6 +16,7 @@ public final class LightActivity
     private TextView ambientValue;
     private TextView diffuseValue;
     private TextView specularValue;
+    private TextView shininessValue;
 
     @Override
     protected void init() {
@@ -24,8 +25,14 @@ public final class LightActivity
         ambientValue = findViewById(R.id.ambientValue);
         diffuseValue = findViewById(R.id.diffuseValue);
         specularValue = findViewById(R.id.specularValue);
+        shininessValue = findViewById(R.id.shininessValue);
 
-        int[] ids = {R.id.ambientStrength, R.id.diffuseStrength, R.id.specularStrength};
+        int[] ids = {
+                R.id.ambientStrength,
+                R.id.diffuseStrength,
+                R.id.specularStrength,
+                R.id.shininessStrength
+        };
         for (int id : ids) {
             ((SeekBar) findViewById(id)).setOnSeekBarChangeListener(this);
         }
@@ -42,21 +49,31 @@ public final class LightActivity
 
         if (object == null) return;
 
-        float value = progress / 10f;
-
         switch (seekBar.getId()) {
-            case R.id.ambientStrength:
+            case R.id.ambientStrength: {
+                float value = progress / 10f;
                 object.setAmbientStrength(value);
                 ambientValue.setText(String.valueOf(value));
-                break;
-            case R.id.diffuseStrength:
+            }
+            break;
+            case R.id.diffuseStrength: {
+                float value = progress / 10f;
                 object.setDiffuseStrength(value);
                 diffuseValue.setText(String.valueOf(value));
-                break;
-            case R.id.specularStrength:
+            }
+            break;
+            case R.id.specularStrength: {
+                float value = progress / 10f;
                 object.setSpecularStrength(value);
                 specularValue.setText(String.valueOf(value));
-                break;
+            }
+            break;
+            case R.id.shininessStrength: {
+                int shininess = ((int) Math.pow(2, progress));
+                object.setShininessStrength(shininess);
+                shininessValue.setText(String.valueOf(shininess));
+            }
+            break;
             default:
         }
     }

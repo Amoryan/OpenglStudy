@@ -14,6 +14,8 @@ uniform float u_AmbientStrength;
 uniform float u_DiffuseStrength;
 // 镜面反射强度(物体粗糙度，1表示非常光滑)
 uniform float u_SpecularStrength;
+// 反光度
+uniform float u_ShininessStrength;
 
 varying vec3 v_PosInWorldSpace;
 varying vec3 v_NormalInWorldSpace;
@@ -51,8 +53,7 @@ vec4 specularColorInWorldSpace(){
 
     vec3 reflectLight = -reflect(normalize(v_PosInWorldSpace - u_LightInWorldSpace), v_NormalInWorldSpace);
 
-    // 32表示高光的反光度，越大表示反光度越强，散色的光就越少
-    float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
+    float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), u_ShininessStrength);
 
     vec3 specularColor = u_SpecularStrength * specular * u_LightColor;
 
@@ -66,7 +67,7 @@ vec4 specularColorInEyeSpace(){
 
     vec3 reflectLight = -reflect(normalize(v_PosInEyeSpace - u_LightInEyeSpace), v_NormalInEyeSpace);
 
-    float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
+    float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), u_ShininessStrength);
 
     vec3 specularColor = u_SpecularStrength * specular * u_LightColor;
 
