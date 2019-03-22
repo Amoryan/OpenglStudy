@@ -54,14 +54,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".texture.TextureConfigActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".texture.TextureActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".light.LightMenuActivity"
             android:screenOrientation="portrait" />
 
