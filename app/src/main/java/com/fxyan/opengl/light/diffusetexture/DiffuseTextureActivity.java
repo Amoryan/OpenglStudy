@@ -36,7 +36,7 @@ public final class DiffuseTextureActivity
 
     @Override
     protected void initData() {
-        object = new DiffuseTexture();
+        object = new DiffuseTexture(this);
     }
 
     @Override
