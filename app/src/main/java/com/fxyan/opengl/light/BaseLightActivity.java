@@ -2,11 +2,10 @@ package com.fxyan.opengl.light;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -16,7 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author fxYan
  */
 public final class BaseLightActivity
-        extends AppCompatActivity
+        extends BaseActivity
         implements SeekBar.OnSeekBarChangeListener,
         GLSurfaceView.Renderer {
 
@@ -31,15 +30,19 @@ public final class BaseLightActivity
     private Light light;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_light);
+    public int getLayoutId() {
+        return R.layout.activity_base_light;
+    }
 
+    @Override
+    protected void initParams(Bundle bundle) {
+    }
+
+    @Override
+    protected void initViews() {
         GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
-
-        light = new Light();
 
         ambientValue = findViewById(R.id.ambientValue);
         diffuseValue = findViewById(R.id.diffuseValue);
@@ -48,7 +51,15 @@ public final class BaseLightActivity
         redValue = findViewById(R.id.redValue);
         greenValue = findViewById(R.id.greenValue);
         blueValue = findViewById(R.id.blueValue);
+    }
 
+    @Override
+    protected void initData() {
+        light = new Light();
+    }
+
+    @Override
+    protected void initEvents() {
         int[] ids = {
                 R.id.ambientStrength,
                 R.id.diffuseStrength,
@@ -58,8 +69,13 @@ public final class BaseLightActivity
                 R.id.greenStrength,
                 R.id.blueStrength,
         };
-        for (int id : ids) {
-            ((SeekBar) findViewById(id)).setOnSeekBarChangeListener(this);
+        int[] defProgress = {
+                3, 7, 3, 5, 217, 142, 212,
+        };
+        for (int i = 0; i < ids.length; i++) {
+            SeekBar seekBar = (SeekBar) findViewById(ids[i]);
+            seekBar.setOnSeekBarChangeListener(this);
+            seekBar.setProgress(defProgress[i]);
         }
     }
 
