@@ -34,7 +34,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".light.LightActivity"
+            android:name=".light.BaseLightActivity"
             android:screenOrientation="portrait" />
 
         <activity

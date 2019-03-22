@@ -1,24 +1,19 @@
 package com.fxyan.opengl.light;
 
-import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.fxyan.opengl.entity.geometry.ObjectImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 /**
  * @author fxYan
  */
-public final class Light extends ObjectImpl {
+public final class Light {
 
     private final int PER_FLOAT_BYTES = 4;
 
@@ -148,7 +143,12 @@ public final class Light extends ObjectImpl {
     private int programHandle;
     private int lightPosProgramHandle;
 
-    public Light(Context context) {
+    protected float[] mvpMatrix = new float[16];
+    protected float[] modelMatrix = new float[16];
+    protected float[] viewMatrix = new float[16];
+    protected float[] projectionMatrix = new float[16];
+
+    public Light() {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -168,17 +168,16 @@ public final class Light extends ObjectImpl {
         lightPosBuffer.position(0);
     }
 
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        super.onSurfaceCreated(gl, config);
+    public void onSurfaceCreated() {
+        GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         programHandle = GLESUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
         lightPosProgramHandle = GLESUtils.createAndLinkProgram("light/lightpos.vert", "light/lightpos.frag");
     }
 
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        super.onSurfaceChanged(gl, width, height);
+    public void onSurfaceChanged(int width, int height) {
+        GLES20.glViewport(0, 0, width, height);
 
         Matrix.setLookAtM(viewMatrix, 0, cameraInWorldSpace[0], cameraInWorldSpace[1], cameraInWorldSpace[2], 0, 0, -5f, 0, 1, 0);
 
@@ -187,9 +186,8 @@ public final class Light extends ObjectImpl {
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1, 10);
     }
 
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        super.onDrawFrame(gl);
+    public void onDrawFrame() {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         drawCube();
 

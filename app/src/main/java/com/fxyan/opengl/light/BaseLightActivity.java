@@ -1,17 +1,24 @@
 package com.fxyan.opengl.light;
 
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.fxyan.opengl.OpenGLActivity;
 import com.fxyan.opengl.R;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * @author fxYan
  */
-public final class LightActivity
-        extends OpenGLActivity
-        implements SeekBar.OnSeekBarChangeListener {
+public final class BaseLightActivity
+        extends AppCompatActivity
+        implements SeekBar.OnSeekBarChangeListener,
+        GLSurfaceView.Renderer {
 
     private TextView ambientValue;
     private TextView diffuseValue;
@@ -21,9 +28,18 @@ public final class LightActivity
     private TextView greenValue;
     private TextView blueValue;
 
+    private Light light;
+
     @Override
-    protected void init() {
-        setObject(Light.class);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_base_light);
+
+        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView.setEGLContextClientVersion(2);
+        surfaceView.setRenderer(this);
+
+        light = new Light();
 
         ambientValue = findViewById(R.id.ambientValue);
         diffuseValue = findViewById(R.id.diffuseValue);
@@ -48,56 +64,47 @@ public final class LightActivity
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_light;
-    }
-
-    @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        Light object = (Light) getObject();
-
-        if (object == null) return;
-
         switch (seekBar.getId()) {
             case R.id.ambientStrength: {
                 float value = progress / 10f;
-                object.setAmbientStrength(value);
+                light.setAmbientStrength(value);
                 ambientValue.setText(String.valueOf(value));
             }
             break;
             case R.id.diffuseStrength: {
                 float value = progress / 10f;
-                object.setDiffuseStrength(value);
+                light.setDiffuseStrength(value);
                 diffuseValue.setText(String.valueOf(value));
             }
             break;
             case R.id.specularStrength: {
                 float value = progress / 10f;
-                object.setSpecularStrength(value);
+                light.setSpecularStrength(value);
                 specularValue.setText(String.valueOf(value));
             }
             break;
             case R.id.shininessStrength: {
                 int shininess = ((int) Math.pow(2, progress));
-                object.setShininessStrength(shininess);
+                light.setShininessStrength(shininess);
                 shininessValue.setText(String.valueOf(shininess));
             }
             break;
             case R.id.redStrength: {
                 float red = progress / 255f;
-                object.setRed(red);
+                light.setRed(red);
                 redValue.setText(String.valueOf(progress));
             }
             break;
             case R.id.greenStrength: {
                 float green = progress / 255f;
-                object.setGreen(green);
+                light.setGreen(green);
                 greenValue.setText(String.valueOf(progress));
             }
             break;
             case R.id.blueStrength: {
                 float blue = progress / 255f;
-                object.setBlue(blue);
+                light.setBlue(blue);
                 blueValue.setText(String.valueOf(progress));
             }
             break;
@@ -113,5 +120,20 @@ public final class LightActivity
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        light.onSurfaceCreated();
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        light.onSurfaceChanged(width, height);
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        light.onDrawFrame();
     }
 }
