@@ -15,6 +15,7 @@ public final class LightTextureActivity
         extends BaseActivity
         implements GLSurfaceView.Renderer {
 
+    private GLSurfaceView surfaceView;
     private LightTexture object;
 
     @Override
@@ -24,7 +25,7 @@ public final class LightTextureActivity
 
     @Override
     protected void initViews() {
-        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
     }
@@ -37,6 +38,18 @@ public final class LightTextureActivity
     @Override
     protected void initEvents() {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        surfaceView.onPause();
     }
 
     @Override

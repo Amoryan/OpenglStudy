@@ -1,18 +1,15 @@
 package com.fxyan.opengl.ply;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.utils.GLESUtils;
 
@@ -23,7 +20,7 @@ import org.smurn.jply.PlyReaderFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -40,42 +37,54 @@ import io.reactivex.schedulers.Schedulers;
  * @author fxYan
  */
 public final class PlyActivity
-        extends AppCompatActivity
+        extends BaseActivity
         implements GLSurfaceView.Renderer {
 
-    Context context;
-    GLSurfaceView surfaceView;
-    CopyOnWriteArrayList<PlyModel> models = new CopyOnWriteArrayList<>();
+    private GLSurfaceView surfaceView;
+    private ConcurrentHashMap<String, PlyModel> map = new ConcurrentHashMap<>();
+    private Map<String, Integer> textureMap = new HashMap<>();
+    private CompositeDisposable disposables = new CompositeDisposable();
 
-    CompositeDisposable disposables = new CompositeDisposable();
+    private Bitmap t950;
+    private Bitmap diamond;
 
-    float[] mvpMatrix = new float[16];
-    float[] mvMatrix = new float[16];
-    float[] modelMatrix = new float[16];
-    float[] viewMatrix = new float[16];
-    float[] projectionMatrix = new float[16];
+    private float[] mvpMatrix = new float[16];
+    private float[] mvMatrix = new float[16];
+    private float[] modelMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
 
     private int programHandle;
 
-    private Map<String, PlyModel> map = new HashMap<>();
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_ply;
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ply);
-
-        context = this;
-
+    protected void initViews() {
         surfaceView = findViewById(R.id.surfaceView);
-
         surfaceView.setEGLContextClientVersion(2);
-
         surfaceView.setRenderer(this);
+    }
 
-        readPlyFile("ply/戒臂.ply", 0);
-        readPlyFile("ply/花托.ply", 0);
-        readPlyFile("ply/主石.ply", 1);
-        readPlyFile("ply/副石.ply", 1);
+    @Override
+    protected void initData() {
+        readPlyFile("ply/戒臂.ply");
+        textureMap.put("ply/戒臂.ply", 0);
+        readPlyFile("ply/花托.ply");
+        textureMap.put("ply/花托.ply", 0);
+        readPlyFile("ply/主石.ply");
+        textureMap.put("ply/主石.ply", 1);
+        readPlyFile("ply/副石.ply");
+        textureMap.put("ply/副石.ply", 1);
+
+        t950 = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_t950);
+        diamond = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_diamond);
+    }
+
+    @Override
+    protected void initEvents() {
     }
 
     @Override
@@ -88,6 +97,13 @@ public final class PlyActivity
     protected void onPause() {
         super.onPause();
         surfaceView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        t950.recycle();
+        diamond.recycle();
     }
 
     @Override
@@ -106,20 +122,9 @@ public final class PlyActivity
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.t950);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[1]);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        Bitmap zuanshi = BitmapFactory.decodeResource(getResources(), R.mipmap.zuanshi);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, zuanshi, 0);
-
-        for (PlyModel model : models) {
-            model.onSurfaceCreated(gl, config);
+        for (PlyModel value : map.values()) {
+            value.onSurfaceCreated();
         }
     }
 
@@ -127,13 +132,13 @@ public final class PlyActivity
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 50f, 0f, 0f, -5f, 1f, 1f, 1f);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 30f, 0f, 0f, -5f, 1f, 1f, 1f);
 
         float ratio = (float) width / height;
 
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 100f);
-        for (PlyModel model : models) {
-            model.onSurfaceChanged(gl, width, height);
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 50f);
+        for (PlyModel model : map.values()) {
+            model.onSurfaceChanged();
         }
     }
 
@@ -146,40 +151,46 @@ public final class PlyActivity
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1f, 1f, 1f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.2f, 0.7f, 0.45f);
         Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
-
-        for (PlyModel model : models) {
-            model.onDrawFrame(viewMatrix, mvMatrix, mvpMatrix, programHandle);
+        for (Map.Entry<String, PlyModel> entry : map.entrySet()) {
+            int type = textureMap.get(entry.getKey());
+            if (type == 0) {
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, t950, 0);
+            } else {
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, diamond, 0);
+            }
+            entry.getValue().onDrawFrame(mvpMatrix, programHandle);
         }
     }
 
-    private void readPlyFile(String path, final int type) {
+    private void readPlyFile(String path) {
         Single.create((SingleOnSubscribe<PlyModel>) emitter -> {
+            boolean result = false;
+
             PlyReaderFile reader = null;
+            float[] vertex = null;
+            int[] index = null;
             try {
                 reader = new PlyReaderFile(getAssets().open(path));
 
-                Map<String, float[]> map = readVertex(reader);
+                vertex = readVertex(reader);
+                index = readFace(reader);
 
-                int[] index = readFace(reader);
-
-                if (type == 1) {
-                    emitter.onSuccess(new ZSPlyModel(context, map.get("vertex"), map.get("normal"), index));
-                } else {
-                    emitter.onSuccess(new PlyModel(context, map.get("vertex"), map.get("normal"), index));
-                }
-            } catch (IOException e) {
-                emitter.onError(e);
+                result = true;
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        emitter.onError(e);
-                    }
+                    reader.close();
                 }
+            }
+
+            if (result) {
+                emitter.onSuccess(new PlyModel(context, vertex, index));
+            } else {
+                emitter.onError(new RuntimeException());
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -192,7 +203,6 @@ public final class PlyActivity
                     @Override
                     public void onSuccess(PlyModel plyModel) {
                         map.put(path, plyModel);
-                        models.add(plyModel);
                     }
 
                     @Override
@@ -202,26 +212,20 @@ public final class PlyActivity
                 });
     }
 
-    private Map<String, float[]> readVertex(PlyReaderFile reader) throws IOException {
-        float[] vertex, normal;
-        Map<String, float[]> map = new HashMap<>();
+    private float[] readVertex(PlyReaderFile reader) throws IOException {
         ElementReader elementReader = reader.nextElementReader();
-        vertex = new float[elementReader.getCount() * PlyModel.PER_VERTEX_SIZE];
-        normal = new float[elementReader.getCount() * PlyModel.PER_NORMAL_SIZE];
+        float[] vertex = new float[elementReader.getCount() * PlyModel.PER_VERTEX_SIZE];
         for (int i = 0; i < elementReader.getCount(); i++) {
             Element element = elementReader.readElement();
             vertex[i * PlyModel.PER_VERTEX_SIZE] = (float) element.getDouble("x");
             vertex[i * PlyModel.PER_VERTEX_SIZE + 1] = (float) element.getDouble("y");
             vertex[i * PlyModel.PER_VERTEX_SIZE + 2] = (float) element.getDouble("z");
-
-            normal[i * PlyModel.PER_NORMAL_SIZE] = (float) element.getDouble("nx");
-            normal[i * PlyModel.PER_NORMAL_SIZE + 1] = (float) element.getDouble("ny");
-            normal[i * PlyModel.PER_NORMAL_SIZE + 2] = (float) element.getDouble("nz");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 3] = (float) element.getDouble("nx");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 4] = (float) element.getDouble("ny");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 5] = (float) element.getDouble("nz");
         }
-        map.put("vertex", vertex);
-        map.put("normal", normal);
         elementReader.close();
-        return map;
+        return vertex;
     }
 
     private int[] readFace(PlyReaderFile reader) throws IOException {

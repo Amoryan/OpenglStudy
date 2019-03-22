@@ -18,6 +18,8 @@ public final class BaseLightActivity
         implements SeekBar.OnSeekBarChangeListener,
         GLSurfaceView.Renderer {
 
+    private GLSurfaceView surfaceView;
+
     private TextView ambientValue;
     private TextView diffuseValue;
     private TextView specularValue;
@@ -35,7 +37,7 @@ public final class BaseLightActivity
 
     @Override
     protected void initViews() {
-        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
 
@@ -72,6 +74,18 @@ public final class BaseLightActivity
             seekBar.setOnSeekBarChangeListener(this);
             seekBar.setProgress(defProgress[i]);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        surfaceView.onPause();
     }
 
     @Override

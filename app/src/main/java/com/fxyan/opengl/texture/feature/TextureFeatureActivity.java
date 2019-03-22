@@ -16,6 +16,7 @@ public abstract class TextureFeatureActivity
         implements GLSurfaceView.Renderer {
 
     private TextureFeature object;
+    private GLSurfaceView surfaceView;
 
     @Override
     public int getLayoutId() {
@@ -24,7 +25,7 @@ public abstract class TextureFeatureActivity
 
     @Override
     protected void initViews() {
-        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
     }
@@ -39,6 +40,18 @@ public abstract class TextureFeatureActivity
     }
 
     protected abstract int getWrapMode();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        surfaceView.onPause();
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {

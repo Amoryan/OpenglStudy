@@ -16,6 +16,7 @@ public final class CubeTextureActivity
         implements GLSurfaceView.Renderer {
 
     private CubeTexture object;
+    private GLSurfaceView surfaceView;
 
     @Override
     public int getLayoutId() {
@@ -24,7 +25,7 @@ public final class CubeTextureActivity
 
     @Override
     protected void initViews() {
-        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
     }
@@ -36,6 +37,18 @@ public final class CubeTextureActivity
 
     @Override
     protected void initEvents() {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        surfaceView.onPause();
     }
 
     @Override
