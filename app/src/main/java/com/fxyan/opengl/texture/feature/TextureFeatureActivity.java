@@ -1,4 +1,4 @@
-package com.fxyan.opengl.texture;
+package com.fxyan.opengl.texture.feature;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import javax.microedition.khronos.opengles.GL10;
 public abstract class TextureFeatureActivity
         extends BaseActivity
         implements GLSurfaceView.Renderer {
+
+    private TextureFeature object;
 
     @Override
     public int getLayoutId() {
@@ -34,24 +36,27 @@ public abstract class TextureFeatureActivity
 
     @Override
     protected void initData() {
+        object = new TextureFeature(this, getWrapMode(), getWrapMode());
     }
 
     @Override
     protected void initEvents() {
     }
 
+    protected abstract int getWrapMode();
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
+        object.onSurfaceCreated();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-
+        object.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-
+        object.onDrawFrame();
     }
 }

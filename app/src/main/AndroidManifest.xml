@@ -38,7 +38,15 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".texture.TextureFeatureActivity"
+            android:name=".texture.feature.RepeatActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".texture.feature.MirroredRepeatActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".texture.feature.ClampToEdgeActivity"
             android:screenOrientation="portrait" />
 
         <activity

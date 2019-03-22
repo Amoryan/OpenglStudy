@@ -1,4 +1,4 @@
-package com.fxyan.opengl.texture;
+package com.fxyan.opengl.texture.feature;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +17,6 @@ import java.nio.IntBuffer;
 
 /**
  * @author fxYan
- * 2D纹理贴图
  */
 public final class TextureFeature {
 
@@ -30,12 +29,8 @@ public final class TextureFeature {
     private final int PER_TEX_COORD_SIZE = 2;
     private final int PER_TEX_COORD_STRIDE = PER_FLOAT_BYTES * PER_TEX_COORD_SIZE;
 
-    private final int PER_COLOR_SIZE = 4;
-    private final int PER_COLOR_STRIDE = PER_FLOAT_BYTES * PER_COLOR_SIZE;
-
     private FloatBuffer vertexBuffer;
     private IntBuffer indexBuffer;
-    private FloatBuffer colorBuffer;
     private FloatBuffer texCoordBuffer;
 
     private float[] vertex = {
@@ -50,21 +45,14 @@ public final class TextureFeature {
     };
     private int[] index = {
             0, 1, 2,
-            0, 2, 3
-    };
-    private float[] color = {
-            1f, 0f, 0f, 1f,
-            0f, 1f, 0f, 1f,
-            0f, 0f, 1f, 1f,
-            1f, 1f, 0f, 1f
+            2, 3, 0
     };
     private float[] texCoord = {
-            0f, 0f,
-            0f, 2f,
+            2f, -1f,
             2f, 2f,
-            2f, 0f,
+            -1f, 2f,
+            -1f, -1f,
     };
-    private int[] textures;
 
     private float[] mvpMatrix = new float[16];
     private float[] mvMatrix = new float[16];
@@ -75,17 +63,13 @@ public final class TextureFeature {
     private int programHandle;
     private Context context;
 
-    private int sMode;
-    private int tMode;
-    private int minFilter;
-    private int magFilter;
+    private int wrapSMode;
+    private int wrapTMode;
 
-    public TextureFeature(Context _context, int _sMode, int _tMode, int _minFilter, int _magFilter) {
-        this.context = _context;
-        this.sMode = _sMode;
-        this.tMode = _tMode;
-        this.minFilter = _minFilter;
-        this.magFilter = _magFilter;
+    public TextureFeature(Context context, int wrapSMode, int wrapTMode) {
+        this.context = context;
+        this.wrapSMode = wrapSMode;
+        this.wrapTMode = wrapTMode;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -99,12 +83,6 @@ public final class TextureFeature {
                 .put(index);
         indexBuffer.position(0);
 
-        colorBuffer = ByteBuffer.allocateDirect(color.length * PER_FLOAT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(color);
-        colorBuffer.position(0);
-
         texCoordBuffer = ByteBuffer.allocateDirect(texCoord.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -115,41 +93,17 @@ public final class TextureFeature {
     public void onSurfaceCreated() {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
 
-        programHandle = GLESUtils.createAndLinkProgram("texture/texture2d.vert", "texture/texture2d.frag");
+        programHandle = GLESUtils.createAndLinkProgram("texture/feature/feature.vert", "texture/feature/feature.frag");
 
-        /**
-         * 第一个参数是生成纹理的数量
-         * 第二个参数是生成的纹理id存放的数组
-         * 第三个参数是偏移量
-         */
-        textures = new int[2];
-        GLES20.glGenTextures(2, textures, 0);
-
-        // 绑定纹理，默认GL_TEXTURE0的纹理单元是激活的
-//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        int[] textures = new int[1];
+        GLES20.glGenTextures(1, textures, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
-        // 设置缩小过滤
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter);
-        // 设置放大过滤
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, magFilter);
-        // 设置环绕方向S
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, sMode);
-        // 设置环绕方向T
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, tMode);
-        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.texture2d);
-        /**
-         * 第二个参数表示多级远近纹理的级别
-         */
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap1, 0);
-
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[1]);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, magFilter);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, sMode);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, tMode);
-        Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.kb);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap2, 0);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, wrapSMode);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, wrapTMode);
+        Bitmap b1 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_huaji);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, b1, 0);
     }
 
     public void onSurfaceChanged(int width, int height) {
@@ -176,24 +130,12 @@ public final class TextureFeature {
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        int colorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        GLES20.glEnableVertexAttribArray(colorHandle);
-        GLES20.glVertexAttribPointer(colorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, colorBuffer);
-
         int texCoordHandle = GLES20.glGetAttribLocation(programHandle, "a_TexCoord");
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(texCoordHandle, PER_TEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, texCoordBuffer);
 
-        // u_Texture1绑定第一个纹理
-        int texture1Handle = GLES20.glGetUniformLocation(programHandle, "u_Texture1");
-        GLES20.glUniform1i(texture1Handle, 0);
-        // u_Texture2绑定第二个纹理
-        int texture2Handle = GLES20.glGetUniformLocation(programHandle, "u_Texture2");
-        GLES20.glUniform1i(texture2Handle, 1);
-
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
         GLES20.glDisableVertexAttribArray(positionHandle);
-        GLES20.glDisableVertexAttribArray(colorHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }
 
