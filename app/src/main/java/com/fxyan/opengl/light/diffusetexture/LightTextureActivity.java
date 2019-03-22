@@ -12,15 +12,15 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public final class DiffuseTextureActivity
+public final class LightTextureActivity
         extends BaseActivity
         implements GLSurfaceView.Renderer {
 
-    private DiffuseTexture object;
+    private LightTexture object;
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_diffuse_texture;
+        return R.layout.activity_light_texture;
     }
 
     @Override
@@ -36,7 +36,7 @@ public final class DiffuseTextureActivity
 
     @Override
     protected void initData() {
-        object = new DiffuseTexture(this);
+        object = new LightTexture(this);
     }
 
     @Override

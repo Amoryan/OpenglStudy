@@ -14,7 +14,7 @@ import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.entity.ActivityMenu;
 import com.fxyan.opengl.light.base.BaseLightActivity;
-import com.fxyan.opengl.light.diffusetexture.DiffuseTextureActivity;
+import com.fxyan.opengl.light.diffusetexture.LightTextureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public final class LightMenuActivity
     @Override
     protected void initData() {
         data.add(new ActivityMenu(BaseLightActivity.class, "基础光照"));
-        data.add(new ActivityMenu(DiffuseTextureActivity.class, "漫射光贴图"));
+        data.add(new ActivityMenu(LightTextureActivity.class, "漫射光贴图"));
         adapter.notifyDataSetChanged();
     }
 

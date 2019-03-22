@@ -42,7 +42,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".light.diffusetexture.DiffuseTextureActivity"
+            android:name=".light.diffusetexture.LightTextureActivity"
             android:screenOrientation="portrait" />
 
         <activity

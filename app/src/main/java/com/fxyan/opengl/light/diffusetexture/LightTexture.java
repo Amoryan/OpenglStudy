@@ -18,7 +18,7 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class DiffuseTexture {
+public final class LightTexture {
 
     private final int PER_FLOAT_BYTES = 4;
 
@@ -94,7 +94,7 @@ public final class DiffuseTexture {
     protected float[] viewMatrix = new float[16];
     protected float[] projectionMatrix = new float[16];
 
-    public DiffuseTexture(Context context) {
+    public LightTexture(Context context) {
         this.context = context;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
@@ -108,7 +108,7 @@ public final class DiffuseTexture {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        programHandle = GLESUtils.createAndLinkProgram("light/diffusetexture.vert", "light/diffusetexture.frag");
+        programHandle = GLESUtils.createAndLinkProgram("light/lighttexture.vert", "light/lighttexture.frag");
 
         int[] textureIds = new int[1];
         GLES20.glGenTextures(1, textureIds, 0);
