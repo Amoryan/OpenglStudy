@@ -49,7 +49,7 @@ vec4 diffuseColorInEyeSpace(){
 vec4 specularColorInWorldSpace(){
     vec3 cameraDirection = normalize(v_PosInWorldSpace - u_CameraInWorldSpace);
 
-    vec3 reflectLight = reflect(-normalize(u_LightInWorldSpace - v_PosInWorldSpace), v_NormalInWorldSpace);
+    vec3 reflectLight = -reflect(normalize(v_PosInWorldSpace - u_LightInWorldSpace), v_NormalInWorldSpace);
 
     float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
 
@@ -63,7 +63,7 @@ vec4 specularColorInEyeSpace(){
 
     vec3 cameraDirection = normalize(v_PosInEyeSpace - cameraInEyeSpace);
 
-    vec3 reflectLight = reflect(-normalize(u_LightInEyeSpace - v_PosInEyeSpace), v_NormalInEyeSpace);
+    vec3 reflectLight = -reflect(normalize(v_PosInEyeSpace - u_LightInEyeSpace), v_NormalInEyeSpace);
 
     float specular = pow(max(dot(cameraDirection, reflectLight), 0.0), 32.0);
 
@@ -73,6 +73,6 @@ vec4 specularColorInEyeSpace(){
 }
 
 void main(){
-    gl_FragColor = (ambientColor() + diffuseColorInWorldSpace()+ specularColorInWorldSpace()) * vec4(1.0, 1.0, 0.0, 1.0);
-    //    gl_FragColor = (ambientColor() + diffuseColorInEyeSpace() + specularColorInEyeSpace()) * vec4(1.0, 1.0, 0.0, 1.0);
+    //    gl_FragColor = (ambientColor() + diffuseColorInWorldSpace()+ specularColorInWorldSpace()) * vec4(1.0, 1.0, 0.0, 1.0);
+    gl_FragColor = (ambientColor() + diffuseColorInEyeSpace() + specularColorInEyeSpace()) * vec4(1.0, 1.0, 0.0, 1.0);
 }
