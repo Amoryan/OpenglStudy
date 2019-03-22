@@ -26,19 +26,6 @@ public final class DiffuseTexture {
     private final int PER_LIGHT_POS_SIZE = 3;
     private final int PER_LIGHT_POS_STRIDE = PER_LIGHT_POS_SIZE * PER_FLOAT_BYTES;
 
-    // 环境光强度
-    private float ambientStrength;
-    // 漫反射强度
-    private float diffuseStrength;
-    // 镜面反射强度(物体粗糙度)
-    private float specularStrength;
-    // 反光度
-    private float shininessStrength;
-
-    private float red;
-    private float green;
-    private float blue;
-
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
             // front
@@ -138,11 +125,9 @@ public final class DiffuseTexture {
     private float[] lightPosInEyeSpace = new float[4];
     private float[] lightColor = {1f, 1f, 1f, 1f};
 
-    private float[] cameraInWorldSpace = {0f, 0f, 3f};
-
     private int programHandle;
-    private int lightPosProgramHandle;
 
+    protected float[] mvMatrix = new float[16];
     protected float[] mvpMatrix = new float[16];
     protected float[] modelMatrix = new float[16];
     protected float[] viewMatrix = new float[16];
@@ -160,26 +145,19 @@ public final class DiffuseTexture {
                 .asFloatBuffer()
                 .put(normal);
         normalBuffer.position(0);
-
-        lightPosBuffer = ByteBuffer.allocateDirect(lightPosInModelSpace.length * PER_FLOAT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(lightPosInModelSpace);
-        lightPosBuffer.position(0);
     }
 
     public void onSurfaceCreated() {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        programHandle = GLESUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
-        lightPosProgramHandle = GLESUtils.createAndLinkProgram("light/lightpos.vert", "light/lightpos.frag");
+        programHandle = GLESUtils.createAndLinkProgram("light/diffusetexture.vert", "light/diffusetexture.frag");
     }
 
     public void onSurfaceChanged(int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        Matrix.setLookAtM(viewMatrix, 0, cameraInWorldSpace[0], cameraInWorldSpace[1], cameraInWorldSpace[2], 0, 0, -5f, 0, 1, 0);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3, 0, 0, -5f, 0, 1, 0);
 
         float ratio = (float) width / height;
 
@@ -190,8 +168,6 @@ public final class DiffuseTexture {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         drawCube();
-
-        drawLight();
     }
 
     private void drawCube() {
@@ -201,48 +177,20 @@ public final class DiffuseTexture {
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 0);
-
-        int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ModelMatrix");
-        GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
-
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         int mvMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVMatrix");
-        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
+        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
-        int colorHandle = GLES20.glGetUniformLocation(programHandle, "u_Color");
-        GLES20.glUniform3f(colorHandle, red, green, blue);
-
-        int lightColorHandle = GLES20.glGetUniformLocation(programHandle, "u_LightColor");
-        GLES20.glUniform3f(lightColorHandle, lightColor[0], lightColor[1], lightColor[2]);
-
         Matrix.setIdentityM(lightModelMatrix, 0);
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
-        int lightInWorldSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_LightInWorldSpace");
-        GLES20.glUniform3f(lightInWorldSpaceHandle, lightPosInWorldSpace[0], lightPosInWorldSpace[1], lightPosInWorldSpace[2]);
-
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
         int lightInEyeSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_LightInEyeSpace");
         GLES20.glUniform3f(lightInEyeSpaceHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-
-        int cameraInWorldSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_CameraInWorldSpace");
-        GLES20.glUniform3f(cameraInWorldSpaceHandle, cameraInWorldSpace[0], cameraInWorldSpace[1], cameraInWorldSpace[2]);
-
-        int ambientStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientStrength");
-        GLES20.glUniform1f(ambientStrengthHandle, ambientStrength);
-
-        int diffuseStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_DiffuseStrength");
-        GLES20.glUniform1f(diffuseStrengthHandle, diffuseStrength);
-
-        int specularStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_SpecularStrength");
-        GLES20.glUniform1f(specularStrengthHandle, specularStrength);
-
-        int shininessStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_ShininessStrength");
-        GLES20.glUniform1f(shininessStrengthHandle, shininessStrength);
 
         vertexBuffer.position(0);
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
@@ -260,51 +208,4 @@ public final class DiffuseTexture {
         GLES20.glDisableVertexAttribArray(normalHandle);
     }
 
-    private void drawLight() {
-        GLES20.glUseProgram(lightPosProgramHandle);
-
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
-
-        int mvpMatrixHandle = GLES20.glGetUniformLocation(lightPosProgramHandle, "u_MVPMatrix");
-        GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
-
-        lightPosBuffer.position(0);
-        int positionHandle = GLES20.glGetAttribLocation(lightPosProgramHandle, "a_Position");
-        GLES20.glEnableVertexAttribArray(positionHandle);
-        GLES20.glVertexAttribPointer(positionHandle, PER_LIGHT_POS_SIZE, GLES20.GL_FLOAT, false, PER_LIGHT_POS_STRIDE, lightPosBuffer);
-
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
-
-        GLES20.glDisableVertexAttribArray(positionHandle);
-    }
-
-    public void setAmbientStrength(float value) {
-        ambientStrength = value;
-    }
-
-    public void setDiffuseStrength(float value) {
-        diffuseStrength = value;
-    }
-
-    public void setSpecularStrength(float value) {
-        this.specularStrength = value;
-    }
-
-    public void setShininessStrength(int shininess) {
-        this.shininessStrength = shininess;
-    }
-
-    public void setRed(float red) {
-        this.red = red;
-    }
-
-    public void setGreen(float green) {
-        this.green = green;
-    }
-
-    public void setBlue(float blue) {
-        this.blue = blue;
-    }
 }

@@ -16,6 +16,8 @@ public final class DiffuseTextureActivity
         extends BaseActivity
         implements GLSurfaceView.Renderer {
 
+    private DiffuseTexture object;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_diffuse_texture;
@@ -34,7 +36,7 @@ public final class DiffuseTextureActivity
 
     @Override
     protected void initData() {
-
+        object = new DiffuseTexture();
     }
 
     @Override
@@ -44,16 +46,16 @@ public final class DiffuseTextureActivity
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
+        object.onSurfaceCreated();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-
+        object.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-
+        object.onDrawFrame();
     }
 }
