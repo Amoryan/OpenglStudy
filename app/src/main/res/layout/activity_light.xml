@@ -19,8 +19,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="ambient"
-        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
-        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintEnd_toEndOf="@+id/shininessLabel"
+        app:layout_constraintStart_toStartOf="@+id/shininessLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -37,9 +37,10 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/ambientValue"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="0.0"
         app:layout_constraintBottom_toBottomOf="@+id/ambientLabel"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,8 +52,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="diffuse"
-        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
-        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintEnd_toEndOf="@+id/shininessLabel"
+        app:layout_constraintStart_toStartOf="@+id/shininessLabel"
         app:layout_constraintTop_toBottomOf="@+id/ambientLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -69,22 +70,23 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/diffuseValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="0.0"
         app:layout_constraintBottom_toBottomOf="@+id/diffuseLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ambientValue"
+        app:layout_constraintStart_toStartOf="@+id/ambientValue"
         app:layout_constraintTop_toTopOf="@+id/diffuseLabel" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/specularLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:gravity="center"
         android:text="specular"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/shininessLabel"
+        app:layout_constraintStart_toStartOf="@+id/shininessLabel"
         app:layout_constraintTop_toBottomOf="@+id/diffuseLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -101,22 +103,24 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/specularValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="0.0"
         app:layout_constraintBottom_toBottomOf="@+id/specularLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ambientValue"
+        app:layout_constraintStart_toStartOf="@+id/ambientValue"
         app:layout_constraintTop_toTopOf="@+id/specularLabel" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/shininessLabel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:gravity="center"
-        android:text="反光度"
-        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
-        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        android:text="shininess"
+        app:layout_constraintEnd_toStartOf="@+id/shininessStrength"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/specularLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -133,12 +137,13 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/shininessValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="1"
         app:layout_constraintBottom_toBottomOf="@+id/shininessLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ambientValue"
+        app:layout_constraintStart_toStartOf="@+id/ambientValue"
         app:layout_constraintTop_toTopOf="@+id/shininessLabel" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -147,8 +152,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="red"
-        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
-        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintEnd_toEndOf="@+id/shininessLabel"
+        app:layout_constraintStart_toStartOf="@+id/shininessLabel"
         app:layout_constraintTop_toBottomOf="@+id/shininessLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -165,12 +170,13 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/redValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="0"
         app:layout_constraintBottom_toBottomOf="@+id/redLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ambientValue"
+        app:layout_constraintStart_toStartOf="@+id/ambientValue"
         app:layout_constraintTop_toTopOf="@+id/redLabel" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -179,8 +185,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="green"
-        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
-        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintEnd_toEndOf="@+id/shininessLabel"
+        app:layout_constraintStart_toStartOf="@+id/shininessLabel"
         app:layout_constraintTop_toBottomOf="@+id/redLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -197,12 +203,13 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/greenValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="0"
         app:layout_constraintBottom_toBottomOf="@+id/greenLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ambientValue"
+        app:layout_constraintStart_toStartOf="@+id/ambientValue"
         app:layout_constraintTop_toTopOf="@+id/greenLabel" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -211,8 +218,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="blue"
-        app:layout_constraintEnd_toEndOf="@+id/specularLabel"
-        app:layout_constraintStart_toStartOf="@+id/specularLabel"
+        app:layout_constraintEnd_toEndOf="@+id/shininessLabel"
+        app:layout_constraintStart_toStartOf="@+id/shininessLabel"
         app:layout_constraintTop_toBottomOf="@+id/greenLabel" />
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -229,12 +236,13 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/blueValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:gravity="end"
         android:text="0"
         app:layout_constraintBottom_toBottomOf="@+id/blueLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ambientValue"
+        app:layout_constraintStart_toStartOf="@+id/ambientValue"
         app:layout_constraintTop_toTopOf="@+id/blueLabel" />
 
 </android.support.constraint.ConstraintLayout>
