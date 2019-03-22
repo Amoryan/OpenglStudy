@@ -19,6 +19,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    sourceSets {
+        main {
+            res.srcDirs += [
+                    "src/main/res/base",
+                    "src/main/res/light",
+                    "src/main/res"
+            ]
+        }
+    }
 }
 
 def ver = rootProject.ext.versions
