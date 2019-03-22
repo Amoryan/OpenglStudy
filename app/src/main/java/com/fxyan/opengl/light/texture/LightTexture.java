@@ -110,8 +110,8 @@ public final class LightTexture {
 
         programHandle = GLESUtils.createAndLinkProgram("light/texture/lighttexture.vert", "light/texture/lighttexture.frag");
 
-        int[] textureIds = new int[1];
-        GLES20.glGenTextures(1, textureIds, 0);
+        int[] textureIds = new int[2];
+        GLES20.glGenTextures(2, textureIds, 0);
         // 默认TEXTURE_0是激活的
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
@@ -120,8 +120,18 @@ public final class LightTexture {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_box);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        Bitmap box = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_box);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, box, 0);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[1]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+        Bitmap boxBorder = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_box_border);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, boxBorder, 0);
     }
 
     public void onSurfaceChanged(int width, int height) {
@@ -161,6 +171,12 @@ public final class LightTexture {
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
         int lightInEyeSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_LightInEyeSpace");
         GLES20.glUniform3f(lightInEyeSpaceHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+
+        int boxHandle = GLES20.glGetUniformLocation(programHandle, "u_Box");
+        GLES20.glUniform1i(boxHandle, 0);
+
+        int boxBorderHandle = GLES20.glGetUniformLocation(programHandle, "u_BoxBorder");
+        GLES20.glUniform1i(boxBorderHandle, 1);
 
         vertexBuffer.position(0);
         int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
