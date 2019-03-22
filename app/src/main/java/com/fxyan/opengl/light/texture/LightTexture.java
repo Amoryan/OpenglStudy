@@ -254,7 +254,7 @@ public final class LightTexture {
     public void onSurfaceChanged(int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3, 0, 0, -5f, 0, 1, 0);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 5, 0, 0, -5f, 0, 1, 0);
 
         float ratio = (float) width / height;
 
@@ -264,18 +264,38 @@ public final class LightTexture {
     public void onDrawFrame() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+        GLES20.glUseProgram(programHandle);
+
+        long time = SystemClock.uptimeMillis() % 10000L;
+        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 0);
+        drawCube();
+
+        Matrix.setIdengtityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, -2f, 2f, -2f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+        drawCube();
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 2f, 3f, -3f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 1);
+        drawCube();
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, -2f, -2.5f, -1f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 0);
+        drawCube();
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 2f, -2f, 0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.5f, 1, 0.7f);
         drawCube();
     }
 
     private void drawCube() {
-        GLES20.glUseProgram(programHandle);
-
-        Matrix.setIdentityM(modelMatrix, 0);
-        long time = SystemClock.uptimeMillis() % 10000L;
-        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 0);
         Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-
         int mvMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVMatrix");
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 
