@@ -197,6 +197,10 @@ public final class Light extends ObjectImpl {
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0, 1, 0);
+
+        int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ModelMatrix");
+        GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
+
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         int mvMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVMatrix");
@@ -211,9 +215,15 @@ public final class Light extends ObjectImpl {
 
         Matrix.setIdentityM(lightModelMatrix, 0);
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
+        int lightInWorldSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_LightInWorldSpace");
+        GLES20.glUniform3f(lightInWorldSpaceHandle, lightPosInWorldSpace[0], lightPosInWorldSpace[1], lightPosInWorldSpace[2]);
+
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
         int lightInEyeSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_LightInEyeSpace");
         GLES20.glUniform3f(lightInEyeSpaceHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+
+        int cameraInWorldSpaceHandle = GLES20.glGetUniformLocation(programHandle, "u_CameraInWorldSpace");
+        GLES20.glUniform3f(cameraInWorldSpaceHandle, cameraInWorldSpace[0], cameraInWorldSpace[1], cameraInWorldSpace[2]);
 
         int ambientStrengthHandle = GLES20.glGetUniformLocation(programHandle, "u_AmbientStrength");
         GLES20.glUniform1f(ambientStrengthHandle, ambientStrength);
