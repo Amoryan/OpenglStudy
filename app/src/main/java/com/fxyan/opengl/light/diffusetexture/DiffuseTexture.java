@@ -1,4 +1,4 @@
-package com.fxyan.opengl.light;
+package com.fxyan.opengl.light.diffusetexture;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -13,7 +13,7 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class Light {
+public final class DiffuseTexture {
 
     private final int PER_FLOAT_BYTES = 4;
 
@@ -148,7 +148,7 @@ public final class Light {
     protected float[] viewMatrix = new float[16];
     protected float[] projectionMatrix = new float[16];
 
-    public Light() {
+    public DiffuseTexture() {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()

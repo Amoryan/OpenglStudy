@@ -13,6 +13,7 @@ import android.widget.Button;
 import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.light.base.BaseLightActivity;
 
 import java.util.ArrayList;
 import java.util.List;

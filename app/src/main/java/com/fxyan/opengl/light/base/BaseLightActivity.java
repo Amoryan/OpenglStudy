@@ -1,4 +1,4 @@
-package com.fxyan.opengl.light;
+package com.fxyan.opengl.light.base;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ public final class BaseLightActivity
     private TextView greenValue;
     private TextView blueValue;
 
-    private Light light;
+    private BaseLight object;
 
     @Override
     public int getLayoutId() {
@@ -55,7 +55,7 @@ public final class BaseLightActivity
 
     @Override
     protected void initData() {
-        light = new Light();
+        object = new BaseLight();
     }
 
     @Override
@@ -84,43 +84,43 @@ public final class BaseLightActivity
         switch (seekBar.getId()) {
             case R.id.ambientStrength: {
                 float value = progress / 10f;
-                light.setAmbientStrength(value);
+                object.setAmbientStrength(value);
                 ambientValue.setText(String.valueOf(value));
             }
             break;
             case R.id.diffuseStrength: {
                 float value = progress / 10f;
-                light.setDiffuseStrength(value);
+                object.setDiffuseStrength(value);
                 diffuseValue.setText(String.valueOf(value));
             }
             break;
             case R.id.specularStrength: {
                 float value = progress / 10f;
-                light.setSpecularStrength(value);
+                object.setSpecularStrength(value);
                 specularValue.setText(String.valueOf(value));
             }
             break;
             case R.id.shininessStrength: {
                 int shininess = ((int) Math.pow(2, progress));
-                light.setShininessStrength(shininess);
+                object.setShininessStrength(shininess);
                 shininessValue.setText(String.valueOf(shininess));
             }
             break;
             case R.id.redStrength: {
                 float red = progress / 255f;
-                light.setRed(red);
+                object.setRed(red);
                 redValue.setText(String.valueOf(progress));
             }
             break;
             case R.id.greenStrength: {
                 float green = progress / 255f;
-                light.setGreen(green);
+                object.setGreen(green);
                 greenValue.setText(String.valueOf(progress));
             }
             break;
             case R.id.blueStrength: {
                 float blue = progress / 255f;
-                light.setBlue(blue);
+                object.setBlue(blue);
                 blueValue.setText(String.valueOf(progress));
             }
             break;
@@ -140,16 +140,16 @@ public final class BaseLightActivity
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        light.onSurfaceCreated();
+        object.onSurfaceCreated();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        light.onSurfaceChanged(width, height);
+        object.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        light.onDrawFrame();
+        object.onDrawFrame();
     }
 }

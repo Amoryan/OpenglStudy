@@ -38,7 +38,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".light.BaseLightActivity"
+            android:name=".light.base.BaseLightActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".light.diffusetexture.DiffuseTextureActivity"
             android:screenOrientation="portrait" />
 
         <activity
