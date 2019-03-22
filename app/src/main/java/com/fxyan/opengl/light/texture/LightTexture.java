@@ -1,4 +1,4 @@
-package com.fxyan.opengl.light.diffusetexture;
+package com.fxyan.opengl.light.texture;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -108,7 +108,7 @@ public final class LightTexture {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        programHandle = GLESUtils.createAndLinkProgram("light/lighttexture.vert", "light/lighttexture.frag");
+        programHandle = GLESUtils.createAndLinkProgram("light/texture/lighttexture.vert", "light/texture/lighttexture.frag");
 
         int[] textureIds = new int[1];
         GLES20.glGenTextures(1, textureIds, 0);

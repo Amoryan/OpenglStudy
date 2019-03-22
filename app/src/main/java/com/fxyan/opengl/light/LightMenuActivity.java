@@ -14,7 +14,7 @@ import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.entity.ActivityMenu;
 import com.fxyan.opengl.light.base.BaseLightActivity;
-import com.fxyan.opengl.light.diffusetexture.LightTextureActivity;
+import com.fxyan.opengl.light.texture.LightTextureActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -172,8 +172,8 @@ public final class BaseLight {
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        programHandle = GLESUtils.createAndLinkProgram("light/light.vert", "light/light.frag");
-        lightPosProgramHandle = GLESUtils.createAndLinkProgram("light/lightpos.vert", "light/lightpos.frag");
+        programHandle = GLESUtils.createAndLinkProgram("light/base/light.vert", "light/base/light.frag");
+        lightPosProgramHandle = GLESUtils.createAndLinkProgram("light/base/lightpos.vert", "light/base/lightpos.frag");
     }
 
     public void onSurfaceChanged(int width, int height) {

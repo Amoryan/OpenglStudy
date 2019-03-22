@@ -1,4 +1,4 @@
-package com.fxyan.opengl.light.diffusetexture;
+package com.fxyan.opengl.light.texture;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
