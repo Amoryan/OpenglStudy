@@ -1,4 +1,4 @@
-package com.fxyan.opengl.texture.feature;
+package com.fxyan.opengl.texture.cube;
 
 import android.opengl.GLSurfaceView;
 
@@ -11,15 +11,15 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public abstract class TextureFeatureActivity
+public final class CubeTextureActivity
         extends BaseActivity
         implements GLSurfaceView.Renderer {
 
-    private TextureFeature object;
+    private CubeTexture object;
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_texture_feature;
+        return R.layout.activity_cube_texture;
     }
 
     @Override
@@ -31,14 +31,12 @@ public abstract class TextureFeatureActivity
 
     @Override
     protected void initData() {
-        object = new TextureFeature(this, getWrapMode());
+        object = new CubeTexture(this);
     }
 
     @Override
     protected void initEvents() {
     }
-
-    protected abstract int getWrapMode();
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {

@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.fxyan.opengl.utils.CubeHelper;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
@@ -40,96 +41,10 @@ public final class BaseLight {
     private float blue;
 
     private FloatBuffer vertexBuffer;
-    private float[] vertex = {
-            // front
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            // back
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            // left
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            // right
-            0.5f, 0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            // top
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, -0.5f,
-            // bottom
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, -0.5f,
-    };
+    private float[] vertex = CubeHelper.vertex();
 
     private FloatBuffer normalBuffer;
-    private float[] normal = {
-            // front
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-            // back
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-            // left
-            -1f, 0f, 0f,
-            -1f, 0f, 0f,
-            -1f, 0f, 0f,
-            -1f, 0f, 0f,
-            -1f, 0f, 0f,
-            -1f, 0f, 0f,
-            // right
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-            // top
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-            // bottom
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-    };
+    private float[] normal = CubeHelper.normal();
 
     private FloatBuffer lightPosBuffer;
     private float[] lightModelMatrix = new float[16];

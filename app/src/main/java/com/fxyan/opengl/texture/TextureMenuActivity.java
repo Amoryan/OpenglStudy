@@ -2,6 +2,7 @@ package com.fxyan.opengl.texture;
 
 import com.fxyan.opengl.BaseMenuActivity;
 import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.texture.cube.CubeTextureActivity;
 import com.fxyan.opengl.texture.feature.ClampToEdgeActivity;
 import com.fxyan.opengl.texture.feature.MirroredRepeatActivity;
 import com.fxyan.opengl.texture.feature.RepeatActivity;
@@ -19,6 +20,7 @@ public final class TextureMenuActivity
         data.add(new ActivityMenu(RepeatActivity.class, "GL_REPEAT"));
         data.add(new ActivityMenu(MirroredRepeatActivity.class, "GL_MIRRORED_REPEAT"));
         data.add(new ActivityMenu(ClampToEdgeActivity.class, "GL_CLAMP_TO_EDGE"));
+        data.add(new ActivityMenu(CubeTextureActivity.class, "立方体贴图"));
     }
 
 }

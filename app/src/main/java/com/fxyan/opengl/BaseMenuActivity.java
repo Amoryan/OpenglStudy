@@ -1,7 +1,6 @@
 package com.fxyan.opengl;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,10 +26,6 @@ public abstract class BaseMenuActivity
     @Override
     public int getLayoutId() {
         return R.layout.activity_base_menu;
-    }
-
-    @Override
-    protected void initParams(Bundle bundle) {
     }
 
     @Override

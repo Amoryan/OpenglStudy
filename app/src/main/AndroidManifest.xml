@@ -50,6 +50,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".texture.cube.CubeTextureActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".texture.TextureConfigActivity"
             android:screenOrientation="portrait" />
 

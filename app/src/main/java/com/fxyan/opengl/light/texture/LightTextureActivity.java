@@ -1,7 +1,6 @@
 package com.fxyan.opengl.light.texture;
 
 import android.opengl.GLSurfaceView;
-import android.os.Bundle;
 
 import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
@@ -21,10 +20,6 @@ public final class LightTextureActivity
     @Override
     public int getLayoutId() {
         return R.layout.activity_light_texture;
-    }
-
-    @Override
-    protected void initParams(Bundle bundle) {
     }
 
     @Override

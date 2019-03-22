@@ -21,9 +21,6 @@ public abstract class BaseActivity
 
         context = this;
 
-        Bundle bundle = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
-        initParams(bundle);
-
         initViews();
 
         initData();
@@ -33,8 +30,6 @@ public abstract class BaseActivity
 
     @LayoutRes
     public abstract int getLayoutId();
-
-    protected abstract void initParams(Bundle bundle);
 
     protected abstract void initViews();
 

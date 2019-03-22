@@ -1,7 +1,6 @@
 package com.fxyan.opengl.light.base;
 
 import android.opengl.GLSurfaceView;
-import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -32,10 +31,6 @@ public final class BaseLightActivity
     @Override
     public int getLayoutId() {
         return R.layout.activity_base_light;
-    }
-
-    @Override
-    protected void initParams(Bundle bundle) {
     }
 
     @Override
