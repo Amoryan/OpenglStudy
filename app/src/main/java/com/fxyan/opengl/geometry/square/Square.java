@@ -1,9 +1,9 @@
-package com.fxyan.opengl.entity.geometry;
+package com.fxyan.opengl.geometry.square;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.fxyan.opengl.entity.ModelImpl;
+import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;

@@ -4,7 +4,7 @@ import android.opengl.GLSurfaceView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.fxyan.opengl.BaseActivity;
+import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
 
 import javax.microedition.khronos.egl.EGLConfig;

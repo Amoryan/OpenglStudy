@@ -1,4 +1,4 @@
-package com.fxyan.opengl.entity;
+package com.fxyan.opengl.base;
 
 import android.app.Activity;
 

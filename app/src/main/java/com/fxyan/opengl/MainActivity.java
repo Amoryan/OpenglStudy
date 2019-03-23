@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.base.ActivityMenu;
 import com.fxyan.opengl.geometry.GeometryMenuActivity;
 import com.fxyan.opengl.light.LightMenuActivity;
 import com.fxyan.opengl.ply.PlyActivity;

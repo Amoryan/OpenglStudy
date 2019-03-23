@@ -1,7 +1,7 @@
 package com.fxyan.opengl.texture;
 
-import com.fxyan.opengl.BaseMenuActivity;
-import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.base.BaseMenuActivity;
+import com.fxyan.opengl.base.ActivityMenu;
 import com.fxyan.opengl.texture.cube.CubeTextureActivity;
 import com.fxyan.opengl.texture.feature.ClampToEdgeActivity;
 import com.fxyan.opengl.texture.feature.MirroredRepeatActivity;

@@ -2,7 +2,7 @@ package com.fxyan.opengl.texture.feature;
 
 import android.opengl.GLSurfaceView;
 
-import com.fxyan.opengl.BaseActivity;
+import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
 
 import javax.microedition.khronos.egl.EGLConfig;

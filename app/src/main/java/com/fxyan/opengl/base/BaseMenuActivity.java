@@ -1,4 +1,4 @@
-package com.fxyan.opengl;
+package com.fxyan.opengl.base;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.R;
+import com.fxyan.opengl.base.ActivityMenu;
+import com.fxyan.opengl.base.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;

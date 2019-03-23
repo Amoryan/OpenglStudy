@@ -1,11 +1,10 @@
-package com.fxyan.opengl.entity.geometry;
+package com.fxyan.opengl.geometry.cube;
 
-import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.fxyan.opengl.entity.ModelImpl;
+import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;

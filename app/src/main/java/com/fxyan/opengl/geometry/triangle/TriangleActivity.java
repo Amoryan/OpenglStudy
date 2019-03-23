@@ -1,6 +1,6 @@
 package com.fxyan.opengl.geometry.triangle;
 
-import com.fxyan.opengl.entity.IModel;
+import com.fxyan.opengl.base.IModel;
 import com.fxyan.opengl.geometry.GeometryActivity;
 
 /**

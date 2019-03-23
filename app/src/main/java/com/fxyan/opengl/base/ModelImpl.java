@@ -1,8 +1,6 @@
-package com.fxyan.opengl.entity;
+package com.fxyan.opengl.base;
 
 import android.opengl.GLES20;
-
-import com.fxyan.opengl.entity.IModel;
 
 /**
  * @author fxYan

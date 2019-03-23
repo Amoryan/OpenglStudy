@@ -2,9 +2,9 @@ package com.fxyan.opengl.geometry;
 
 import android.opengl.GLSurfaceView;
 
-import com.fxyan.opengl.BaseActivity;
+import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
-import com.fxyan.opengl.entity.IModel;
+import com.fxyan.opengl.base.IModel;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

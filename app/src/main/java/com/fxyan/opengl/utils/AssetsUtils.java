@@ -1,6 +1,6 @@
 package com.fxyan.opengl.utils;
 
-import com.fxyan.opengl.BaseApp;
+import com.fxyan.opengl.base.BaseApp;
 
 import java.io.BufferedReader;
 import java.io.IOException;

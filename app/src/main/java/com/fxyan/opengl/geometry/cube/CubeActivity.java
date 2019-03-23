@@ -1,7 +1,6 @@
 package com.fxyan.opengl.geometry.cube;
 
-import com.fxyan.opengl.entity.IModel;
-import com.fxyan.opengl.entity.geometry.Cube;
+import com.fxyan.opengl.base.IModel;
 import com.fxyan.opengl.geometry.GeometryActivity;
 
 /**

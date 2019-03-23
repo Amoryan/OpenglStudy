@@ -9,7 +9,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.fxyan.opengl.BaseActivity;
+import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
 import com.fxyan.opengl.utils.GLESUtils;
 

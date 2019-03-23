@@ -1,7 +1,7 @@
 package com.fxyan.opengl.light;
 
-import com.fxyan.opengl.BaseMenuActivity;
-import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.base.BaseMenuActivity;
+import com.fxyan.opengl.base.ActivityMenu;
 import com.fxyan.opengl.light.base.BaseLightActivity;
 import com.fxyan.opengl.light.texture.LightTextureActivity;
 

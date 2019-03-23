@@ -1,7 +1,7 @@
 package com.fxyan.opengl.geometry;
 
-import com.fxyan.opengl.BaseMenuActivity;
-import com.fxyan.opengl.entity.ActivityMenu;
+import com.fxyan.opengl.base.BaseMenuActivity;
+import com.fxyan.opengl.base.ActivityMenu;
 import com.fxyan.opengl.geometry.cube.CubeActivity;
 import com.fxyan.opengl.geometry.square.SquareActivity;
 import com.fxyan.opengl.geometry.triangle.TriangleActivity;

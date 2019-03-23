@@ -1,4 +1,4 @@
-package com.fxyan.opengl;
+package com.fxyan.opengl.base;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -1,7 +1,6 @@
 package com.fxyan.opengl.geometry.square;
 
-import com.fxyan.opengl.entity.IModel;
-import com.fxyan.opengl.entity.geometry.Square;
+import com.fxyan.opengl.base.IModel;
 import com.fxyan.opengl.geometry.GeometryActivity;
 
 /**
