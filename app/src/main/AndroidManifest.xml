@@ -30,6 +30,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".geometry.point.PointActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".geometry.triangle.TriangleActivity"
             android:screenOrientation="portrait" />
 
