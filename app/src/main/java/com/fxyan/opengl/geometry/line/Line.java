@@ -23,6 +23,15 @@ public final class Line
     private float[] vertex = {
             -1f, 0f, 0f,
             1f, 0f, 0f,
+
+            -1f, 1f, 0f,
+            1f, 1f, 0f,
+
+            -1f, -1f, 0f,
+            1f, -1f, 0f,
+
+            0f, 1f, 0f,
+            0f, -1f, 0f,
     };
 
     private int programHandle;
