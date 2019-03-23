@@ -23,6 +23,7 @@ android {
         main {
             res.srcDirs += [
                     "src/main/res/base",
+                    "src/main/res/geometry",
                     "src/main/res/light",
                     "src/main/res/ply",
                     "src/main/res/texture",

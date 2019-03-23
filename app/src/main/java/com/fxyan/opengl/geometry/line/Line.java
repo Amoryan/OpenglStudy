@@ -21,18 +21,13 @@ public final class Line
 
     private FloatBuffer vertexBuffer;
     private float[] vertex = {
-            -1f, 0f, 0f,
-            1f, 0f, 0f,
-
-            -1f, 1f, 0f,
-            1f, 1f, 0f,
-
-            -1f, -1f, 0f,
-            1f, -1f, 0f,
-
-            0f, 1f, 0f,
-            0f, -1f, 0f,
+            -1, 1, 0,
+            -1, -1, 0,
+            1, -1, 0,
+            1, 1, 0
     };
+
+    private int lineType = GLES20.GL_LINES;
 
     private int programHandle;
 
@@ -47,6 +42,8 @@ public final class Line
     @Override
     public void onSurfaceCreated() {
         super.onSurfaceCreated();
+
+        GLES20.glLineWidth(5f);
 
         programHandle = GLESUtils.createAndLinkProgram("geometry/line/line.vert", "geometry/line/line.frag");
     }
@@ -80,8 +77,12 @@ public final class Line
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_LINES, 0, vertex.length / PER_VERTEX_SIZE);
+        GLES20.glDrawArrays(lineType, 0, vertex.length / PER_VERTEX_SIZE);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
+    }
+
+    public void setLineType(int type) {
+        this.lineType = type;
     }
 }
