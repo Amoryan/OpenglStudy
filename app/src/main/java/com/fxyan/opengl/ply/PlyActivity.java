@@ -229,10 +229,9 @@ public final class PlyActivity
     }
 
     private int[] readFace(PlyReaderFile reader) throws IOException {
-        int[] index;
         ElementReader elementReader = reader.nextElementReader();
         int PER_FACE_VERTEX_COUNT = 3;
-        index = new int[elementReader.getCount() * PER_FACE_VERTEX_COUNT];
+        int[] index = new int[elementReader.getCount() * PER_FACE_VERTEX_COUNT];
         for (int i = 0; i < elementReader.getCount(); i++) {
             Element element = elementReader.readElement();
             int[] vertex_indices = element.getIntList("vertex_indices");

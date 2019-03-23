@@ -1,9 +1,9 @@
 package com.fxyan.opengl.entity.geometry;
 
-import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.fxyan.opengl.entity.ModelImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
@@ -11,16 +11,10 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 /**
  * @author fxYan
  */
-public final class Square extends ObjectImpl {
-    private final int PER_FLOAT_BYTES = 4;
-    private final int PER_INT_BYTES = 4;
-
+public final class Square extends ModelImpl {
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
@@ -28,20 +22,20 @@ public final class Square extends ObjectImpl {
     private final int PER_COLOR_STRIDE = PER_COLOR_SIZE * PER_FLOAT_BYTES;
 
     private FloatBuffer vertexBuffer;
-    private IntBuffer indexBuffer;
-    private FloatBuffer colorBuffer;
-
     private float[] vertex = {
             -0.5f, 0.5f, 0f,
             -0.5f, -0.5f, 0f,
             0.5f, -0.5f, 0f,
             0.5f, 0.5f, 0f,
     };
-    // 每个面的索引
+
+    private IntBuffer indexBuffer;
     private int[] index = {
             0, 1, 2,
             0, 2, 3
     };
+
+    private FloatBuffer colorBuffer;
     private float[] color = {
             1f, 0f, 0f, 1f,
             0f, 1f, 0f, 1f,
@@ -51,7 +45,7 @@ public final class Square extends ObjectImpl {
 
     private int programHandle;
 
-    public Square(Context context) {
+    public Square() {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -72,15 +66,15 @@ public final class Square extends ObjectImpl {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        super.onSurfaceCreated(gl, config);
+    public void onSurfaceCreated() {
+        super.onSurfaceCreated();
 
-        programHandle = GLESUtils.createAndLinkProgram("geometry/square.vert", "geometry/square.frag");
+        programHandle = GLESUtils.createAndLinkProgram("geometry/square/square.vert", "geometry/square/square.frag");
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        super.onSurfaceChanged(gl, width, height);
+    public void onSurfaceChanged(int width, int height) {
+        super.onSurfaceChanged(width, height);
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3f, 0, 0, -5f, 0, 1, 0);
 
         float ratio = (float) width / height;
@@ -94,23 +88,26 @@ public final class Square extends ObjectImpl {
     }
 
     @Override
-    public void onDrawFrame(GL10 gl) {
-        super.onDrawFrame(gl);
+    public void onDrawFrame() {
+        super.onDrawFrame();
 
         GLES20.glUseProgram(programHandle);
 
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
-        int aPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
-        GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
+        int positionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
+        GLES20.glEnableVertexAttribArray(positionHandle);
+        GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        int aColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        GLES20.glEnableVertexAttribArray(aColorHandle);
-        GLES20.glVertexAttribPointer(aColorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
+        int colorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
+        GLES20.glEnableVertexAttribArray(colorHandle);
+        GLES20.glVertexAttribPointer(colorHandle, PER_COLOR_SIZE, GLES20.GL_FLOAT, false, PER_COLOR_STRIDE, colorBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
+
+        GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES20.glDisableVertexAttribArray(colorHandle);
     }
 
 }

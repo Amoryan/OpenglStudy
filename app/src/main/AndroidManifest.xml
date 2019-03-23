@@ -26,11 +26,19 @@
         </activity>
 
         <activity
-            android:name=".geometry.GeometryActivity"
+            android:name=".geometry.GeometryMenuActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".geometry.GeometrySelectActivity"
+            android:name=".geometry.triangle.TriangleActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".geometry.square.SquareActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".geometry.cube.CubeActivity"
             android:screenOrientation="portrait" />
 
         <activity

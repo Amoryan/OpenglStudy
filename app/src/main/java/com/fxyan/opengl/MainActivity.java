@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.fxyan.opengl.entity.ActivityMenu;
-import com.fxyan.opengl.geometry.GeometryActivity;
+import com.fxyan.opengl.geometry.GeometryMenuActivity;
 import com.fxyan.opengl.light.LightMenuActivity;
 import com.fxyan.opengl.ply.PlyActivity;
 import com.fxyan.opengl.texture.TextureMenuActivity;
@@ -36,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
         context = this;
 
-        data.add(new ActivityMenu(GeometryActivity.class, "几何图形"));
+        data.add(new ActivityMenu(GeometryMenuActivity.class, "几何图形"));
         data.add(new ActivityMenu(TextureMenuActivity.class, "纹理"));
         data.add(new ActivityMenu(LightMenuActivity.class, "光照"));
-        data.add(new ActivityMenu(PlyActivity.class, "Ply文件"));
+        data.add(new ActivityMenu(PlyActivity.class, "Ply模型"));
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

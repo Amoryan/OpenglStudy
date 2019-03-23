@@ -1,46 +1,58 @@
 package com.fxyan.opengl.geometry;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.View;
+import android.opengl.GLSurfaceView;
 
-import com.fxyan.opengl.OpenGLActivity;
+import com.fxyan.opengl.BaseActivity;
 import com.fxyan.opengl.R;
-import com.fxyan.opengl.entity.RendererMenu;
-import com.fxyan.opengl.entity.geometry.Cube;
+import com.fxyan.opengl.entity.IModel;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * @author fxYan
  */
-public final class GeometryActivity extends OpenGLActivity {
+public abstract class GeometryActivity
+        extends BaseActivity
+        implements GLSurfaceView.Renderer {
+
+    private IModel model;
 
     @Override
-    protected void init() {
-        setObject(Cube.class);
-    }
-
-    @Override
-    protected int getLayoutId() {
+    public int getLayoutId() {
         return R.layout.activity_geometry;
     }
 
-    public void geometry(View view) {
-        startActivityForResult(new Intent(this, GeometrySelectActivity.class), 1);
+    @Override
+    protected void initViews() {
+        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView.setEGLContextClientVersion(2);
+        surfaceView.setRenderer(this);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            if (data != null && data.getExtras() != null) {
-                Bundle bundle = data.getExtras();
-                RendererMenu menu = (RendererMenu) bundle.getSerializable("menu");
+    protected void initData() {
+        model = getModel();
+    }
 
-                if (menu == null) return;
+    protected abstract IModel getModel();
 
-                setObject(menu.clazz);
-            }
-        }
+    @Override
+    protected void initEvents() {
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        model.onSurfaceCreated();
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        model.onSurfaceChanged(width, height);
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        model.onDrawFrame();
     }
 }
