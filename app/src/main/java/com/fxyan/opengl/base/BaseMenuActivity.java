@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.fxyan.opengl.R;
-import com.fxyan.opengl.base.ActivityMenu;
-import com.fxyan.opengl.base.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,12 +66,9 @@ public abstract class BaseMenuActivity
             btn.setText(data.get(i).menu);
 
             btn.setTag(i);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = (int) v.getTag();
-                    context.startActivity(new Intent(context, data.get(pos).clazz));
-                }
+            btn.setOnClickListener(v -> {
+                int pos = (int) v.getTag();
+                context.startActivity(new Intent(context, data.get(pos).clazz));
             });
         }
 

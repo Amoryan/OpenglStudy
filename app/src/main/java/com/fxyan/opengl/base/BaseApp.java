@@ -6,7 +6,8 @@ import android.content.Context;
 /**
  * @author fxYan
  */
-public final class BaseApp extends Application {
+public final class BaseApp
+        extends Application {
 
     private static Context context;
 

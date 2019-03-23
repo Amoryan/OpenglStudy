@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.CubeHelper;
 import com.fxyan.opengl.utils.GLESUtils;
 
@@ -14,9 +15,8 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class BaseLight {
-
-    private final int PER_FLOAT_BYTES = 4;
+public final class BaseLight
+        extends ModelImpl {
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -57,11 +57,6 @@ public final class BaseLight {
 
     private int programHandle;
     private int lightPosProgramHandle;
-
-    protected float[] mvpMatrix = new float[16];
-    protected float[] modelMatrix = new float[16];
-    protected float[] viewMatrix = new float[16];
-    protected float[] projectionMatrix = new float[16];
 
     public BaseLight() {
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
@@ -120,12 +115,12 @@ public final class BaseLight {
         int modelMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_ModelMatrix");
         GLES20.glUniformMatrix4fv(modelMatrixHandle, 1, false, modelMatrix, 0);
 
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         int mvMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVMatrix");
-        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
+        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 

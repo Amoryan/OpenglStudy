@@ -14,7 +14,8 @@ import java.nio.IntBuffer;
 /**
  * @author fxYan
  */
-public final class Triangle extends ModelImpl {
+public final class Triangle
+        extends ModelImpl {
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;

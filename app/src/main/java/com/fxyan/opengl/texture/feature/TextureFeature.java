@@ -8,6 +8,7 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
 import com.fxyan.opengl.R;
+import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import java.nio.ByteBuffer;
@@ -18,10 +19,8 @@ import java.nio.IntBuffer;
 /**
  * @author fxYan
  */
-public final class TextureFeature {
-
-    private final int PER_FLOAT_BYTES = 4;
-    private final int PER_INT_BYTES = 4;
+public final class TextureFeature
+        extends ModelImpl {
 
     private final int PER_VERTEX_SIZE = 2;
     private final int PER_VERTEX_STRIDE = PER_FLOAT_BYTES * PER_VERTEX_SIZE;
@@ -53,12 +52,6 @@ public final class TextureFeature {
             -1f, 2f,
             -1f, -1f,
     };
-
-    private float[] mvpMatrix = new float[16];
-    private float[] mvMatrix = new float[16];
-    private float[] modelMatrix = new float[16];
-    private float[] viewMatrix = new float[16];
-    private float[] projectionMatrix = new float[16];
 
     private int programHandle;
     private Context context;
@@ -133,6 +126,7 @@ public final class TextureFeature {
         GLES20.glVertexAttribPointer(texCoordHandle, PER_TEX_COORD_SIZE, GLES20.GL_FLOAT, false, PER_TEX_COORD_STRIDE, texCoordBuffer);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
+
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(texCoordHandle);
     }

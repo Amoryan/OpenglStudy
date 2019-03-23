@@ -9,6 +9,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.fxyan.opengl.R;
+import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.CubeHelper;
 import com.fxyan.opengl.utils.GLESUtils;
 
@@ -19,9 +20,8 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class LightTexture {
-
-    private final int PER_FLOAT_BYTES = 4;
+public final class LightTexture
+        extends ModelImpl {
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -49,12 +49,6 @@ public final class LightTexture {
     private float[] lightPosInEyeSpace = new float[4];
 
     private int programHandle;
-
-    protected float[] mvMatrix = new float[16];
-    protected float[] mvpMatrix = new float[16];
-    protected float[] modelMatrix = new float[16];
-    protected float[] viewMatrix = new float[16];
-    protected float[] projectionMatrix = new float[16];
 
     public LightTexture(Context context) {
         this.context = context;

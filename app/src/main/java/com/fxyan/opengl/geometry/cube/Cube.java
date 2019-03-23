@@ -15,7 +15,8 @@ import java.nio.IntBuffer;
 /**
  * @author fxYan
  */
-public final class Cube extends ModelImpl {
+public final class Cube
+        extends ModelImpl {
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_COLOR_SIZE = 4;

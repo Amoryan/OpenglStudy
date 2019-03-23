@@ -4,21 +4,17 @@ import android.opengl.GLSurfaceView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import com.fxyan.opengl.base.IModel;
+import com.fxyan.opengl.base.OpenGLActivity;
 
 /**
  * @author fxYan
  */
 public final class BaseLightActivity
-        extends BaseActivity
+        extends OpenGLActivity
         implements SeekBar.OnSeekBarChangeListener,
         GLSurfaceView.Renderer {
-
-    private GLSurfaceView surfaceView;
 
     private TextView ambientValue;
     private TextView diffuseValue;
@@ -37,9 +33,7 @@ public final class BaseLightActivity
 
     @Override
     protected void initViews() {
-        surfaceView = findViewById(R.id.surfaceView);
-        surfaceView.setEGLContextClientVersion(2);
-        surfaceView.setRenderer(this);
+        super.initViews();
 
         ambientValue = findViewById(R.id.ambientValue);
         diffuseValue = findViewById(R.id.diffuseValue);
@@ -51,8 +45,9 @@ public final class BaseLightActivity
     }
 
     @Override
-    protected void initData() {
+    protected IModel getModel() {
         object = new BaseLight();
+        return object;
     }
 
     @Override
@@ -74,18 +69,6 @@ public final class BaseLightActivity
             seekBar.setOnSeekBarChangeListener(this);
             seekBar.setProgress(defProgress[i]);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        surfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        surfaceView.onPause();
     }
 
     @Override
@@ -147,18 +130,4 @@ public final class BaseLightActivity
 
     }
 
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        object.onSurfaceCreated();
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        object.onSurfaceChanged(width, height);
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        object.onDrawFrame();
-    }
 }

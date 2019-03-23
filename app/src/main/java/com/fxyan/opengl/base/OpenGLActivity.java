@@ -1,10 +1,8 @@
-package com.fxyan.opengl.geometry;
+package com.fxyan.opengl.base;
 
 import android.opengl.GLSurfaceView;
 
-import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
-import com.fxyan.opengl.base.IModel;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -12,20 +10,21 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author fxYan
  */
-public abstract class GeometryActivity
+public abstract class OpenGLActivity
         extends BaseActivity
         implements GLSurfaceView.Renderer {
 
+    private GLSurfaceView surfaceView;
     private IModel model;
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_geometry;
+        return R.layout.activity_opengl;
     }
 
     @Override
     protected void initViews() {
-        GLSurfaceView surfaceView = findViewById(R.id.surfaceView);
+        surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
     }
@@ -39,6 +38,18 @@ public abstract class GeometryActivity
 
     @Override
     protected void initEvents() {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        surfaceView.onPause();
     }
 
     @Override

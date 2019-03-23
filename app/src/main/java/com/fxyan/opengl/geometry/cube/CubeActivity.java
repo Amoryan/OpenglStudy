@@ -1,13 +1,13 @@
 package com.fxyan.opengl.geometry.cube;
 
 import com.fxyan.opengl.base.IModel;
-import com.fxyan.opengl.geometry.GeometryActivity;
+import com.fxyan.opengl.base.OpenGLActivity;
 
 /**
  * @author fxYan
  */
 public final class CubeActivity
-        extends GeometryActivity {
+        extends OpenGLActivity {
     @Override
     protected IModel getModel() {
         return new Cube();

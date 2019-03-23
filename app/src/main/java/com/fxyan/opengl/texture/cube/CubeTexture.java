@@ -9,6 +9,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.fxyan.opengl.R;
+import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.CubeHelper;
 import com.fxyan.opengl.utils.GLESUtils;
 
@@ -19,10 +20,8 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class CubeTexture {
-
-    private final int PER_FLOAT_BYTES = 4;
-    private final int PER_INT_BYTES = 4;
+public final class CubeTexture
+        extends ModelImpl {
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -37,12 +36,6 @@ public final class CubeTexture {
 
     private FloatBuffer texCoordBuffer;
     private float[] texCoord = CubeHelper.texCoord();
-
-    private float[] mvMatrix = new float[16];
-    private float[] mvpMatrix = new float[16];
-    private float[] modelMatrix = new float[16];
-    private float[] viewMatrix = new float[16];
-    private float[] projectionMatrix = new float[16];
 
     private int programHandle;
 
