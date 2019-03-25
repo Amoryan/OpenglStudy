@@ -16,7 +16,10 @@ import java.nio.FloatBuffer;
 public final class Circle
         extends ModelImpl {
 
-    private final int PER_VERTEX_SIZE = 2;
+    private final int TRIANGLE_COUNT = 80;
+    private final int VERTEX_COUNT = TRIANGLE_COUNT + 2;
+
+    private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
     private FloatBuffer vertexBuffer;
@@ -25,13 +28,13 @@ public final class Circle
     private int programHandle;
 
     public Circle() {
-        vertex = new float[720 * PER_VERTEX_SIZE];
-        for (int i = 0; i < 720; i += 2) {
-            double degrees = Math.toRadians(i * 0.125);
-            float sin = (float) Math.sin(degrees);
-            float cos = (float) Math.cos(degrees);
-            vertex[i] = cos;
-            vertex[i + 1] = sin;
+        vertex = new float[VERTEX_COUNT * VERTEX_COUNT];
+
+        for (int i = 0; i < VERTEX_COUNT; i++) {
+            double degree = Math.toRadians(360F / TRIANGLE_COUNT) * i;
+            vertex[i * PER_VERTEX_SIZE] = (float) Math.cos(degree);
+            vertex[i * PER_VERTEX_SIZE + 1] = (float) Math.sin(degree);
+            vertex[i * PER_VERTEX_SIZE + 2] = 0;
         }
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
@@ -77,9 +80,8 @@ public final class Circle
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, vertex.length / PER_VERTEX_SIZE);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_COUNT);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
     }
-
 }

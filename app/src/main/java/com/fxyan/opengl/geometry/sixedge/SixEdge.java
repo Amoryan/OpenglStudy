@@ -16,7 +16,9 @@ import java.nio.FloatBuffer;
 public final class SixEdge
         extends ModelImpl {
 
-    private final int PER_VERTEX_COUNT = 8;
+    private final int TRIANGLE_COUNT = 6;
+    private final int VERTEX_COUNT = TRIANGLE_COUNT + 2;
+
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
@@ -24,35 +26,14 @@ public final class SixEdge
     private float[] vertex;
 
     public SixEdge() {
-        double _60d = Math.toRadians(60);
-        float sin60 = (float) Math.sin(_60d);
-        float cos60 = (float) Math.cos(_60d);
+        vertex = new float[VERTEX_COUNT * PER_VERTEX_SIZE];
 
-        vertex = new float[PER_VERTEX_COUNT * PER_VERTEX_SIZE];
-        for (int i = 0; i < vertex.length; i++) {
-            vertex[i] = 0;
+        for (int i = 0; i < VERTEX_COUNT; i++) {
+            double degree = Math.toRadians(60 * i);
+            vertex[i * PER_VERTEX_SIZE] = (float) Math.cos(degree);
+            vertex[i * PER_VERTEX_SIZE + 1] = (float) Math.sin(degree);
+            vertex[i * PER_VERTEX_SIZE + 2] = 0;
         }
-        // 第二个点
-        vertex[3] = -cos60;
-        vertex[4] = -sin60;
-        // 第三个点
-        vertex[6] = cos60;
-        vertex[7] = -sin60;
-        // 第四个点
-        vertex[9] = 1;
-        vertex[10] = 0;
-        // 第五个点
-        vertex[12] = cos60;
-        vertex[13] = sin60;
-        // 第六个点
-        vertex[15] = -cos60;
-        vertex[16] = sin60;
-        // 第七个点
-        vertex[18] = -1;
-        vertex[19] = 0;
-        // 第八个点
-        vertex[21] = -cos60;
-        vertex[22] = -sin60;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -90,6 +71,10 @@ public final class SixEdge
 
         GLES20.glUseProgram(programHandle);
 
+        drawSixEdge();
+    }
+
+    protected void drawSixEdge() {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
@@ -98,7 +83,7 @@ public final class SixEdge
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, PER_VERTEX_COUNT);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_COUNT);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
     }
