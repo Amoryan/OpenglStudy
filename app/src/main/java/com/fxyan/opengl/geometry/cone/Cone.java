@@ -1,7 +1,8 @@
-package com.fxyan.opengl.geometry.sixedge;
+package com.fxyan.opengl.geometry.cone;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 
 import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.GLESUtils;
@@ -13,11 +14,11 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class SixEdge
+public final class Cone
         extends ModelImpl {
 
-    private final int TRIANGLE_COUNT = 6;
-    private final int VERTEX_COUNT = TRIANGLE_COUNT + 2;
+    private final int TRIANGLES = 80;
+    private final int VERTEX_COUNT = TRIANGLES + 2;
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -25,16 +26,20 @@ public final class SixEdge
     private FloatBuffer vertexBuffer;
     private float[] vertex;
 
-    public SixEdge() {
+    private int programHandle;
+
+    public Cone() {
         vertex = new float[VERTEX_COUNT * PER_VERTEX_SIZE];
 
-        vertex[0] = vertex[1] = vertex[2] = 0;
+        // 顶部
+        vertex[0] = vertex[2] = 0;
+        vertex[1] = 1;
 
         for (int i = 1; i < VERTEX_COUNT; i++) {
-            double degree = Math.toRadians(360F / TRIANGLE_COUNT * (i - 1));
-            vertex[i * PER_VERTEX_SIZE] = (float) Math.cos(degree);
-            vertex[i * PER_VERTEX_SIZE + 1] = (float) Math.sin(degree);
-            vertex[i * PER_VERTEX_SIZE + 2] = 0;
+            double degree = Math.toRadians(360F / TRIANGLES * (i - 1));
+            vertex[i * PER_VERTEX_SIZE] = ((float) (0.5 * Math.cos(degree)));
+            vertex[i * PER_VERTEX_SIZE + 1] = 0;
+            vertex[i * PER_VERTEX_SIZE + 2] = ((float) (0.5 * Math.sin(degree)));
         }
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
@@ -44,13 +49,11 @@ public final class SixEdge
         vertexBuffer.position(0);
     }
 
-    private int programHandle;
-
     @Override
     public void onSurfaceCreated() {
         super.onSurfaceCreated();
 
-        programHandle = GLESUtils.createAndLinkProgram("geometry/sixedge/sixedge.vert", "geometry/sixedge/sixedge.frag");
+        programHandle = GLESUtils.createAndLinkProgram("geometry/cone/cone.vert", "geometry/cone/cone.frag");
     }
 
     @Override
@@ -62,9 +65,6 @@ public final class SixEdge
         float ratio = (float) width / height;
 
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1, 10);
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
     }
 
     @Override
@@ -73,10 +73,13 @@ public final class SixEdge
 
         GLES20.glUseProgram(programHandle);
 
-        drawSixEdge();
-    }
+        Matrix.setIdentityM(modelMatrix, 0);
+        long time = SystemClock.uptimeMillis() % 10000L;
+        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1, 1, 1);
+        Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
 
-    protected void drawSixEdge() {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 

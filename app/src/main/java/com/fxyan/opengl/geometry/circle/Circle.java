@@ -30,8 +30,10 @@ public final class Circle
     public Circle() {
         vertex = new float[VERTEX_COUNT * VERTEX_COUNT];
 
-        for (int i = 0; i < VERTEX_COUNT; i++) {
-            double degree = Math.toRadians(360F / TRIANGLE_COUNT) * i;
+        vertex[0] = vertex[1] = vertex[2] = 0;
+
+        for (int i = 1; i < VERTEX_COUNT; i++) {
+            double degree = Math.toRadians(360F / TRIANGLE_COUNT) * (i - 1);
             vertex[i * PER_VERTEX_SIZE] = (float) Math.cos(degree);
             vertex[i * PER_VERTEX_SIZE + 1] = (float) Math.sin(degree);
             vertex[i * PER_VERTEX_SIZE + 2] = 0;

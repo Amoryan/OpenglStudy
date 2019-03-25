@@ -3,6 +3,7 @@ package com.fxyan.opengl.geometry;
 import com.fxyan.opengl.base.ActivityMenu;
 import com.fxyan.opengl.base.BaseMenuActivity;
 import com.fxyan.opengl.geometry.circle.CircleActivity;
+import com.fxyan.opengl.geometry.cone.ConeActivity;
 import com.fxyan.opengl.geometry.cube.CubeActivity;
 import com.fxyan.opengl.geometry.cylindrical.CylindricalActivity;
 import com.fxyan.opengl.geometry.line.LineActivity;
@@ -27,6 +28,7 @@ public final class GeometryMenuActivity
         data.add(new ActivityMenu(SquareActivity.class, "正方形"));
         data.add(new ActivityMenu(SixEdgeActivity.class, "六边形"));
         data.add(new ActivityMenu(CircleActivity.class, "圆"));
+        data.add(new ActivityMenu(ConeActivity.class, "圆锥"));
         data.add(new ActivityMenu(CylindricalActivity.class, "圆柱"));
         data.add(new ActivityMenu(CubeActivity.class, "立方体"));
     }

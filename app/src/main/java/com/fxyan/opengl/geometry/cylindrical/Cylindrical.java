@@ -7,4 +7,5 @@ import com.fxyan.opengl.base.ModelImpl;
  */
 public final class Cylindrical
         extends ModelImpl {
+
 }
