@@ -1,4 +1,4 @@
-package com.fxyan.opengl.geometry.sixedge;
+package com.fxyan.opengl.geometry.polygon;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -13,11 +13,8 @@ import java.nio.FloatBuffer;
 /**
  * @author fxYan
  */
-public final class SixEdge
+public final class Polygon
         extends ModelImpl {
-
-    private final int TRIANGLE_COUNT = 6;
-    private final int VERTEX_COUNT = TRIANGLE_COUNT + 2;
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -25,13 +22,19 @@ public final class SixEdge
     private FloatBuffer vertexBuffer;
     private float[] vertex;
 
-    public SixEdge() {
-        vertex = new float[VERTEX_COUNT * PER_VERTEX_SIZE];
+    private int edgeNum;
+    private int vertexCount;
+
+    public Polygon(int edgeNum) {
+        this.edgeNum = edgeNum;
+        this.vertexCount = this.edgeNum + 2;
+
+        vertex = new float[vertexCount * PER_VERTEX_SIZE];
 
         vertex[0] = vertex[1] = vertex[2] = 0;
 
-        for (int i = 1; i < VERTEX_COUNT; i++) {
-            double degree = Math.toRadians(360F / TRIANGLE_COUNT * (i - 1));
+        for (int i = 1; i < vertexCount; i++) {
+            double degree = Math.toRadians(360F / edgeNum * (i - 1));
             vertex[i * PER_VERTEX_SIZE] = (float) Math.cos(degree);
             vertex[i * PER_VERTEX_SIZE + 1] = (float) Math.sin(degree);
             vertex[i * PER_VERTEX_SIZE + 2] = 0;
@@ -50,7 +53,7 @@ public final class SixEdge
     public void onSurfaceCreated() {
         super.onSurfaceCreated();
 
-        programHandle = GLESUtils.createAndLinkProgram("geometry/sixedge/sixedge.vert", "geometry/sixedge/sixedge.frag");
+        programHandle = GLESUtils.createAndLinkProgram("geometry/polygon/polygon.vert", "geometry/polygon/polygon.frag");
     }
 
     @Override
@@ -85,7 +88,7 @@ public final class SixEdge
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, PER_VERTEX_SIZE, GLES20.GL_FLOAT, false, PER_VERTEX_STRIDE, vertexBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_COUNT);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
     }

@@ -47,7 +47,12 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".geometry.sixedge.SixEdgeActivity"
+            android:name=".geometry.polygon.EdgeInputActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+
+        <activity
+            android:name=".geometry.polygon.PolygonActivity"
             android:screenOrientation="portrait" />
 
         <activity
