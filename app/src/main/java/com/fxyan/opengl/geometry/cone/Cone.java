@@ -17,8 +17,8 @@ import java.nio.FloatBuffer;
 public final class Cone
         extends ModelImpl {
 
-    private final int TRIANGLES = 80;
-    private final int VERTEX_COUNT = TRIANGLES + 2;
+    private final int TRIANGLE_COUNT = 80;
+    private final int VERTEX_COUNT = TRIANGLE_COUNT + 2;
 
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
@@ -36,7 +36,7 @@ public final class Cone
         vertex[1] = 1;
 
         for (int i = 1; i < VERTEX_COUNT; i++) {
-            double degree = Math.toRadians(360F / TRIANGLES * (i - 1));
+            double degree = Math.toRadians(360F / TRIANGLE_COUNT * (i - 1));
             vertex[i * PER_VERTEX_SIZE] = ((float) (0.5 * Math.cos(degree)));
             vertex[i * PER_VERTEX_SIZE + 1] = 0;
             vertex[i * PER_VERTEX_SIZE + 2] = ((float) (0.5 * Math.sin(degree)));
