@@ -1,12 +1,13 @@
 uniform mat4 u_MVPMatrix;
 
 attribute vec4 a_Position;
-attribute vec4 a_Color;
-
-varying vec4 v_Color;
 
 void main(){
     gl_Position = u_MVPMatrix * a_Position;
-
-    v_Color = a_Color;
 }
+
+//end
+/*
+    GL_TRIANGLES，每三个点绘制一个三角形，总共绘制N/3个三角形
+    GL_TRIANGLE_STRIDE，会绘制
+*/
