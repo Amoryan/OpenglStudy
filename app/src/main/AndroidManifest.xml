@@ -88,6 +88,14 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".texture.feature.NearestActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".texture.feature.LinearActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".texture.cube.CubeTextureActivity"
             android:screenOrientation="portrait" />
 

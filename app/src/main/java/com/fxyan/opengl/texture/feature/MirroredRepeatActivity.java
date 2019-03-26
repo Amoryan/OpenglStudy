@@ -11,4 +11,14 @@ public final class MirroredRepeatActivity
     protected int getWrapMode() {
         return GLES20.GL_MIRRORED_REPEAT;
     }
+
+    @Override
+    protected int getMinFilter() {
+        return GLES20.GL_NEAREST;
+    }
+
+    @Override
+    protected int getMagFilter() {
+        return GLES20.GL_LINEAR;
+    }
 }

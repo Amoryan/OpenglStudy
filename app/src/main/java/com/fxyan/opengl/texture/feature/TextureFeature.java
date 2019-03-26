@@ -7,7 +7,6 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
-import com.fxyan.opengl.R;
 import com.fxyan.opengl.base.ModelImpl;
 import com.fxyan.opengl.utils.GLESUtils;
 
@@ -56,11 +55,17 @@ public final class TextureFeature
     private int programHandle;
     private Context context;
 
+    private int resId;
     private int wrapMode;
+    private int minFilter;
+    private int magFilter;
 
-    public TextureFeature(Context context, int wrapMode) {
+    public TextureFeature(Context context, int resId, int wrapMode, int minFilter, int magFilter) {
         this.context = context;
         this.wrapMode = wrapMode;
+        this.resId = resId;
+        this.minFilter = minFilter;
+        this.magFilter = magFilter;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
@@ -89,14 +94,14 @@ public final class TextureFeature
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, magFilter);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, wrapMode);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, wrapMode);
 
-        Bitmap b1 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_huaji);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, b1, 0);
-        b1.recycle();
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        bitmap.recycle();
     }
 
     public void onSurfaceChanged(int width, int height) {
