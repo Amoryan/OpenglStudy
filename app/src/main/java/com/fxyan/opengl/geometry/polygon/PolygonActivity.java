@@ -15,7 +15,6 @@ public final class PolygonActivity
 
     private static final String EDGE_NUM = "edgeNum";
 
-    private Polygon object;
     private int edgeNum;
 
     public static void open(Context context, int edgeNum) {
@@ -34,7 +33,6 @@ public final class PolygonActivity
 
     @Override
     protected IModel getModel() {
-        object = new Polygon(edgeNum);
-        return object;
+        return new Polygon(edgeNum);
     }
 }

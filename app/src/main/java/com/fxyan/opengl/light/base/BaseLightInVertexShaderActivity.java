@@ -11,7 +11,7 @@ import com.fxyan.opengl.base.OpenGLActivity;
 /**
  * @author fxYan
  */
-public final class BaseLightActivity
+public class BaseLightInVertexShaderActivity
         extends OpenGLActivity
         implements SeekBar.OnSeekBarChangeListener,
         GLSurfaceView.Renderer {
@@ -24,7 +24,7 @@ public final class BaseLightActivity
     private TextView greenValue;
     private TextView blueValue;
 
-    private BaseLight object;
+    protected BaseLight object;
 
     @Override
     public int getLayoutId() {
@@ -46,7 +46,7 @@ public final class BaseLightActivity
 
     @Override
     protected IModel getModel() {
-        object = new BaseLight();
+        object = new BaseLight(BaseLight.CALCULATE_IN_VERTEX_SHADER);
         return object;
     }
 

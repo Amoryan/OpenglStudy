@@ -2,6 +2,7 @@ package com.fxyan.opengl;
 
 import com.fxyan.opengl.base.ActivityMenu;
 import com.fxyan.opengl.base.BaseMenuActivity;
+import com.fxyan.opengl.camera.CameraActivity;
 import com.fxyan.opengl.geometry.GeometryMenuActivity;
 import com.fxyan.opengl.light.LightMenuActivity;
 import com.fxyan.opengl.ply.PlyActivity;
@@ -18,5 +19,6 @@ public class MainActivity
         data.add(new ActivityMenu(TextureMenuActivity.class, "纹理"));
         data.add(new ActivityMenu(LightMenuActivity.class, "光照"));
         data.add(new ActivityMenu(PlyActivity.class, "Ply模型"));
+        data.add(new ActivityMenu(CameraActivity.class, "相机"));
     }
 }

@@ -76,10 +76,10 @@ public final class Polygon
 
         GLES20.glUseProgram(programHandle);
 
-        drawSixEdge();
+        drawPolygon();
     }
 
-    protected void drawSixEdge() {
+    protected void drawPolygon() {
         int mvpMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 

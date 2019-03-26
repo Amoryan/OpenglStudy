@@ -96,7 +96,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".light.base.BaseLightActivity"
+            android:name=".light.base.BaseLightInVertexShaderActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".light.base.BaseLightInFragmentShaderActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -105,6 +109,10 @@
 
         <activity
             android:name=".ply.PlyActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".camera.CameraActivity"
             android:screenOrientation="portrait" />
 
     </application>

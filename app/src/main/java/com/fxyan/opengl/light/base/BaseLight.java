@@ -18,6 +18,9 @@ import java.nio.FloatBuffer;
 public final class BaseLight
         extends ModelImpl {
 
+    public static final int CALCULATE_IN_VERTEX_SHADER = 0;
+    public static final int CALCULATE_IN_FRAGMENT_SHADER = 1;
+
     private final int PER_VERTEX_SIZE = 3;
     private final int PER_VERTEX_STRIDE = PER_VERTEX_SIZE * PER_FLOAT_BYTES;
 
@@ -58,7 +61,11 @@ public final class BaseLight
     private int programHandle;
     private int lightPosProgramHandle;
 
-    public BaseLight() {
+    private int type;
+
+    public BaseLight(int type) {
+        this.type = type;
+
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
@@ -82,7 +89,11 @@ public final class BaseLight
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        programHandle = GLESUtils.createAndLinkProgram("light/base/light.vert", "light/base/light.frag");
+        if (type == CALCULATE_IN_VERTEX_SHADER) {
+            programHandle = GLESUtils.createAndLinkProgram("light/base/lightInVert.vert", "light/base/lightInVert.frag");
+        } else {
+            programHandle = GLESUtils.createAndLinkProgram("light/base/lightInFrag.vert", "light/base/lightInFrag.frag");
+        }
         lightPosProgramHandle = GLESUtils.createAndLinkProgram("light/base/lightpos.vert", "light/base/lightpos.frag");
     }
 
