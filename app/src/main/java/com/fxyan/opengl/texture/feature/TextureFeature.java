@@ -93,8 +93,10 @@ public final class TextureFeature
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, wrapMode);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, wrapMode);
+
         Bitmap b1 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_huaji);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, b1, 0);
+        b1.recycle();
     }
 
     public void onSurfaceChanged(int width, int height) {

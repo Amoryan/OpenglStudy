@@ -10,3 +10,17 @@ void main(){
 
     v_TexCoord = a_TexCoord;
 }
+
+//end
+
+/*
+    GL_TEXTURE_MIN_FILTER
+        表示在绘制小于纹理原始大小的时候使用哪种过滤；
+    GL_TEXTURE_MAG_FILTER
+        表示在绘制大于纹理原始大小的时候使用哪种过滤
+
+        >GL_NEAREST
+            这种方式是最粗糙，
+        >GL_LINEAR
+
+*/
