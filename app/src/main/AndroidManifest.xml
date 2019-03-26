@@ -116,6 +116,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".blending.BlendingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ply.PlyActivity"
             android:screenOrientation="portrait" />
 
