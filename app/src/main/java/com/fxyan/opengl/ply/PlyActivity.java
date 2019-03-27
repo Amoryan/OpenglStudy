@@ -58,7 +58,7 @@ public final class PlyActivity
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_ply;
+        return R.layout.activity_model;
     }
 
     @Override

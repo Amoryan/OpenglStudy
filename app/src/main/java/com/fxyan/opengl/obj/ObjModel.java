@@ -6,7 +6,6 @@ import android.opengl.GLES20;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 /**
  * @author fxYan
@@ -23,28 +22,19 @@ public class ObjModel {
 
     protected FloatBuffer vertexBuffer;
     protected float[] vertex;
-    protected IntBuffer indexBuffer;
-    protected int[] index;
 
     protected Context context;
 
-    public ObjModel(Context context, float[] vertex, int[] index) {
+    public ObjModel(Context context, float[] vertex) {
         this.context = context;
 
         this.vertex = vertex;
-        this.index = index;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertex.length * PER_FLOAT_BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertex);
         vertexBuffer.position(0);
-
-        indexBuffer = ByteBuffer.allocateDirect(index.length * PER_INT_BYTES)
-                .order(ByteOrder.nativeOrder())
-                .asIntBuffer()
-                .put(index);
-        indexBuffer.position(0);
     }
 
     public void onSurfaceCreated() {
@@ -67,7 +57,7 @@ public class ObjModel {
         GLES20.glEnableVertexAttribArray(normalHandle);
         GLES20.glVertexAttribPointer(normalHandle, PER_VERTEX_NORMAL_SIZE, GLES20.GL_FLOAT, true, PER_VERTEX_STRIDE, vertexBuffer);
 
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, index.length, GLES20.GL_UNSIGNED_INT, indexBuffer);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertex.length / PER_VERTEX_SIZE);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(normalHandle);

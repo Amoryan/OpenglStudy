@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
@@ -56,7 +57,7 @@ public final class ObjActivity
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_ply;
+        return R.layout.activity_model;
     }
 
     @Override
@@ -153,12 +154,12 @@ public final class ObjActivity
         Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
         for (Map.Entry<String, ObjModel> entry : map.entrySet()) {
-//            int type = textureMap.get(entry.getKey());
-//            if (type == 0) {
-//                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, t950, 0);
-//            } else {
-//                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, diamond, 0);
-//            }
+            int type = textureMap.get(entry.getKey());
+            if (type == 0) {
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, t950, 0);
+            } else {
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, diamond, 0);
+            }
             entry.getValue().onDrawFrame(mvpMatrix, programHandle);
         }
     }
@@ -169,7 +170,7 @@ public final class ObjActivity
 
             BufferedReader bufr = null;
             ArrayList<Float> vertexList = new ArrayList<>();
-            ArrayList<Integer> normaList = new ArrayList<>();
+            ArrayList<Float> normalList = new ArrayList<>();
             ArrayList<Integer> indexList = new ArrayList<>();
             try {
                 bufr = new BufferedReader(new InputStreamReader(getAssets().open(path)));
@@ -181,6 +182,10 @@ public final class ObjActivity
                         vertexList.add(Float.valueOf(split[1]));
                         vertexList.add(Float.valueOf(split[2]));
                         vertexList.add(Float.valueOf(split[3]));
+                    } else if ("vn".equals(split[0])) {
+                        normalList.add(Float.valueOf(split[1]));
+                        normalList.add(Float.valueOf(split[2]));
+                        normalList.add(Float.valueOf(split[3]));
                     } else if ("f".equals(split[0])) {
                         for (int i = 1; i < 4; i++) {
                             String[] array = split[i].split("/");
@@ -188,7 +193,7 @@ public final class ObjActivity
                                 indexList.add(Integer.valueOf(array[0]) - 1);
                             }
                             if (array.length > 2) {
-                                normaList.add(Integer.valueOf(array[2]) - 1);
+                                indexList.add(Integer.valueOf(array[2]) - 1);
                             }
                         }
                     }
@@ -208,15 +213,22 @@ public final class ObjActivity
             }
 
             if (result) {
-                float[] vertex = new float[vertexList.size()];
-                for (int i = 0; i < vertexList.size(); i++) {
-                    vertex[i] = vertexList.get(i);
+                float[] vertex = new float[indexList.size() * 3];
+                for (int i = 0; i < indexList.size(); i += 2) {
+                    int start = ObjModel.PER_VERTEX_SIZE * i / 2;
+                    int vIndex = indexList.get(i);
+                    vIndex *= ObjModel.PER_VERTEX_COORD_SIZE;
+                    vertex[start] = vertexList.get(vIndex);
+                    vertex[start + 1] = vertexList.get(vIndex + 1);
+                    vertex[start + 2] = vertexList.get(vIndex + 2);
+
+                    int nIndex = indexList.get(i + 1);
+                    nIndex *= ObjModel.PER_VERTEX_NORMAL_SIZE;
+                    vertex[start + 3] = normalList.get(nIndex);
+                    vertex[start + 4] = normalList.get(nIndex + 1);
+                    vertex[start + 5] = normalList.get(nIndex + 2);
                 }
-                int[] index = new int[indexList.size()];
-                for (int i = 0; i < indexList.size(); i++) {
-                    index[i] = indexList.get(i);
-                }
-                emitter.onSuccess(new ObjModel(context, vertex, index));
+                emitter.onSuccess(new ObjModel(context, vertex));
             } else {
                 emitter.onError(new RuntimeException());
             }
