@@ -124,6 +124,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".obj.ObjActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".camera.CameraActivity"
             android:screenOrientation="portrait" />
 

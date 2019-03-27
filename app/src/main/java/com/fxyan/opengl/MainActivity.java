@@ -6,6 +6,7 @@ import com.fxyan.opengl.blending.BlendingActivity;
 import com.fxyan.opengl.camera.CameraActivity;
 import com.fxyan.opengl.geometry.GeometryMenuActivity;
 import com.fxyan.opengl.light.LightMenuActivity;
+import com.fxyan.opengl.obj.ObjActivity;
 import com.fxyan.opengl.ply.PlyActivity;
 import com.fxyan.opengl.texture.TextureMenuActivity;
 
@@ -21,6 +22,7 @@ public class MainActivity
         data.add(new ActivityMenu(LightMenuActivity.class, "光照"));
         data.add(new ActivityMenu(BlendingActivity.class, "混合"));
         data.add(new ActivityMenu(PlyActivity.class, "Ply模型"));
+        data.add(new ActivityMenu(ObjActivity.class, "Obj模型"));
         data.add(new ActivityMenu(CameraActivity.class, "相机"));
     }
 }
