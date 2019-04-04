@@ -8,9 +8,11 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
-import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.R;
+import com.fxyan.opengl.base.BaseActivity;
 import com.fxyan.opengl.utils.GLESUtils;
 
 import org.smurn.jply.Element;
@@ -49,12 +51,19 @@ public final class PlyActivity
     private Bitmap diamond;
 
     private float[] mvpMatrix = new float[16];
-    private float[] mvMatrix = new float[16];
     private float[] modelMatrix = new float[16];
-    private float[] viewMatrix = new float[16];
     private float[] projectionMatrix = new float[16];
 
     private int programHandle;
+
+    private float maxVertex = 1;
+    private float currentScale = 0.5f;
+
+    private float downX, downY;
+    private float degreeX, degreeY;
+    private boolean isMultiPointer;
+    private float ratio;
+    private ScaleGestureDetector detector;
 
     @Override
     public int getLayoutId() {
@@ -66,6 +75,30 @@ public final class PlyActivity
         surfaceView = findViewById(R.id.surfaceView);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(this);
+        detector = new ScaleGestureDetector(this, new ScaleGestureDetector.OnScaleGestureListener() {
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                float scaleFactor = detector.getScaleFactor();
+                scaleFactor = (scaleFactor - 1) * 2 + 1;// 基数放大2倍
+                currentScale *= scaleFactor;
+                if (currentScale >= 1) {
+                    currentScale = 1;
+                } else if (currentScale <= 0.2) {
+                    currentScale = 0.2f;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                return true;
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+
+            }
+        });
     }
 
     @Override
@@ -132,11 +165,8 @@ public final class PlyActivity
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 30f, 0f, 0f, -5f, 1f, 1f, 1f);
+        ratio = (float) width / height;
 
-        float ratio = (float) width / height;
-
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 50f);
         for (PlyModel model : map.values()) {
             model.onSurfaceChanged();
         }
@@ -148,12 +178,15 @@ public final class PlyActivity
 
         GLES20.glUseProgram(programHandle);
 
+        float scale = maxVertex / currentScale;
+        Matrix.orthoM(projectionMatrix, 0, -ratio * scale, ratio * scale, -scale, scale, -scale, scale);
+
         Matrix.setIdentityM(modelMatrix, 0);
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.2f, 0.7f, 0.45f);
-        Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvMatrix, 0);
+        Matrix.rotateM(modelMatrix, 0, degreeY + angleInDegrees, 0f, 1f, 0f);
+        Matrix.rotateM(modelMatrix, 0, degreeX, 1f, 0f, 0f);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
         for (Map.Entry<String, PlyModel> entry : map.entrySet()) {
             int type = textureMap.get(entry.getKey());
             if (type == 0) {
@@ -163,6 +196,36 @@ public final class PlyActivity
             }
             entry.getValue().onDrawFrame(mvpMatrix, programHandle);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        detector.onTouchEvent(event);
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                downX = event.getX();
+                downY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int pointerCount = event.getPointerCount();
+                if (pointerCount > 1) {
+                    isMultiPointer = true;
+                } else if (pointerCount == 1 && !isMultiPointer) {
+                    float moveX = event.getX();
+                    float moveY = event.getY();
+                    degreeX += (moveY - downY) / 2;
+                    degreeY += (moveX - downX) / 2;
+                    downX = moveX;
+                    downY = moveY;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                isMultiPointer = false;
+                break;
+            default:
+        }
+        return true;
     }
 
     private void readPlyFile(String path) {
@@ -217,9 +280,21 @@ public final class PlyActivity
         float[] vertex = new float[elementReader.getCount() * PlyModel.PER_VERTEX_SIZE];
         for (int i = 0; i < elementReader.getCount(); i++) {
             Element element = elementReader.readElement();
-            vertex[i * PlyModel.PER_VERTEX_SIZE] = (float) element.getDouble("x");
-            vertex[i * PlyModel.PER_VERTEX_SIZE + 1] = (float) element.getDouble("y");
-            vertex[i * PlyModel.PER_VERTEX_SIZE + 2] = (float) element.getDouble("z");
+            float x = (float) element.getDouble("x");
+            vertex[i * PlyModel.PER_VERTEX_SIZE] = x;
+            if (maxVertex < x) {
+                maxVertex = x;
+            }
+            float y = (float) element.getDouble("y");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 1] = y;
+            if (maxVertex < y) {
+                maxVertex = y;
+            }
+            float z = (float) element.getDouble("z");
+            vertex[i * PlyModel.PER_VERTEX_SIZE + 2] = z;
+            if (maxVertex < z) {
+                maxVertex = z;
+            }
             vertex[i * PlyModel.PER_VERTEX_SIZE + 3] = (float) element.getDouble("nx");
             vertex[i * PlyModel.PER_VERTEX_SIZE + 4] = (float) element.getDouble("ny");
             vertex[i * PlyModel.PER_VERTEX_SIZE + 5] = (float) element.getDouble("nz");
